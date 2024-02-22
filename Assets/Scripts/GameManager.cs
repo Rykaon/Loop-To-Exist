@@ -265,6 +265,7 @@ public class GameManager : MonoBehaviour
                         if (playerControls.UI.Y.IsPressed())
                         {
                             playerMenu.gameObject.SetActive(false);
+                            Cursor.lockState = CursorLockMode.Locked;
                             StartRun();
                         }
 
