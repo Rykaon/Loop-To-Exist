@@ -248,7 +248,7 @@ public class PlayerManager : StateManager
     {
         Quaternion rotation = cameraTarget.rotation;
         rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, Vector3.up);
-        rotation *= Quaternion.AngleAxis(value.y * cameraRotationSpeed, Vector3.right);
+        rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, Vector3.right);
 
         if (isAiming)
         {
