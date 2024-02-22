@@ -4,7 +4,7 @@ using System.Collections;
 
 [AddComponentMenu("Radial Menu Framework/RMF Force Direction")]
 [ExecuteInEditMode]
-public class RMF_ForceDirection : MonoBehaviour {
+public class RadialMenuForceDirection : MonoBehaviour {
 
     private RectTransform rt;
 
@@ -20,14 +20,7 @@ public class RMF_ForceDirection : MonoBehaviour {
 
 
     }
-
-	// Use this for initialization
-	void Start () {
-
-
-    }
 	
-	// Update is called once per frame
 	void Update () {
 
         if (!Application.isPlaying)

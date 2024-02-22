@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class PlayerInteractionTrigger : MonoBehaviour
 {
-    public List<GrabObject> triggeredObjectsList { get; private set; }
+    public List<ItemManager> triggeredObjectsList { get; private set; }
 
     private void Awake()
     {
-        triggeredObjectsList = new List<GrabObject>();
+        triggeredObjectsList = new List<ItemManager>();
     }
 
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.transform.tag == "Wall")
         {
-            if (collision.transform.TryGetComponent<GrabObject>(out GrabObject catchObject))
+            if (collision.transform.TryGetComponent<ItemManager>(out ItemManager catchObject))
             {
                 triggeredObjectsList.Add(catchObject);
             }
@@ -26,7 +26,7 @@ public class PlayerInteractionTrigger : MonoBehaviour
     {
         if (collision.transform.tag == "Wall")
         {
-            if (collision.transform.TryGetComponent<GrabObject>(out GrabObject catchObject))
+            if (collision.transform.TryGetComponent<ItemManager>(out ItemManager catchObject))
             {
                 if (triggeredObjectsList.Contains(catchObject))
                 {

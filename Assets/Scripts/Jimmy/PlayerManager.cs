@@ -3,20 +3,20 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 
-public class PlayerController : MonoBehaviour
+public class PlayerManager : StateManager
 {
     [Header("Component References")]
-    //[SerializeField] private PlayerManager playerManager;
-    [SerializeField] private Rigidbody rigidBody;
     [SerializeField] private Transform head;
     [SerializeField] private Transform feet;
     [SerializeField] private Transform eye;
+    [SerializeField] public Transform cameraTarget;
 
-    [SerializeField] private Transform PlayerCamera;
     public Transform playerCamera { get; private set; }
 
     [SerializeField] private Transform VirtualCamera;
@@ -25,17 +25,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerInteractionTrigger Trigger;
     public PlayerInteractionTrigger trigger { get; private set; }
 
-    [SerializeField] private GameManager GameManager;
-    public GameManager gameManager { get; private set; }
-
     public PlayerControls playerControls { get; private set; }
     public InputRecorder recorder { get; private set; }
 
-    public bool buttonSouthIsPressed = false;
-    public bool buttonWestIsPressed = false;
-    public bool buttonEastIsPressed = false;
-    public bool aimIsPressed = false;
-    public bool shotIsPressed = false;
+    [HideInInspector] public bool buttonSouthIsPressed = false;
+    [HideInInspector] public bool buttonWestIsPressed = false;
+    [HideInInspector] public bool buttonEastIsPressed = false;
+    [HideInInspector] public bool aimIsPressed = false;
+    [HideInInspector] public bool shotIsPressed = false;
 
     [Header("Status")]
     public bool isMainPlayer;
@@ -47,97 +44,78 @@ public class PlayerController : MonoBehaviour
     private bool isAiming = false;
 
     [Header("Move Properties")]
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float maxMoveSpeed;
-    [SerializeField] private float jumpForce;
-    [SerializeField] private float collisionDetectionDistance;
-    private Vector3 forceDirection = Vector3.zero;
-    private Vector2 jumpFrameMovementSave;
+    [SerializeField] protected float moveSpeed;
+    [SerializeField] protected float maxMoveSpeed;
+    [SerializeField] protected float jumpForce;
+    [SerializeField] protected float collisionDetectionDistance;
+    [HideInInspector] protected Vector3 forceDirection = Vector3.zero;
+    [HideInInspector] protected Vector2 jumpFrameMovementSave;
 
-    [Header("Catch Properties")]
-    [SerializeField] private GrabObject selectedObject = null;
-    [HideInInspector] private GrabObject previousSelectedObject = null;
+    [HideInInspector] protected ItemManager selectedObject = null;
+    [HideInInspector] protected ItemManager previousSelectedObject = null;
 
+    [Header("Camera Properties")]
     [SerializeField] public Transform cameraAimLockPoint;
     [SerializeField] public Transform cameraAimCursorLockPoint;
     [SerializeField] public float cameraCursorDistance;
     [SerializeField] public float cameraCursorMoveSpeed;
+    [SerializeField] public float cameraRotationSpeed;
 
     [SerializeField] public float cameraMinX;
     [SerializeField] public float cameraMinY;
     [SerializeField] public float cameraMaxX;
     [SerializeField] public float cameraMaxY;
 
-    public Vector3 startPosition { get; private set; }
-    public Quaternion startRotation { get; private set; }
+    public InputAction moveAction { get; private set; }
+    public InputAction jumpAction { get; private set; }
+    public InputAction grabAction { get; private set; }
+    public InputAction throwAction { get; private set; }
+    public InputAction shotAction { get; private set; }
 
-    public InputAction move { get; private set; }
-    public InputAction jump { get; private set; }
-    public InputAction grab { get; private set; }
-    public InputAction throooooooow { get; private set; }
-
-    public InputAction shot { get; private set; }
-
-    public void Initialize()
+    public override void Initialize(GameManager instance)
     {
-        this.gameManager = gameManager;
+        base.Initialize(instance);
+
         recorder = new InputRecorder(this);
 
-        playerCamera = PlayerCamera;
         virtualCamera = VirtualCamera;
         trigger = Trigger;
-        this.gameManager = GameManager;
 
         playerControls = gameManager.playerControls;
-        //playerControls.World.Enable();
 
-        move = playerControls.Player.Move;
-        jump = playerControls.Player.Jump;
-        grab = playerControls.Player.Grab;
-        throooooooow = playerControls.Player.Throw;
-        shot = playerControls.Player.Shot;
+        moveAction = playerControls.Player.Move;
+        jumpAction = playerControls.Player.Jump;
+        grabAction = playerControls.Player.Grab;
+        throwAction = playerControls.Player.Throw;
+        shotAction = playerControls.Player.Shot;
+    }
+    
+    public override void Reset()
+    {
+        recorder.ResetExecution();
 
-        startPosition = transform.position;
-        startRotation = transform.rotation;
+        base.Reset();
 
-        if (isMainPlayer)
-        {
-            isRecording = true;
-        }
+        isAiming = false;
+        selectedObject = null;
+        previousSelectedObject = null;
+        cameraAimCursorLockPoint.localPosition = new Vector3(0, 0, cameraCursorDistance);
     }
 
-    public void SetIsMainPlayer(bool isMainPlayer)
+    public void SetIsMainPlayer(bool value)
     {
-        if (isMainPlayer)
+        if (value)
         {
-            playerCamera = gameManager.transform;
+            playerCamera = gameManager.cameraManager.currentCamera.transform;
             playerControls = gameManager.playerControls;
-            this.isMainPlayer = true;
+            isMainPlayer = true;
         }
         else
         {
             playerCamera = virtualCamera;
             playerControls = null;
-            this.isMainPlayer = false;
+            isMainPlayer = false;
         }
-    }
-
-    public void Restart()
-    {
-        recorder.ResetExecution();
-
-        rigidBody.isKinematic = true;
-        Move(Vector2.zero);
-        rigidBody.isKinematic = false;
-
-        selectedObject = null;
-        cameraAimCursorLockPoint.localPosition = new Vector3(0, 0, cameraCursorDistance);
-        previousSelectedObject = null;
-
-        transform.position = startPosition;
-        transform.rotation = startRotation;
-
-        isActive = false;
     }
 
     public void Move(Vector2 value)
@@ -178,6 +156,7 @@ public class PlayerController : MonoBehaviour
         {
             LookAt(value);
         }
+
         forceDirection = Vector3.zero;
     }
 
@@ -185,7 +164,6 @@ public class PlayerController : MonoBehaviour
     {
         if (isRecording)
         {
-            //Debug.Log("Jump at : " + elapsedTime);
             recorder.RecordInput(playerControls.Player.Jump);
         }
 
@@ -200,7 +178,6 @@ public class PlayerController : MonoBehaviour
     {
         if (isRecording)
         {
-            //Debug.Log("Catch at : " + elapsedTime);
             recorder.RecordInput(playerControls.Player.Grab);
         }
 
@@ -225,13 +202,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
+    public void SetSelectedObject(ItemManager grab)
+    {
+        selectedObject = grab;
+        Transform[] path = new Transform[2];
+        path[0] = grab.transform; path[1] = head;
+        Debug.Log(grab.gameObject);
+        grab.SetSelectedObject(path, 0.25f);
+    }
 
     public void Throw()
     {
         if (isRecording)
         {
-            //Debug.Log("Throw at : " + elapsedTime);
             recorder.RecordInput(playerControls.Player.Throw);
         }
 
@@ -250,28 +233,50 @@ public class PlayerController : MonoBehaviour
     {
         if (value)
         {
-            gameManager.SetCameraTarget(cameraAimLockPoint, cameraAimCursorLockPoint);
             isAiming = true;
-            cameraAimCursorLockPoint.localPosition = new Vector3(0, 0, cameraCursorDistance);
         }
         else
         {
-            gameManager.SetCameraTarget(transform, transform);
             isAiming = false;
         }
-
-        gameManager.SetCameraAim(value);
+        
+        gameManager.cameraManager.SetCameraAim(value);
+        //gameManager.SetCameraAim(value);
     }
 
-    public void MoveCameraCursor(Vector2 value)
+    public void MoveCamera(Vector2 value)
     {
-        Vector3 movement = new Vector3(value.x, value.y, 0f);
+        Quaternion rotation = cameraTarget.rotation;
+        rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, Vector3.up);
+        rotation *= Quaternion.AngleAxis(value.y * cameraRotationSpeed, Vector3.right);
 
-        Vector3 cameraPos = cameraAimCursorLockPoint.localPosition;
-        cameraPos += movement * cameraCursorMoveSpeed;
-        cameraPos.x = Mathf.Clamp(cameraPos.x, cameraMinX, cameraMaxX);
-        cameraPos.y = Mathf.Clamp(cameraPos.y, cameraMinY, cameraMaxY);
-        cameraAimCursorLockPoint.localPosition = cameraPos;
+        if (isAiming)
+        {
+            rotation = ClampCameraRotation(rotation);
+        }
+
+        cameraTarget.rotation = rotation;
+    }
+
+    private Quaternion ClampCameraRotation(Quaternion rotation)
+    {
+        Vector3 eulers = rotation.eulerAngles;
+        eulers.x = ClampAngle(eulers.x, transform.rotation.eulerAngles.x - 30f, transform.rotation.eulerAngles.x + 30f);
+        eulers.y = ClampAngle(eulers.y, transform.rotation.eulerAngles.y - 30f, transform.rotation.eulerAngles.y + 30f);
+
+        return Quaternion.Euler(eulers);
+    }
+
+    private float ClampAngle(float current, float min, float max)
+    {
+        float dtAngle = Mathf.Abs(((min - max) + 180) % 360 - 180);
+        float hdtAngle = dtAngle * 0.5f;
+        float midAngle = min + hdtAngle;
+
+        float offset = Mathf.Abs(Mathf.DeltaAngle(current, midAngle)) - hdtAngle;
+        if (offset > 0)
+            current = Mathf.MoveTowardsAngle(current, midAngle, offset);
+        return current;
     }
 
     public void Shot()
@@ -357,24 +362,15 @@ public class PlayerController : MonoBehaviour
         return isCollisionDetected;
     }
 
-    public void ResetObject()
+    protected override void OnCollisionEnter(Collision collision)
     {
-        selectedObject = null;
-        previousSelectedObject = null;
-    }
 
-    public void SetSelectedObject(GrabObject grab)
-    {
-        selectedObject = grab;
-        //Lancer animation et faire durer le tween le temps de l'animation;
-        Transform[] path = new Transform[2];
-        path[0] = grab.transform; path[1] = head;
-        Debug.Log(grab.gameObject);
-        grab.SetSelectedObject(path, 0.25f);
     }
 
     private void FixedUpdate()
     {
+        cameraTarget.position = rigidBody.position + (Vector3.up / 2);
+        
         if (playerControls != null)
         {
             if (buttonSouthIsPressed && !playerControls.Player.Jump.IsPressed())
@@ -420,6 +416,11 @@ public class PlayerController : MonoBehaviour
                     Jump();
                 }
 
+                if (playerControls.Player.MoveCamera.ReadValue<Vector2>() != Vector2.zero)
+                {
+                    MoveCamera(playerControls.Player.MoveCamera.ReadValue<Vector2>());
+                }
+
                 if (!isAiming)
                 {
                     if (playerControls.Player.Grab.IsPressed() && !buttonWestIsPressed)
@@ -448,11 +449,6 @@ public class PlayerController : MonoBehaviour
                         Aim(false);
                     }
 
-                    if (playerControls.Player.MoveCamera.ReadValue<Vector2>() != Vector2.zero)
-                    {
-                        MoveCameraCursor(playerControls.Player.MoveCamera.ReadValue<Vector2>());
-                    }
-
                     if (playerControls.Player.Shot.IsPressed() && !shotIsPressed)
                     {
                         shotIsPressed = true;
@@ -472,23 +468,23 @@ public class PlayerController : MonoBehaviour
                 {
                     for (int i = 0; i < recorder.GetInputActions(gameManager.elapsedTime).Count; ++i)
                     {
-                        if (recorder.GetInputActions(gameManager.elapsedTime)[i] == move)
+                        if (recorder.GetInputActions(gameManager.elapsedTime)[i] == moveAction)
                         {
                             recorder.ExecuteVectorLog(recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.moveLogs));
                         }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == jump)
+                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == jumpAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.jumpLogs));
                         }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == grab)
+                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == grabAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.catchLogs));
                         }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == throooooooow)
+                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == throwAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.throwLogs));
                         }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == shot)
+                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == shotAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.shotLogs));
                         }

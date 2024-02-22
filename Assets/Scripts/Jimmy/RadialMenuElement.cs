@@ -31,7 +31,7 @@ public class RadialMenuElement : MonoBehaviour
     //[HideInInspector]
     public bool selected = false;
 
-    public PlayerController player;
+    public PlayerManager player;
 
     [HideInInspector]
     public int assignedIndex = 0;

@@ -12,7 +12,7 @@ using Cinemachine;
 
 public class InputRecorder
 {
-    public PlayerController player;// {  get; private set; }
+    public PlayerManager player;// {  get; private set; }
     public List<float> timeList { get; private set; }
     public List<InputLog<Vector2>> moveLogs { get; private set; }
     public List<InputLog<Vector3>> cameraPosLogs { get; private set; }
@@ -23,7 +23,7 @@ public class InputRecorder
     public List<InputLog<float>> shotLogs { get; private set; }
     public List<List<InputLog<float>>> floatLogs { get; private set; }
 
-    public InputRecorder(PlayerController playerRecorder)
+    public InputRecorder(PlayerManager playerRecorder)
     {
         player = playerRecorder;
         timeList = new List<float>();
@@ -192,27 +192,27 @@ public class InputRecorder
 
     public void RecordInput(InputAction action)
     {
-        if (action == player.move)
+        if (action == player.moveAction)
         {
             InputLog<Vector2> log = new InputLog<Vector2>(action.ReadValue<Vector2>(), player.gameManager.elapsedTime, action);
             AddVectorLogs(log, moveLogs);
         }
-        else if (action == player.jump)
+        else if (action == player.jumpAction)
         {
             InputLog<float> log = new InputLog<float>(action.ReadValue<float>(), player.gameManager.elapsedTime, action);
             AddFloatLogs(log, jumpLogs);
         }
-        else if (action == player.grab)
+        else if (action == player.grabAction)
         {
             InputLog<float> log = new InputLog<float>(action.ReadValue<float>(), player.gameManager.elapsedTime, action);
             AddFloatLogs(log, catchLogs);
         }
-        else if (action == player.throooooooow)
+        else if (action == player.throwAction)
         {
             InputLog<float> log = new InputLog<float>(action.ReadValue<float>(), player.gameManager.elapsedTime, action);
             AddFloatLogs(log, throwLogs);
         }
-        else if (action == player.shot)
+        else if (action == player.shotAction)
         {
             InputLog<float> log = new InputLog<float>(action.ReadValue<float>(), player.gameManager.elapsedTime, action);
             AddFloatLogs(log, shotLogs);
@@ -230,7 +230,7 @@ public class InputRecorder
     {
         if (!log.hasBeenExecuted)
         {
-            if (log.action == player.move)
+            if (log.action == player.moveAction)
             {
                 player.Move(log.value);
             }
@@ -243,19 +243,19 @@ public class InputRecorder
     {
         if (!log.hasBeenExecuted)
         {
-            if (log.action == player.jump)
+            if (log.action == player.jumpAction)
             {
                 player.Jump();
             }
-            else if (log.action == player.grab)
+            else if (log.action == player.grabAction)
             {
                 player.Grab();
             }
-            else if (log.action == player.throooooooow)
+            else if (log.action == player.throwAction)
             {
                 player.Throw();
             }
-            else if (log.action == player.shot)
+            else if (log.action == player.shotAction)
             {
                 player.Shot();
             }
@@ -270,12 +270,11 @@ public class InputRecorder
         {
             if (isQuaternion)
             {
-                player.playerCamera.GetComponent<VirtualCameraManager>().SetVirtualCameraRotation(log.value);
+                player.playerCamera.rotation = Quaternion.Euler(log.value);
             }
             else
             {
-                Debug.Log(player.playerCamera.name);
-                player.playerCamera.GetComponent<VirtualCameraManager>().SetVirtualCameraPosition(log.value);
+                player.playerCamera.position = log.value;
             }
 
             log.SetExexcuted(true);

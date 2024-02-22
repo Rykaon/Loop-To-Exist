@@ -1,52 +1,39 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Profiling;
 
-public class GrabObject : MonoBehaviour
+public class ItemManager : StateManager
 {
-    private PlayerController player;
-
+    [Header("Items References")]
     [SerializeField] private Collider ObjectCollider;
+    [SerializeField] protected float throwForceHorizontal = 8;
+    [SerializeField] protected float throwForceVertical = 5;
+
+    protected PlayerManager player;
+
     public Collider objectCollider { get; private set; }
+    public bool isSelectedObject { get; private set; }
+    public bool isSet { get; private set; }
 
-
-    [SerializeField] private Rigidbody RigidBody;
-    public Rigidbody rigidBody { get; private set; }
-    private float mass;
-    private float drag;
-    private float angularDrag;
-
-    private float throwForceHorizontal = 8;
-    private float throwForceVertical = 5;
-
-    public bool isSelectedObject = false;
-    public bool isSet = false;
-
-    private void Awake()
+    public override void Initialize(GameManager instance)
     {
+        base.Initialize(instance);
+
         objectCollider = ObjectCollider;
-        rigidBody = RigidBody;
-        mass = rigidBody.mass;
-        drag = rigidBody.drag;
-        angularDrag = rigidBody.angularDrag;
-    }
-
-    public void ResetObject()
-    {
         isSelectedObject = false;
         isSet = false;
-        Debug.Log("yeaaaaaaaaaaaaaah");
-        if (player != null)
-        {
-            player.ResetObject();
-        }
+    }
 
+    public override void Reset()
+    {
+        base.Reset();
+
+        isSelectedObject = false;
+        isSet = false;
         objectCollider.isTrigger = false;
         rigidBody.useGravity = true;
-        rigidBody.isKinematic = false;
-        rigidBody.velocity = Vector3.zero;
     }
 
     public void SetSelectedObject(Transform[] path, float time)
@@ -56,14 +43,6 @@ public class GrabObject : MonoBehaviour
         rigidBody.useGravity = false;
 
         StartCoroutine(SetObject(path, time));
-
-        /*iTween.MoveTo(gameObject, iTween.Hash(
-            "path", path,
-            "time", time,
-            "easetype", iTween.EaseType.easeOutSine,
-            "oncomplete", "InitializeObjectSet",
-            "oncompleteparams", path[1].parent
-        ));*/
     }
 
     private IEnumerator SetObject(Transform[] path, float time)
@@ -93,11 +72,10 @@ public class GrabObject : MonoBehaviour
     {
         transform.parent = parent;
         isSet = true;
-        player = parent.GetComponent<PlayerController>();
+        player = parent.GetComponent<PlayerManager>();
 
         objectCollider.isTrigger = false;
         rigidBody.isKinematic = false;
-        Debug.Log("yo");
     }
 
     public void ThrowObject()
@@ -124,5 +102,10 @@ public class GrabObject : MonoBehaviour
         throwDirection += Vector3.one.z * player.transform.forward.normalized * throwForceHorizontal;
 
         return throwDirection;
+    }
+
+    protected override void OnCollisionEnter(Collision collision)
+    {
+
     }
 }
