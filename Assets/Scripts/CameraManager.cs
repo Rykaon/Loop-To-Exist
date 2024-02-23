@@ -9,9 +9,9 @@ public class CameraManager : MonoBehaviour
 {
     [Header("General Properties")]
     [SerializeField] protected GameManager gameManager;
-    [HideInInspector] public CinemachineVirtualCamera currentCamera;
-    [SerializeField] protected CinemachineVirtualCamera worldCamera;
-    [SerializeField] protected CinemachineVirtualCamera aimCamera;
+    [HideInInspector] public CinemachineFreeLook currentCamera;
+    [SerializeField] protected CinemachineFreeLook worldCamera;
+    [SerializeField] protected CinemachineFreeLook aimCamera;
     [HideInInspector] protected Cinemachine3rdPersonFollow thirdPersonFollow;
     [SerializeField] protected Transform followTransitionTarget;
     [SerializeField] protected Transform lookTransitionTarget;

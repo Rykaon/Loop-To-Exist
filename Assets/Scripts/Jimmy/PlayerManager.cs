@@ -129,8 +129,12 @@ public class PlayerManager : StateManager
 
         if (!RaycastCollision() && value != Vector2.zero)
         {
-            forceDirection += movement.x * GetCameraRight(playerCamera) * moveSpeed;
-            forceDirection += movement.z * GetCameraForward(playerCamera) * moveSpeed;
+            //Debug.Log(playerCamera.ToString());
+
+            forceDirection += ConvertToCameraSpace(movement) * moveSpeed;
+
+            //forceDirection += movement.x * GetCameraRight(playerCamera) * moveSpeed;
+            //forceDirection += movement.z * GetCameraForward(playerCamera) * moveSpeed;
         }
 
         rigidBody.AddForce(forceDirection, ForceMode.Impulse);
@@ -294,6 +298,24 @@ public class PlayerManager : StateManager
                 Debug.Log(hit.transform.name);
             }
         }
+    }
+
+    public Vector3 ConvertToCameraSpace(Vector3 vectorToRotate)
+    {
+        Vector3 cameraForward = gameManager.gameObject.transform.forward;
+        Vector3 cameraRight = gameManager.gameObject.transform.right;
+
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+
+        cameraForward = cameraForward.normalized;
+        cameraRight =cameraRight.normalized;
+
+        Vector3 cameraForwardZProduct = vectorToRotate.z * cameraForward;
+        Vector3 cameraRightXProduct = vectorToRotate.x * cameraRight;
+
+        Vector3 vectorRotatedToCameraSpace = cameraForwardZProduct + cameraRightXProduct;
+        return vectorRotatedToCameraSpace;
     }
 
     public Vector3 GetCameraForward(Transform camera)
