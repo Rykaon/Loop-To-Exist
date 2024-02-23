@@ -1,7 +1,9 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.Profiling;
 
 public class ItemManager : StateManager
@@ -12,6 +14,7 @@ public class ItemManager : StateManager
     [SerializeField] protected float throwForceVertical = 5;
 
     protected PlayerManager player;
+    protected Joint joint = null;
 
     public Collider objectCollider { get; private set; }
     public bool isSelectedObject { get; private set; }
@@ -28,10 +31,17 @@ public class ItemManager : StateManager
 
     public override void Reset()
     {
-        base.Reset();
-
         isSelectedObject = false;
         isSet = false;
+
+        if (joint != null)
+        {
+            Destroy(joint);
+            joint = null;
+        }
+
+        base.Reset();
+
         objectCollider.isTrigger = false;
         rigidBody.useGravity = true;
     }
@@ -44,6 +54,19 @@ public class ItemManager : StateManager
     public override void ResetState()
     {
         base.ResetState();
+
+        switch (state)
+        {
+            case State.Sticky:
+                joint = null;
+                break;
+
+            case State.FreezePosition:
+                break;
+
+            case State.FreezeTime:
+                break;
+        }
     }
 
     // Les fonctions propres aux objets interactifs
@@ -54,7 +77,13 @@ public class ItemManager : StateManager
         {
             transform.SetParent(parent, true);
             rigidBody.useGravity = true;
-            rigidBody.isKinematic = false;
+            //rigidBody.isKinematic = false;
+        }
+
+        if (joint != null)
+        {
+            Destroy(joint);
+            joint = null;
         }
 
         isSelectedObject = true;
@@ -89,12 +118,17 @@ public class ItemManager : StateManager
 
     private void InitializeObjectSet(Transform parent)
     {
-        transform.parent = parent;
+        //transform.parent = parent;
         isSet = true;
         player = parent.GetComponent<PlayerManager>();
 
         objectCollider.isTrigger = false;
-        rigidBody.isKinematic = false;
+        if (joint == null)
+        {
+            joint = transform.AddComponent<FixedJoint>();
+        }
+        joint.connectedBody = player.transform.GetComponent<Rigidbody>();
+        //rigidBody.isKinematic = false;
     }
 
     public void ThrowObject()
@@ -105,12 +139,23 @@ public class ItemManager : StateManager
             isSelectedObject = false;
             transform.parent = null;
 
+            if (joint != null)
+            {
+                Destroy(joint);
+                joint = null;
+            }
             rigidBody.useGravity = true;
 
-            rigidBody.AddForce(CalculateThrowForce(), ForceMode.Impulse);
-            objectCollider.isTrigger = false;
-            player = null;
+            StartCoroutine(SetThrowForce());
         }
+    }
+
+    private IEnumerator SetThrowForce()
+    {
+        yield return new WaitForFixedUpdate();
+        rigidBody.AddForce(CalculateThrowForce(), ForceMode.Impulse);
+        objectCollider.isTrigger = false;
+        player = null;
     }
 
     private Vector3 CalculateThrowForce()
@@ -125,13 +170,21 @@ public class ItemManager : StateManager
 
     protected override void OnCollisionEnter(Collision collision)
     {
-        if (state == State.Sticky && !isSelectedObject)
+        if (state == State.Sticky && !isSelectedObject/* && collision.transform.tag != "Player"*/)
         {
             rigidBody.useGravity = false;
-            rigidBody.isKinematic = true;
             rigidBody.velocity = Vector3.zero;
+            rigidBody.angularVelocity = Vector3.zero;
+
+            if (joint == null)
+            {
+                joint = transform.AddComponent<FixedJoint>();
+            }
+            joint.connectedBody = collision.transform.GetComponent<Rigidbody>();
+
+            Debug.Log(collision.transform.name);
             //SetParentWithConstantScale(collision.transform);
-            transform.SetParent(collision.transform, true);
+            //transform.SetParent(collision.transform, true);
         }
     }
 }

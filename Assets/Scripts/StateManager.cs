@@ -32,16 +32,14 @@ public class StateManager : MonoBehaviour
 
     public virtual void Reset()
     {
-        ResetState();
-
         if (state != State.FreezeTime)
         {
+            ResetState();
+
             stateToApply = State.Default;
             rigidBody.velocity = Vector3.zero;
             rigidBody.angularVelocity = Vector3.zero;
             rigidBody.angularDrag = 0f;
-            rigidBody.isKinematic = true;
-            rigidBody.isKinematic = false;
 
             transform.position = startPosition;
             transform.rotation = startRotation;
@@ -68,9 +66,11 @@ public class StateManager : MonoBehaviour
         switch (state)
         {
             case State.Sticky:
-                transform.SetParent(parent, true);
+                if (rigidBody.TryGetComponent<Joint>(out Joint joint))
+                {
+                    Destroy(joint);
+                }
                 rigidBody.useGravity = true;
-                rigidBody.isKinematic = false;
                 break;
 
             case State.FreezePosition:

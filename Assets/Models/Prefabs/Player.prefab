@@ -396,6 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   state: 0
+  stateToApply: 0
   RigidBody: {fileID: 882217338985396927}
   head: {fileID: 4194247132682260400}
   feet: {fileID: 5738480824880601504}

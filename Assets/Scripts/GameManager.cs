@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     public RadialMenu playerMenu { get; private set; }
     public List<PlayerManager> playerList { get; private set; }
     public List<ItemManager> itemList { get; private set; }
-    public List<ObjectManager> objectList { get; private set; }
+    //public List<ObjectManager> objectList { get; private set; }
 
     [HideInInspector] public float recordingEndTime;
     private int playerIndex = 0;
@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
 
         playerList = entities.OfType<PlayerManager>().ToList();
         itemList = entities.OfType<ItemManager>().ToList();
-        objectList = entities.OfType<ObjectManager>().ToList();
+        //objectList = entities.OfType<ObjectManager>().ToList();
 
         for (int i = 0; i < playerList.Count; i++)
         {
@@ -76,10 +76,10 @@ public class GameManager : MonoBehaviour
             itemList[i].Initialize(this);
         }
 
-        for (int i = 0; i < objectList.Count; i++)
+        /*for (int i = 0; i < objectList.Count; i++)
         {
             objectList[i].Initialize(this);
-        }
+        }*/
 
         playerList[0].SetIsMainPlayer(true);
         mainPlayer = playerList[0];

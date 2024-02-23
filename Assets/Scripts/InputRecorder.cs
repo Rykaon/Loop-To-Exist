@@ -14,23 +14,34 @@ public class InputRecorder
 {
     public PlayerManager player;// {  get; private set; }
     public List<float> timeList { get; private set; }
-    public List<InputLog<Vector2>> moveLogs { get; private set; }
+    public List<InputLog<Vector3>> movePosLogs { get; private set; }
+    public List<InputLog<Vector3>> moveRotLogs { get; private set; }
     public List<InputLog<Vector3>> shotLogs { get; private set; }
     public List<InputLog<Vector3>> cameraPosLogs { get; private set; }
     public List<InputLog<Vector3>> cameraRotLogs { get; private set; }
     public List<InputLog<float>> jumpLogs { get; private set; }
     public List<InputLog<float>> catchLogs { get; private set; }
     public List<InputLog<float>> throwLogs { get; private set; }
+
+    public List<List<InputLog<Vector3>>> vectorLogs { get; private set; }
     public List<List<InputLog<float>>> floatLogs { get; private set; }
 
     public InputRecorder(PlayerManager playerRecorder)
     {
         player = playerRecorder;
         timeList = new List<float>();
-        moveLogs = new List<InputLog<Vector2>>();
+        movePosLogs = new List<InputLog<Vector3>>();
+        moveRotLogs = new List<InputLog<Vector3>>();
         shotLogs = new List<InputLog<Vector3>>();
         cameraPosLogs = new List<InputLog<Vector3>>();
         cameraRotLogs   = new List<InputLog<Vector3>>();
+
+        vectorLogs = new List<List<InputLog<Vector3>>>();
+        vectorLogs.Add(movePosLogs);
+        vectorLogs.Add(moveRotLogs);
+        vectorLogs.Add(shotLogs);
+        vectorLogs.Add(cameraPosLogs);
+        vectorLogs.Add(cameraRotLogs);
         jumpLogs = new List<InputLog<float>>();
         catchLogs = new List<InputLog<float>>();
         throwLogs = new List<InputLog<float>>();
@@ -43,7 +54,8 @@ public class InputRecorder
 
     public void Clean()
     {
-        moveLogs.Clear();
+        movePosLogs.Clear();
+        moveRotLogs.Clear();
         cameraPosLogs.Clear();
         cameraRotLogs.Clear();
         jumpLogs.Clear();
@@ -58,13 +70,7 @@ public class InputRecorder
         timeList.Add(log.time);
     }
 
-    public void AddVectorLogs(InputLog<Vector2> log, List<InputLog<Vector2>> logs)
-    {
-        logs.Add(log);
-        timeList.Add(log.time);
-    }
-
-    public void AddCameraLogs(InputLog<Vector3> log, List<InputLog<Vector3>> logs)
+    public void AddVectorLogs(InputLog<Vector3> log, List<InputLog<Vector3>> logs)
     {
         logs.Add(log);
     }
@@ -81,20 +87,7 @@ public class InputRecorder
         return null;
     }
 
-    public InputLog<Vector2> GetVector2InputLogs(float time, List<InputLog<Vector2>> logs)
-    {
-        for (int i = 0; i < logs.Count; ++i)
-        {
-            if (logs[i].time == time)
-            {
-                return logs[i];
-            }
-        }
-
-        return null;
-    }
-
-    public InputLog<Vector3> GetVector3InputLogs(float time, List<InputLog<Vector3>> logs)
+    public InputLog<Vector3> GetVectorInputLogs(float time, List<InputLog<Vector3>> logs)
     {
         for (int i = 0; i < logs.Count; ++i)
         {
@@ -110,39 +103,29 @@ public class InputRecorder
     public List<InputAction> GetInputActions(float time)
     {
         List<InputAction> actions = new List<InputAction>();
-        for (int i = 0; i < floatLogs.Count + 1; ++i)
+        for (int i = 0; i < floatLogs.Count; ++i)
         {
-            if (i == floatLogs.Count)
+            for (int j = 0; j < floatLogs[i].Count; ++j)
             {
-                for (int j = 0; j < moveLogs.Count; ++j)
+                if (floatLogs[i][j].time == time)
                 {
-                    if (moveLogs[j].time == time)
-                    {
-                        actions.Add(moveLogs[j].action);
-                    }
-                }
-
-                for (int k = 0; k < shotLogs.Count; ++k)
-                {
-                    if (shotLogs[k].time == time)
-                    {
-                        actions.Add(shotLogs[k].action);
-                    }
-                }
-            }
-            else
-            {
-                for (int j = 0; j < floatLogs[i].Count; ++j)
-                {
-                    if (floatLogs[i][j].time == time)
-                    {
-                        actions.Add(floatLogs[i][j].action);
-                    }
+                    actions.Add(floatLogs[i][j].action);
                 }
             }
         }
 
-        if(actions.Count > 0)
+        for (int i = 0; i < vectorLogs.Count; ++i)
+        {
+            for (int j = 0; j < vectorLogs[i].Count; ++j)
+            {
+                if (vectorLogs[i][j].time == time)
+                {
+                    actions.Add(vectorLogs[i][j].action);
+                }
+            }
+        }
+
+        if (actions.Count > 0)
         {
             return actions;
         }
@@ -152,21 +135,9 @@ public class InputRecorder
         }
     }
 
-    public bool CheckLog(float time, List<InputLog<Vector2>> vectorLogs, List<InputLog<float>> floatLogs, List<InputLog<Vector3>> cameraLogs)
+    public bool CheckLog(float time, List<InputLog<float>> floatLogs, List<InputLog<Vector3>> vectorLogs)
     {
-        if (floatLogs == null && vectorLogs != null && cameraLogs == null)
-        {
-            for (int i = 0; i < vectorLogs.Count; ++i)
-            {
-                if (vectorLogs[i].time == time)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        else if (floatLogs != null && vectorLogs == null && cameraLogs == null)
+        if (floatLogs != null && vectorLogs == null)
         {
             for (int i = 0; i < floatLogs.Count; ++i)
             {
@@ -178,11 +149,11 @@ public class InputRecorder
 
             return false;
         }
-        else if (floatLogs == null && vectorLogs == null && cameraLogs != null)
+        else if (floatLogs == null && vectorLogs != null)
         {
-            for (int i = 0; i < cameraLogs.Count; ++i)
+            for (int i = 0; i < vectorLogs.Count; ++i)
             {
-                if (cameraLogs[i].time == time)
+                if (vectorLogs[i].time == time)
                 {
                     return true;
                 }
@@ -197,12 +168,14 @@ public class InputRecorder
         }
     }
 
-    public void RecordInput(InputAction action, Vector3 direction = new Vector3())
+    public void RecordInput(InputAction action, Vector3 pos = new Vector3(), Vector3 rot = new Vector3())
     {
         if (action == player.moveAction)
         {
-            InputLog<Vector2> log = new InputLog<Vector2>(action.ReadValue<Vector2>(), player.gameManager.elapsedTime, action);
-            AddVectorLogs(log, moveLogs);
+            InputLog<Vector3> log = new InputLog<Vector3>(pos, player.gameManager.elapsedTime, action);
+            AddVectorLogs(log, movePosLogs);
+            log = new InputLog<Vector3>(rot, player.gameManager.elapsedTime, action);
+            AddVectorLogs(log, moveRotLogs);
         }
         else if (action == player.jumpAction)
         {
@@ -221,28 +194,15 @@ public class InputRecorder
         }
         else if (action == player.shotAction)
         {
-            InputLog<Vector3> log = new InputLog<Vector3>(direction, player.gameManager.elapsedTime, action);
-            AddCameraLogs(log, shotLogs);
+            InputLog<Vector3> log = new InputLog<Vector3>(pos, player.gameManager.elapsedTime, action);
+            AddVectorLogs(log, shotLogs);
         }
         else if (action == null)
         {
             InputLog<Vector3> log = new InputLog<Vector3>(player.playerCamera.position, player.gameManager.elapsedTime, action);
-            AddCameraLogs(log, cameraPosLogs);
+            AddVectorLogs(log, cameraPosLogs);
             log = new InputLog<Vector3>(player.playerCamera.rotation.eulerAngles, player.gameManager.elapsedTime, action);
-            AddCameraLogs(log, cameraRotLogs);
-        }
-    }
-
-    public void ExecuteVectorLog(InputLog<Vector2> log)
-    {
-        if (!log.hasBeenExecuted)
-        {
-            if (log.action == player.moveAction)
-            {
-                player.Move(log.value);
-            }
-
-            log.SetExexcuted(true);
+            AddVectorLogs(log, cameraRotLogs);
         }
     }
 
@@ -267,27 +227,30 @@ public class InputRecorder
         }
     }
 
-    public void ExecuteCameraLog(InputLog<Vector3> log, bool isQuaternion)
+    public void ExecuteVectorLog(InputLog<Vector3> posLog, InputLog<Vector3> rotLog)
     {
-        if (!log.hasBeenExecuted)
+        if (!posLog.hasBeenExecuted)
         {
-            if (isQuaternion)
+            if (posLog.action == player.moveAction)
             {
-                player.playerCamera.rotation = Quaternion.Euler(log.value);
+                player.Move(Vector2.zero, posLog.value, rotLog.value);
+            }
+            else if (posLog.action == player.shotAction)
+            {
+                player.Shot(posLog.value);
             }
             else
             {
-                if (log.action == player.shotAction)
-                {
-                    player.Shot(log.value);
-                }
-                else
-                {
-                    player.playerCamera.position = log.value;
-                }
+                player.playerCamera.position = posLog.value;
+                player.playerCamera.rotation = Quaternion.Euler(rotLog.value);
             }
 
-            log.SetExexcuted(true);
+            posLog.SetExexcuted(true);
+
+            if (rotLog != null)
+            {
+                rotLog.SetExexcuted(true);
+            }
         }
     }
 
@@ -301,9 +264,9 @@ public class InputRecorder
             }
         }
 
-        for (int i = 0; i < moveLogs.Count; ++i)
+        for (int i = 0; i < movePosLogs.Count; ++i)
         {
-            moveLogs[i].SetExexcuted(false);
+            movePosLogs[i].SetExexcuted(false);
         }
 
         for (int i = 0; i < cameraPosLogs.Count; ++i)
