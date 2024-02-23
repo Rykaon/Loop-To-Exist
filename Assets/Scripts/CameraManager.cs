@@ -50,7 +50,7 @@ public class CameraManager : MonoBehaviour
         cameraFOV = currentCamera.m_Lens.FieldOfView;*/
     }
 
-    public IEnumerator SetCameraTarget(Transform follow, Transform look)
+    public IEnumerator SetCameraTarget(Transform follow, Transform look, Transform cameraAimLockPoint)
     {
         isCameraSet = false;
         previousTarget = currentCamera.m_Follow;
@@ -82,8 +82,8 @@ public class CameraManager : MonoBehaviour
 
         currentCamera.m_Follow = follow;
         currentCamera.m_LookAt = look;
-        aimCamera.m_Follow = follow;
-        aimCamera.m_LookAt = look;
+        aimCamera.m_Follow = cameraAimLockPoint;
+        aimCamera.m_LookAt = cameraAimLockPoint;
         isCameraSet = true;
         cameraTransition = null;
     }
@@ -123,7 +123,7 @@ public class CameraManager : MonoBehaviour
         {
             float time = elapsedTime / cameraTransitionDuration;
 
-            gameManager.mainPlayer.cameraTarget.rotation = Quaternion.Slerp(gameManager.mainPlayer.cameraTarget.rotation, gameManager.mainPlayer.transform.rotation, time);
+            gameManager.mainPlayer.cameraAimLockPoint.rotation = Quaternion.Slerp(gameManager.mainPlayer.cameraAimLockPoint.rotation, gameManager.mainPlayer.transform.rotation, time);
 
             elapsedTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();

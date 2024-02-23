@@ -80,7 +80,8 @@ public class GameManager : MonoBehaviour
 
         playerList[0].SetIsMainPlayer(true);
         mainPlayer = playerList[0];
-        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
+
+        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget, mainPlayer.cameraAimLockPoint);
 
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
@@ -103,14 +104,14 @@ public class GameManager : MonoBehaviour
         controlState = state;
     }
 
-    public void SetCameraTarget(Transform follow, Transform look)
+    public void SetCameraTarget(Transform follow, Transform look, Transform cameraAimLockPoint)
     {
         if (cameraManager.cameraTransition != null)
         {
             StopCoroutine(cameraManager.cameraTransition);
         }
 
-        cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look));
+        cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look, cameraAimLockPoint));
     }
 
     /*public void SetCameraAim(bool value)
@@ -145,7 +146,7 @@ public class GameManager : MonoBehaviour
 
     public void StartRun()
     {
-        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
+        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget, mainPlayer.cameraAimLockPoint);
         EraseRunRecord(mainPlayer);
         
         for (int i = 0; i < playerList.Count; i++)
@@ -249,7 +250,7 @@ public class GameManager : MonoBehaviour
 
                         if (cameraManager.currentTarget != playerMenu.elements[playerMenu.index].player.transform)
                         {
-                            SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget);
+                            SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraAimLockPoint);
                         }
 
                         if (playerControls.UI.B.IsPressed())

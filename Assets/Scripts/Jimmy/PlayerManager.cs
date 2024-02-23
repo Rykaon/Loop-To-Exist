@@ -250,7 +250,7 @@ public class PlayerManager : StateManager
 
     public void MoveCamera(Vector2 value)
     {
-        Quaternion rotation = cameraTarget.rotation;
+        Quaternion rotation = cameraAimLockPoint.rotation;
         rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, Vector3.up);
         rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, Vector3.right);
 
@@ -259,7 +259,7 @@ public class PlayerManager : StateManager
             rotation = ClampCameraRotation(rotation);
         }
 
-        cameraTarget.rotation = rotation;
+        cameraAimLockPoint.rotation = rotation;
     }
 
     private Quaternion ClampCameraRotation(Quaternion rotation)
@@ -318,19 +318,19 @@ public class PlayerManager : StateManager
         return vectorRotatedToCameraSpace;
     }
 
-    public Vector3 GetCameraForward(Transform camera)
-    {
-        Vector3 forward = camera.forward;
-        forward.y = 0f;
-        return forward.normalized;
-    }
+    //public Vector3 GetCameraForward(Transform camera)
+    //{
+    //    Vector3 forward = camera.forward;
+    //    forward.y = 0f;
+    //    return forward.normalized;
+    //}
 
-    public Vector3 GetCameraRight(Transform camera)
-    {
-        Vector3 right = camera.right;
-        right.y = 0f;
-        return right.normalized;
-    }
+    //public Vector3 GetCameraRight(Transform camera)
+    //{
+    //    Vector3 right = camera.right;
+    //    right.y = 0f;
+    //    return right.normalized;
+    //}
 
     public void LookAt(Vector2 value)
     {
@@ -459,6 +459,7 @@ public class PlayerManager : StateManager
 
                     if (playerControls.Player.Aim.IsPressed() && !aimIsPressed)
                     {
+
                         aimIsPressed = true;
                         Aim(true);
                     }
