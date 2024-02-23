@@ -10,13 +10,15 @@ public class StateManager : MonoBehaviour
     [Header("StateManager References")]
     public Type type;
     public State state;
+    public State stateToApply;
     [SerializeField] protected Rigidbody RigidBody;
-
-
+    
     public GameManager gameManager { get; private set; }
     public Rigidbody rigidBody { get; private set; }
     public Vector3 startPosition { get; private set; }
     public Quaternion startRotation { get; private set; }
+
+    protected Transform parent;
 
     public virtual void Initialize(GameManager instance)
     {
@@ -25,18 +27,69 @@ public class StateManager : MonoBehaviour
 
         gameManager = instance;
         rigidBody = RigidBody;
+        parent = transform.parent;
     }
 
     public virtual void Reset()
     {
-        rigidBody.isKinematic = true;
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = Vector3.zero;
-        rigidBody.angularDrag = 0f;
-        rigidBody.isKinematic = false;
+        ResetState();
 
-        transform.position = startPosition;
-        transform.rotation = startRotation;
+        if (state != State.FreezeTime)
+        {
+            stateToApply = State.Default;
+            rigidBody.velocity = Vector3.zero;
+            rigidBody.angularVelocity = Vector3.zero;
+            rigidBody.angularDrag = 0f;
+            rigidBody.isKinematic = true;
+            rigidBody.isKinematic = false;
+
+            transform.position = startPosition;
+            transform.rotation = startRotation;
+        }
+    }
+
+    public virtual void SetState(State state)
+    {
+        ResetState();
+
+        switch (state)
+        {
+            case State.FreezePosition:
+                rigidBody.isKinematic = true;
+                rigidBody.useGravity = false;
+                break;
+        }
+
+        this.state = state;
+    }
+
+    public virtual void ResetState()
+    {
+        switch (state)
+        {
+            case State.Sticky:
+                transform.SetParent(parent, true);
+                rigidBody.useGravity = true;
+                rigidBody.isKinematic = false;
+                break;
+
+            case State.FreezePosition:
+                rigidBody.useGravity = true;
+                rigidBody.isKinematic = false;
+                break;
+
+            case State.FreezeTime:
+                break;
+        }
+
+        state = State.Default;
+    }
+
+    protected virtual void SetParentWithConstantScale(Transform parent)
+    {
+        Vector3 scale = transform.localScale;
+        transform.SetParent(parent, true);
+        transform.localScale = new Vector3(1f / parent.localScale.x, 1f / parent.localScale.y, 1f / parent.localScale.z);
     }
 
     protected virtual void OnCollisionEnter(Collision collision)

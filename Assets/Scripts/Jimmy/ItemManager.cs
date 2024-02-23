@@ -36,8 +36,27 @@ public class ItemManager : StateManager
         rigidBody.useGravity = true;
     }
 
+    public override void SetState(State state)
+    {
+        base.SetState(state);
+    }
+
+    public override void ResetState()
+    {
+        base.ResetState();
+    }
+
+    // Les fonctions propres aux objets interactifs
+
     public void SetSelectedObject(Transform[] path, float time)
     {
+        if (state == State.Sticky)
+        {
+            transform.SetParent(parent, true);
+            rigidBody.useGravity = true;
+            rigidBody.isKinematic = false;
+        }
+
         isSelectedObject = true;
         objectCollider.isTrigger = true;
         rigidBody.useGravity = false;
@@ -106,6 +125,13 @@ public class ItemManager : StateManager
 
     protected override void OnCollisionEnter(Collision collision)
     {
-
+        if (state == State.Sticky && !isSelectedObject)
+        {
+            rigidBody.useGravity = false;
+            rigidBody.isKinematic = true;
+            rigidBody.velocity = Vector3.zero;
+            //SetParentWithConstantScale(collision.transform);
+            transform.SetParent(collision.transform, true);
+        }
     }
 }

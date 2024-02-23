@@ -3,6 +3,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -101,6 +102,18 @@ public class PlayerManager : StateManager
         previousSelectedObject = null;
         cameraAimCursorLockPoint.localPosition = new Vector3(0, 0, cameraCursorDistance);
     }
+
+    public override void SetState(State state)
+    {
+        base.SetState(state);
+    }
+
+    public override void ResetState()
+    {
+        base.ResetState();
+    }
+
+    // Les fonctions propres aux joueurs
 
     public void SetIsMainPlayer(bool value)
     {
@@ -207,7 +220,6 @@ public class PlayerManager : StateManager
         selectedObject = grab;
         Transform[] path = new Transform[2];
         path[0] = grab.transform; path[1] = head;
-        Debug.Log(grab.gameObject);
         grab.SetSelectedObject(path, 0.25f);
     }
 
@@ -279,19 +291,55 @@ public class PlayerManager : StateManager
         return current;
     }
 
-    public void Shot()
+    public void Shot(Vector3 direction)
     {
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        Vector3 hitPoint = Vector3.zero;
+        Ray ray = gameManager._camera.ScreenPointToRay(screenCenter);
+        RaycastHit hit;
+
         if (isRecording)
         {
-            recorder.RecordInput(playerControls.Player.Shot);
+            if (Physics.Raycast(ray, out hit))
+            {
+                hitPoint = hit.point;
+            }
+
+            Vector3 rayDirection;
+
+            if (hitPoint == Vector3.zero)
+            {
+                rayDirection = eye.forward;
+            }
+            else
+            {
+                rayDirection = hitPoint - eye.position;
+            }
+
+            ray.origin = eye.position;
+            ray.direction = rayDirection;
+            Debug.Log("Real // Origin : " + eye.position + ", Direction : " + rayDirection);
+            recorder.RecordInput(playerControls.Player.Shot, ray.direction);
+        }
+        else
+        {
+            ray.origin = eye.position;
+            ray.direction = direction;
+            Debug.Log("Record // Origin : " + eye.position + ", Direction : " + direction);
         }
 
-        RaycastHit hit;
-        if (Physics.Raycast(eye.position, (cameraAimCursorLockPoint.position - eye.position), out hit, cameraCursorDistance))
+        if (Physics.Raycast(ray, out hit))
         {
             if ((hit.collider.tag == "Wall" || hit.collider.tag == "Player"))
             {
-                Debug.Log(hit.transform.name);
+                if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                {
+                    if (stateManager.type == Type.Player || stateManager.type == Type.Item)
+                    {
+                        stateManager.SetState(stateToApply);
+                        Debug.Log(hit.transform.name);
+                    }
+                }
             }
         }
     }
@@ -369,7 +417,7 @@ public class PlayerManager : StateManager
 
     private void FixedUpdate()
     {
-        cameraTarget.position = rigidBody.position + (Vector3.up / 2);
+        //cameraTarget.position = rigidBody.position + (Vector3.up / 2);
         
         if (playerControls != null)
         {
@@ -399,6 +447,11 @@ public class PlayerManager : StateManager
             if (selectedObject != null)
             {
                 selectedObject.transform.position = head.position;
+            }
+            
+            if (transform.name == "Player_01")
+            {
+                Debug.Log(transform.position);
             }
 
             if (isMainPlayer)
@@ -452,7 +505,7 @@ public class PlayerManager : StateManager
                     if (playerControls.Player.Shot.IsPressed() && !shotIsPressed)
                     {
                         shotIsPressed = true;
-                        Shot();
+                        Shot(Vector3.zero);
                     }
                 }
             }
@@ -460,33 +513,35 @@ public class PlayerManager : StateManager
             {
                 if (recorder.CheckLog(gameManager.elapsedTime, null, null, recorder.cameraPosLogs))
                 {
-                    recorder.ExecuteCameraLog(recorder.GetCameraInputLogs(gameManager.elapsedTime, recorder.cameraPosLogs), false);
-                    recorder.ExecuteCameraLog(recorder.GetCameraInputLogs(gameManager.elapsedTime, recorder.cameraRotLogs), true);
+                    recorder.ExecuteCameraLog(recorder.GetVector3InputLogs(gameManager.elapsedTime, recorder.cameraPosLogs), false);
+                    recorder.ExecuteCameraLog(recorder.GetVector3InputLogs(gameManager.elapsedTime, recorder.cameraRotLogs), true);
                 }
 
-                if (recorder.GetInputActions(gameManager.elapsedTime) != null)
+                List<InputAction> actions = recorder.GetInputActions(gameManager.elapsedTime);
+
+                if (actions != null)
                 {
-                    for (int i = 0; i < recorder.GetInputActions(gameManager.elapsedTime).Count; ++i)
+                    for (int i = 0; i < actions.Count; ++i)
                     {
-                        if (recorder.GetInputActions(gameManager.elapsedTime)[i] == moveAction)
+                        if (actions[i] == moveAction)
                         {
-                            recorder.ExecuteVectorLog(recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.moveLogs));
+                            recorder.ExecuteVectorLog(recorder.GetVector2InputLogs(gameManager.elapsedTime, recorder.moveLogs));
                         }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == jumpAction)
+                        else if (actions[i] == jumpAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.jumpLogs));
                         }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == grabAction)
+                        else if (actions[i] == grabAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.catchLogs));
                         }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == throwAction)
+                        else if (actions[i] == throwAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.throwLogs));
                         }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == shotAction)
+                        else if (actions[i] == shotAction)
                         {
-                            recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.shotLogs));
+                            recorder.ExecuteCameraLog(recorder.GetVector3InputLogs(gameManager.elapsedTime, recorder.shotLogs), false);
                         }
                     }
                 }

@@ -15,12 +15,12 @@ public class InputRecorder
     public PlayerManager player;// {  get; private set; }
     public List<float> timeList { get; private set; }
     public List<InputLog<Vector2>> moveLogs { get; private set; }
+    public List<InputLog<Vector3>> shotLogs { get; private set; }
     public List<InputLog<Vector3>> cameraPosLogs { get; private set; }
     public List<InputLog<Vector3>> cameraRotLogs { get; private set; }
     public List<InputLog<float>> jumpLogs { get; private set; }
     public List<InputLog<float>> catchLogs { get; private set; }
     public List<InputLog<float>> throwLogs { get; private set; }
-    public List<InputLog<float>> shotLogs { get; private set; }
     public List<List<InputLog<float>>> floatLogs { get; private set; }
 
     public InputRecorder(PlayerManager playerRecorder)
@@ -28,18 +28,17 @@ public class InputRecorder
         player = playerRecorder;
         timeList = new List<float>();
         moveLogs = new List<InputLog<Vector2>>();
+        shotLogs = new List<InputLog<Vector3>>();
         cameraPosLogs = new List<InputLog<Vector3>>();
         cameraRotLogs   = new List<InputLog<Vector3>>();
         jumpLogs = new List<InputLog<float>>();
         catchLogs = new List<InputLog<float>>();
         throwLogs = new List<InputLog<float>>();
-        shotLogs = new List<InputLog<float>>();
 
         floatLogs = new List<List<InputLog<float>>>();
         floatLogs.Add(jumpLogs);
         floatLogs.Add(catchLogs);
         floatLogs.Add(throwLogs);
-        floatLogs.Add(shotLogs);
     }
 
     public void Clean()
@@ -82,7 +81,7 @@ public class InputRecorder
         return null;
     }
 
-    public InputLog<Vector2> GetVectorInputLogs(float time, List<InputLog<Vector2>> logs)
+    public InputLog<Vector2> GetVector2InputLogs(float time, List<InputLog<Vector2>> logs)
     {
         for (int i = 0; i < logs.Count; ++i)
         {
@@ -95,7 +94,7 @@ public class InputRecorder
         return null;
     }
 
-    public InputLog<Vector3> GetCameraInputLogs(float time, List<InputLog<Vector3>> logs)
+    public InputLog<Vector3> GetVector3InputLogs(float time, List<InputLog<Vector3>> logs)
     {
         for (int i = 0; i < logs.Count; ++i)
         {
@@ -120,6 +119,14 @@ public class InputRecorder
                     if (moveLogs[j].time == time)
                     {
                         actions.Add(moveLogs[j].action);
+                    }
+                }
+
+                for (int k = 0; k < shotLogs.Count; ++k)
+                {
+                    if (shotLogs[k].time == time)
+                    {
+                        actions.Add(shotLogs[k].action);
                     }
                 }
             }
@@ -190,7 +197,7 @@ public class InputRecorder
         }
     }
 
-    public void RecordInput(InputAction action)
+    public void RecordInput(InputAction action, Vector3 direction = new Vector3())
     {
         if (action == player.moveAction)
         {
@@ -214,8 +221,8 @@ public class InputRecorder
         }
         else if (action == player.shotAction)
         {
-            InputLog<float> log = new InputLog<float>(action.ReadValue<float>(), player.gameManager.elapsedTime, action);
-            AddFloatLogs(log, shotLogs);
+            InputLog<Vector3> log = new InputLog<Vector3>(direction, player.gameManager.elapsedTime, action);
+            AddCameraLogs(log, shotLogs);
         }
         else if (action == null)
         {
@@ -255,10 +262,6 @@ public class InputRecorder
             {
                 player.Throw();
             }
-            else if (log.action == player.shotAction)
-            {
-                player.Shot();
-            }
 
             log.SetExexcuted(true);
         }
@@ -274,7 +277,14 @@ public class InputRecorder
             }
             else
             {
-                player.playerCamera.position = log.value;
+                if (log.action == player.shotAction)
+                {
+                    player.Shot(log.value);
+                }
+                else
+                {
+                    player.playerCamera.position = log.value;
+                }
             }
 
             log.SetExexcuted(true);

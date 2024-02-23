@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Cinemachine Properties")]
     [SerializeField] public CameraManager cameraManager;
+    [HideInInspector] public Camera _camera;
 
     public PlayerControls playerControls { get; private set; }
 
@@ -51,9 +52,11 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public bool buttonNorthIsPressed = false;
     [HideInInspector] public bool leftShoulderisPressed = false;
+    [HideInInspector] public Coroutine loop;
 
     private void Awake()
     {
+        _camera = GetComponent<Camera>();
         controlState = ControlState.Menu;
         playerControls = new PlayerControls();
         playerControls.Player.Disable();
