@@ -54,8 +54,10 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool leftShoulderisPressed = false;
     [HideInInspector] public Coroutine loop;
 
+
     private void Awake()
     {
+
         _camera = GetComponent<Camera>();
         controlState = ControlState.Menu;
         playerControls = new PlayerControls();
@@ -128,7 +130,7 @@ public class GameManager : MonoBehaviour
 
     public void EraseRunRecord(PlayerManager player)
     {
-        int index = FindIndexInList(player, playerList);
+        int index = Utilities.FindIndexInList(player, playerList);
         playerList[index].recorder.Clean();
         playerList[index].hasBeenRecorded = false;
         playerMenu.elements[index].SetColors();
@@ -136,8 +138,8 @@ public class GameManager : MonoBehaviour
 
     public void SetMainPlayer(PlayerManager player)
     {
-        int previous = FindIndexInList(mainPlayer, playerList);
-        int next = FindIndexInList(player, playerList);
+        int previous = Utilities.FindIndexInList(mainPlayer, playerList);
+        int next = Utilities.FindIndexInList(player, playerList);
 
         playerList[previous].SetIsMainPlayer(false);
         playerMenu.elements[previous].SetColors();
@@ -166,7 +168,7 @@ public class GameManager : MonoBehaviour
 
     public void SetRunRecord()
     {
-        int index = FindIndexInList(mainPlayer, playerList);
+        int index = Utilities.FindIndexInList(mainPlayer, playerList);
 
         playerList[index].hasBeenRecorded = true;
         playerList[index].isRecording = false;
@@ -184,11 +186,6 @@ public class GameManager : MonoBehaviour
         {
             entities[i].Reset();
         }
-    }
-
-    public static int FindIndexInList<T>(T item, List<T> list)
-    {
-        return list.IndexOf(item);
     }
 
     private void FixedUpdate()

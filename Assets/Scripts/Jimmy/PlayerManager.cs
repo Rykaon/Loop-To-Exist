@@ -40,8 +40,6 @@ public class PlayerManager : StateManager
     public bool hasBeenRecorded;
     public bool isActive;
     public bool isRecording = true;
-    private bool isGrounded;
-    private bool wasJumpingLastFrame = false;
     private bool isAiming = false;
 
     [Header("Move Properties")]
@@ -56,16 +54,7 @@ public class PlayerManager : StateManager
     [HideInInspector] protected ItemManager previousSelectedObject = null;
 
     [Header("Camera Properties")]
-    [SerializeField] public Transform cameraAimLockPoint;
-    [SerializeField] public Transform cameraAimCursorLockPoint;
-    [SerializeField] public float cameraCursorDistance;
-    [SerializeField] public float cameraCursorMoveSpeed;
     [SerializeField] public float cameraRotationSpeed;
-
-    [SerializeField] public float cameraMinX;
-    [SerializeField] public float cameraMinY;
-    [SerializeField] public float cameraMaxX;
-    [SerializeField] public float cameraMaxY;
 
     public InputAction moveAction { get; private set; }
     public InputAction jumpAction { get; private set; }
@@ -104,7 +93,6 @@ public class PlayerManager : StateManager
         isAiming = false;
         selectedObject = null;
         previousSelectedObject = null;
-        cameraAimCursorLockPoint.localPosition = new Vector3(0, 0, cameraCursorDistance);
     }
 
     public override void SetState(State state)
@@ -149,8 +137,8 @@ public class PlayerManager : StateManager
         {
             if (!RaycastCollision() && value != Vector2.zero)
             {
-                forceDirection += movement.x * GetCameraRight(playerCamera) * moveSpeed;
-                forceDirection += movement.z * GetCameraForward(playerCamera) * moveSpeed;
+                forceDirection += movement.x * Utilities.GetCameraRight(playerCamera) * moveSpeed;
+                forceDirection += movement.z * Utilities.GetCameraForward(playerCamera) * moveSpeed;
             }
 
             rigidBody.AddForce(forceDirection, ForceMode.Impulse);
@@ -347,20 +335,6 @@ public class PlayerManager : StateManager
     ///          FONCTIONS UTILITAIRES              ///
     ///////////////////////////////////////////////////
 
-    public Vector3 GetCameraForward(Transform camera)
-    {
-        Vector3 forward = camera.forward;
-        forward.y = 0f;
-        return forward.normalized;
-    }
-
-    public Vector3 GetCameraRight(Transform camera)
-    {
-        Vector3 right = camera.right;
-        right.y = 0f;
-        return right.normalized;
-    }
-
     public void LookAt(Vector2 value)
     {
         Vector3 direction = rigidBody.velocity;
@@ -382,13 +356,13 @@ public class PlayerManager : StateManager
     private Quaternion ClampCameraRotation(Quaternion rotation)
     {
         Vector3 eulers = rotation.eulerAngles;
-        eulers.x = ClampAngle(eulers.x, transform.rotation.eulerAngles.x - 30f, transform.rotation.eulerAngles.x + 30f);
-        eulers.y = ClampAngle(eulers.y, transform.rotation.eulerAngles.y - 30f, transform.rotation.eulerAngles.y + 30f);
+        eulers.x = Utilities.ClampAngle(eulers.x, transform.rotation.eulerAngles.x - 30f, transform.rotation.eulerAngles.x + 30f);
+        eulers.y = Utilities.ClampAngle(eulers.y, transform.rotation.eulerAngles.y - 30f, transform.rotation.eulerAngles.y + 30f);
 
         return Quaternion.Euler(eulers);
     }
 
-    private float ClampAngle(float current, float min, float max)
+    /*private float ClampAngle(float current, float min, float max)
     {
         float dtAngle = Mathf.Abs(((min - max) + 180) % 360 - 180);
         float hdtAngle = dtAngle * 0.5f;
@@ -398,7 +372,7 @@ public class PlayerManager : StateManager
         if (offset > 0)
             current = Mathf.MoveTowardsAngle(current, midAngle, offset);
         return current;
-    }
+    }*/
 
     private bool RaycastCollision()
     {
