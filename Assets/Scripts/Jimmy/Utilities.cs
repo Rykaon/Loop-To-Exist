@@ -24,17 +24,26 @@ public static class Utilities
         return right.normalized;
     }
 
-    public static float ClampAngle(float angle, float min, float max)
+    public static void StopRigidBody(Rigidbody rigidbody)
     {
-        do
-        {
-            if (angle < -360)
-                angle += 360;
-            if (angle > 360)
-                angle -= 360;
-        } while (angle < -360 || angle > 360);
+        rigidbody.useGravity = false;
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.drag = 0f;
+        rigidbody.angularVelocity = Vector3.zero;
+        rigidbody.angularDrag = 0.05f;
+        rigidbody.useGravity = true;
+    }
 
-        return Mathf.Clamp(angle, min, max);
+    public static float ClampAngle(float current, float min, float max)
+    {
+        float dtAngle = Mathf.Abs(((min - max) + 180) % 360 - 180);
+        float hdtAngle = dtAngle * 0.5f;
+        float midAngle = min + hdtAngle;
+
+        float offset = Mathf.Abs(Mathf.DeltaAngle(current, midAngle)) - hdtAngle;
+        if (offset > 0)
+            current = Mathf.MoveTowardsAngle(current, midAngle, offset);
+        return current;
     }
 
     public static ClipPlanePoints NearClipPlanePoints(this Camera camera, Vector3 pos, float clipPlaneMargin)

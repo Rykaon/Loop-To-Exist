@@ -15,19 +15,25 @@ public class StateManager : MonoBehaviour
     
     public GameManager gameManager { get; private set; }
     public Rigidbody rigidBody { get; private set; }
-    public Vector3 startPosition { get; private set; }
-    public Quaternion startRotation { get; private set; }
+    protected Vector3 startPosition;
+    protected Quaternion startRotation;
+    protected Vector3 startVelocity;
+    protected Vector3 startAngularVelocity;
+    protected RigidbodyConstraints startConstraints;
 
     protected Transform parent;
 
     public virtual void Initialize(GameManager instance)
     {
-        startPosition = transform.position;
-        startRotation = transform.rotation;
-
         gameManager = instance;
         rigidBody = RigidBody;
         parent = transform.parent;
+        
+        startPosition = rigidBody.position;
+        startRotation = rigidBody.rotation;
+        startVelocity = rigidBody.velocity;
+        startAngularVelocity = rigidBody.angularVelocity;
+        startConstraints = rigidBody.constraints;
     }
 
     public virtual void Reset()
@@ -37,12 +43,13 @@ public class StateManager : MonoBehaviour
             ResetState();
 
             stateToApply = State.Default;
-            rigidBody.velocity = Vector3.zero;
-            rigidBody.angularVelocity = Vector3.zero;
-            rigidBody.angularDrag = 0f;
-
-            transform.position = startPosition;
-            transform.rotation = startRotation;
+            rigidBody.constraints = RigidbodyConstraints.FreezeAll;
+            //Utilities.StopRigidBody(rigidBody);
+            rigidBody.position = startPosition;
+            rigidBody.rotation = startRotation;
+            rigidBody.velocity = startVelocity;
+            rigidBody.angularVelocity = startAngularVelocity;
+            rigidBody.constraints = startConstraints;
         }
     }
 

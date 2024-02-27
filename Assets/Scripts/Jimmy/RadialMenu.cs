@@ -41,7 +41,24 @@ public class RadialMenu : MonoBehaviour
     [HideInInspector]
     public PointerEventData pointer;
 
+    private bool initialized = false;
+
+    public static RadialMenu instance;
+
     private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+            return;
+        }
+    }
+
+    public void Init()
     {
         pointer = new PointerEventData(EventSystem.current);
 
@@ -70,10 +87,12 @@ public class RadialMenu : MonoBehaviour
                 continue;
             }
             elements[i].parentRM = this;
+            elements[i].player = gameManager.playerList[i];
 
             elements[i].SetAllAngles((angleOffset * i) + globalOffset, angleOffset);
 
             elements[i].assignedIndex = i;
+            elements[i].Init();
         }
 
         if (useGamepad)
@@ -91,16 +110,24 @@ public class RadialMenu : MonoBehaviour
                 }
             }
         }
+
+        initialized = true;
     }
 
     private void OnEnable()
     {
-        EnableDisable(true);
+        if (initialized)
+        {
+            EnableDisable(true);
+        }
     }
 
     private void OnDisable()
     {
-        EnableDisable(false);
+        if (initialized)
+        {
+            EnableDisable(false);
+        }
     }
 
     public void EnableDisable(bool enabled)

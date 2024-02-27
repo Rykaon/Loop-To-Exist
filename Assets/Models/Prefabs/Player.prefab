@@ -354,6 +354,7 @@ GameObject:
   - component: {fileID: 8057462345250402438}
   - component: {fileID: 1124989493730086479}
   - component: {fileID: 882217338985396927}
+  - component: {fileID: 8387274569031003673}
   m_Layer: 0
   m_Name: Player_01
   m_TagString: Player
@@ -417,15 +418,7 @@ MonoBehaviour:
   maxMoveSpeed: 5
   jumpForce: 7
   collisionDetectionDistance: 0.01
-  cameraAimLockPoint: {fileID: 892975179741287515}
-  cameraAimCursorLockPoint: {fileID: 7340337715647069683}
-  cameraCursorDistance: 1000
-  cameraCursorMoveSpeed: 100
   cameraRotationSpeed: 3
-  cameraMinX: -500
-  cameraMinY: -500
-  cameraMaxX: 500
-  cameraMaxY: 500
 --- !u!33 &2753056825088638641
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -521,9 +514,35 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
+--- !u!114 &8387274569031003673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2292988574588036909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06de384a85e79e44a6d2eb462730949, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableSleeping: 1
+  BodyTagsForContactWelding:
+    Tag00: 0
+    Tag01: 0
+    Tag02: 0
+    Tag03: 0
+    Tag04: 0
+    Tag05: 0
+    Tag06: 0
+    Tag07: 0
+  VisualDebugger:
+    EnableVisualDebugger: 0
+    Port: 25001
+    TimerBufferSize: 1048576
 --- !u!1 &4297755826429850171
 GameObject:
   m_ObjectHideFlags: 0

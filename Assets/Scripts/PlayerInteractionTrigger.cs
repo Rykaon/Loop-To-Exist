@@ -17,7 +17,10 @@ public class PlayerInteractionTrigger : MonoBehaviour
         {
             if (collision.transform.TryGetComponent<ItemManager>(out ItemManager catchObject))
             {
-                triggeredObjectsList.Add(catchObject);
+                if (catchObject.state != StateManager.State.FreezePosition)
+                {
+                    triggeredObjectsList.Add(catchObject);
+                }
             }
         }
     }
