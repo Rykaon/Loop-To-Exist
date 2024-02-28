@@ -53,11 +53,11 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool buttonNorthIsPressed = false;
     [HideInInspector] public bool leftShoulderisPressed = false;
     [HideInInspector] public Coroutine loop;
+    public bool isLoopActive = false;
 
 
     private void Awake()
     {
-
         _camera = GetComponent<Camera>();
         controlState = ControlState.Menu;
         playerControls = new PlayerControls();
@@ -66,7 +66,6 @@ public class GameManager : MonoBehaviour
 
         playerList = entities.OfType<PlayerManager>().ToList();
         itemList = entities.OfType<ItemManager>().ToList();
-        //objectList = entities.OfType<ObjectManager>().ToList();
 
         for (int i = 0; i < playerList.Count; i++)
         {
@@ -77,11 +76,6 @@ public class GameManager : MonoBehaviour
         {
             itemList[i].Initialize(this);
         }
-
-        /*for (int i = 0; i < objectList.Count; i++)
-        {
-            objectList[i].Initialize(this);
-        }*/
 
         playerList[0].SetIsMainPlayer(true);
         mainPlayer = playerList[0];
@@ -118,16 +112,6 @@ public class GameManager : MonoBehaviour
         cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look));
     }
 
-    /*public void SetCameraAim(bool value)
-    {
-        if (cameraManager.aimTransition != null)
-        {
-            StopCoroutine(cameraManager.aimTransition);
-        }
-
-        cameraManager.aimTransition = StartCoroutine(cameraManager.SetCameraAim(value));
-    }*/
-
     public void EraseRunRecord(PlayerManager player)
     {
         int index = Utilities.FindIndexInList(player, playerList);
@@ -158,12 +142,14 @@ public class GameManager : MonoBehaviour
             if (playerList[i].hasBeenRecorded && playerList[i] != mainPlayer)
             {
                 playerList[i].isActive = true;
+                playerList[i].rigidBody.isKinematic = true;
             }
         }
 
         mainPlayer.isActive = true;
         mainPlayer.isRecording = true;
         elapsedTime = 0f;
+        isLoopActive = true;
     }
 
     public void SetRunRecord()
@@ -186,6 +172,8 @@ public class GameManager : MonoBehaviour
         {
             entities[i].Reset();
         }
+
+        isLoopActive = false;
     }
 
     private void FixedUpdate()

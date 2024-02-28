@@ -77,7 +77,6 @@ public class ItemManager : StateManager
         {
             transform.SetParent(parent, true);
             rigidBody.useGravity = true;
-            //rigidBody.isKinematic = false;
         }
 
         if (joint != null)
@@ -118,7 +117,6 @@ public class ItemManager : StateManager
 
     private void InitializeObjectSet(Transform parent)
     {
-        //transform.parent = parent;
         isSet = true;
         player = parent.GetComponent<PlayerManager>();
 
@@ -128,7 +126,6 @@ public class ItemManager : StateManager
             joint = transform.AddComponent<FixedJoint>();
         }
         joint.connectedBody = player.transform.GetComponent<Rigidbody>();
-        //rigidBody.isKinematic = false;
     }
 
     public void ThrowObject()
@@ -183,8 +180,6 @@ public class ItemManager : StateManager
             joint.connectedBody = collision.transform.GetComponent<Rigidbody>();
 
             Debug.Log(collision.transform.name);
-            //SetParentWithConstantScale(collision.transform);
-            //transform.SetParent(collision.transform, true);
         }
     }
 }

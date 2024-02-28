@@ -113,7 +113,7 @@ public class PlayerManager : StateManager
     {
         if (value)
         {
-            playerCamera = gameManager.cameraManager.currentCamera.transform;
+            playerCamera = gameManager.cameraManager.worldCamera.transform;
             playerControls = gameManager.playerControls;
             isMainPlayer = true;
         }
@@ -266,16 +266,17 @@ public class PlayerManager : StateManager
 
     public void MoveCamera(Vector2 value)
     {
-        Quaternion rotation = cameraTarget.rotation;
-        rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, Vector3.up);
-        rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, Vector3.right);
+        Quaternion rotation = cameraTarget.localRotation;
+        rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, transform.up);
+        rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, transform.right);
 
         if (isAiming)
         {
-            rotation = ClampCameraRotation(rotation);
+            rotation.x = Utilities.ClampAngle(rotation.x, -30, 30);
+            rotation.y = Utilities.ClampAngle(rotation.y, -30, 30);
         }
 
-        cameraTarget.rotation = rotation;
+        cameraTarget.localRotation = rotation;
     }
 
     public void Shot(Vector3 direction)
@@ -352,27 +353,6 @@ public class PlayerManager : StateManager
             }
         }
     }
-
-    private Quaternion ClampCameraRotation(Quaternion rotation)
-    {
-        Vector3 eulers = rotation.eulerAngles;
-        eulers.x = Utilities.ClampAngle(eulers.x, transform.rotation.eulerAngles.x - 30f, transform.rotation.eulerAngles.x + 30f);
-        eulers.y = Utilities.ClampAngle(eulers.y, transform.rotation.eulerAngles.y - 30f, transform.rotation.eulerAngles.y + 30f);
-
-        return Quaternion.Euler(eulers);
-    }
-
-    /*private float ClampAngle(float current, float min, float max)
-    {
-        float dtAngle = Mathf.Abs(((min - max) + 180) % 360 - 180);
-        float hdtAngle = dtAngle * 0.5f;
-        float midAngle = min + hdtAngle;
-
-        float offset = Mathf.Abs(Mathf.DeltaAngle(current, midAngle)) - hdtAngle;
-        if (offset > 0)
-            current = Mathf.MoveTowardsAngle(current, midAngle, offset);
-        return current;
-    }*/
 
     private bool RaycastCollision()
     {
