@@ -46,9 +46,7 @@ public class RadialMenuElement : MonoBehaviour
     [SerializeField] Color m_unrecorded;
     [SerializeField] Color d_unrecorded;
 
-    private bool initialized = false;
-
-    public void Init()
+    void Awake()
     {
         rt = gameObject.GetComponent<RectTransform>();
         image = button.GetComponent<Image>();
@@ -74,7 +72,10 @@ public class RadialMenuElement : MonoBehaviour
         }
 
         SetColors();
+    }
 
+    void Start ()
+    {
         rt.rotation = Quaternion.Euler(0, 0, -angleOffset); //Apply rotation determined by the parent radial menu.
 
         //If we're using lazy selection, we don't want our normal mouse-over effects interfering, so we turn raycasts off.
@@ -110,13 +111,6 @@ public class RadialMenuElement : MonoBehaviour
             t.triggers.Add(enter);
             t.triggers.Add(exit);
         }
-
-        initialized = true;
-    }
-
-    void Start ()
-    {
-        
     }
 	
     //Used by the parent radial menu to set up all the approprate angles. Affects master Z rotation and the active angles for lazy selection.

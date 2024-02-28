@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
-using static UnityEditor.FilePathAttribute;
 
 public class PlayerManager : StateManager
 {
@@ -141,59 +140,41 @@ public class PlayerManager : StateManager
                 forceDirection += movement.x * Utilities.GetCameraRight(playerCamera) * moveSpeed;
                 forceDirection += movement.z * Utilities.GetCameraForward(playerCamera) * moveSpeed;
             }
-        }
-        else
-        {
-            forceDirection = position;
-        }
 
-        rigidBody.AddForce(forceDirection, ForceMode.Impulse);
+            rigidBody.AddForce(forceDirection, ForceMode.Impulse);
 
-        if (rigidBody.velocity.y < 0f)
-        {
-            rigidBody.velocity += Vector3.down * -Physics.gravity.y * Time.fixedDeltaTime;
-        }
+            if (rigidBody.velocity.y < 0f)
+            {
+                rigidBody.velocity += Vector3.down * -Physics.gravity.y * Time.fixedDeltaTime;
+            }
 
-        Vector3 horizontalVelocity = rigidBody.velocity;
-        horizontalVelocity.y = 0f;
+            Vector3 horizontalVelocity = rigidBody.velocity;
+            horizontalVelocity.y = 0f;
 
-        if (horizontalVelocity.sqrMagnitude > maxMoveSpeed * maxMoveSpeed)
-        {
-            rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
-        }
+            if (horizontalVelocity.sqrMagnitude > maxMoveSpeed * maxMoveSpeed)
+            {
+                rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
+            }
 
-        /*if (isRecording)
-        {
-            
+            recorder.RecordInput(playerControls.Player.Move, rigidBody.position, rigidBody.rotation.eulerAngles);
         }
         else
         {
             if (position !=  Vector3.zero && rotation != Vector3.zero)
             {
-                rigidBody.MoveRotation(Quaternion.Euler(rotation));
-                rigidBody.MovePosition(position);
+                rigidBody.Move(position, Quaternion.Euler(rotation));
             }
-        }*/
+        }
 
         if (isAiming)
         {
             LookAt(Vector2.zero);
-
-            if (isRecording)
-            {
-                recorder.RecordInput(playerControls.Player.Move, forceDirection, Vector3.zero);
-            }
         }
         else
         {
             if (isRecording)
             {
                 LookAt(value);
-                recorder.RecordInput(playerControls.Player.Move, forceDirection, new Vector3(value.x, value.y, 0f));
-            }
-            else
-            {
-                LookAt(new Vector2(rotation.x, rotation.y));
             }
         }
 
@@ -204,7 +185,7 @@ public class PlayerManager : StateManager
     {
         if (isRecording)
         {
-            recorder.RecordInput(playerControls.Player.Jump);
+            //recorder.RecordInput(playerControls.Player.Jump);
         }
 
         if (RaycastGrounded())
@@ -285,21 +266,16 @@ public class PlayerManager : StateManager
 
     public void MoveCamera(Vector2 value)
     {
-        Quaternion rotation = cameraTarget.localRotation;
+        Quaternion rotation = cameraTarget.rotation;
         rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, Vector3.up);
         rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, Vector3.right);
 
-        Vector3 euler = rotation.eulerAngles;
-
         if (isAiming)
         {
-            euler.x = Utilities.ClampAngle(euler.x, -30, 30);
-            euler.y = Utilities.ClampAngle(euler.y, -30, 30);
+            rotation = ClampCameraRotation(rotation);
         }
 
-        rotation = Quaternion.Euler(euler);
-
-        cameraTarget.localRotation = rotation;
+        cameraTarget.rotation = rotation;
     }
 
     public void Shot(Vector3 direction)
@@ -329,14 +305,14 @@ public class PlayerManager : StateManager
 
             ray.origin = eye.position;
             ray.direction = rayDirection;
+            Debug.Log("Real // Origin : " + eye.position + ", Direction : " + rayDirection);
             recorder.RecordInput(playerControls.Player.Shot, ray.direction);
-            Debug.Log("Real // Position : " + eye.position + ", Direction : " + ray.direction);
         }
         else
         {
             ray.origin = eye.position;
             ray.direction = direction;
-            Debug.Log("Virtual // Position : " + eye.position + ", Direction : " + ray.direction);
+            Debug.Log("Record // Origin : " + eye.position + ", Direction : " + direction);
         }
 
         if (Physics.Raycast(ray, out hit))
@@ -364,7 +340,7 @@ public class PlayerManager : StateManager
         Vector3 direction = rigidBody.velocity;
         direction.y = 0f;
 
-        if (value.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.01f)
+        if (value.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
         {
             rigidBody.rotation = Quaternion.LookRotation(direction, Vector3.up);
         }
@@ -376,6 +352,27 @@ public class PlayerManager : StateManager
             }
         }
     }
+
+    private Quaternion ClampCameraRotation(Quaternion rotation)
+    {
+        Vector3 eulers = rotation.eulerAngles;
+        eulers.x = Utilities.ClampAngle(eulers.x, transform.rotation.eulerAngles.x - 30f, transform.rotation.eulerAngles.x + 30f);
+        eulers.y = Utilities.ClampAngle(eulers.y, transform.rotation.eulerAngles.y - 30f, transform.rotation.eulerAngles.y + 30f);
+
+        return Quaternion.Euler(eulers);
+    }
+
+    /*private float ClampAngle(float current, float min, float max)
+    {
+        float dtAngle = Mathf.Abs(((min - max) + 180) % 360 - 180);
+        float hdtAngle = dtAngle * 0.5f;
+        float midAngle = min + hdtAngle;
+
+        float offset = Mathf.Abs(Mathf.DeltaAngle(current, midAngle)) - hdtAngle;
+        if (offset > 0)
+            current = Mathf.MoveTowardsAngle(current, midAngle, offset);
+        return current;
+    }*/
 
     private bool RaycastCollision()
     {
@@ -448,18 +445,6 @@ public class PlayerManager : StateManager
                 selectedObject.transform.position = head.position;
             }*/
 
-            if (transform.name == "Player_01")
-            {
-                /*if (isRecording)
-                {
-                    Debug.Log(transform.position);
-                }
-                else
-                {
-                    Debug.Log(transform.position);
-                }*/
-            }
-
             if (isMainPlayer)
             {
                 if (isRecording)
@@ -519,7 +504,7 @@ public class PlayerManager : StateManager
             {
                 if (recorder.CheckLog(gameManager.elapsedTime, null, recorder.cameraPosLogs))
                 {
-                    //recorder.ExecuteVectorLog(recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.cameraPosLogs), recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.cameraRotLogs));
+                    recorder.ExecuteVectorLog(recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.cameraPosLogs), recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.cameraRotLogs));
                 }
 
                 List<InputAction> actions = recorder.GetInputActions(gameManager.elapsedTime);
@@ -532,34 +517,21 @@ public class PlayerManager : StateManager
                         {
                             recorder.ExecuteVectorLog(recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.movePosLogs), recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.moveRotLogs));
                         }
-                        
-                        if (actions[i] == jumpAction)
+                        else if (actions[i] == shotAction)
+                        {
+                            recorder.ExecuteVectorLog(recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.shotLogs), null);
+                        }
+                        else if (actions[i] == jumpAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.jumpLogs));
                         }
-                        
-                        if (!isAiming)
-                        {
-                            
-                        }
-                        else
-                        {
-                            
-                        }
-
-                        if (actions[i] == grabAction)
+                        else if (actions[i] == grabAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.catchLogs));
                         }
-
-                        if (actions[i] == throwAction)
+                        else if (actions[i] == throwAction)
                         {
                             recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.throwLogs));
-                        }
-
-                        if (actions[i] == shotAction)
-                        {
-                            recorder.ExecuteVectorLog(recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.shotLogs), null);
                         }
                     }
                 }

@@ -13,7 +13,6 @@ using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
     public enum ControlState
     {
         Menu,
@@ -24,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Cinemachine Properties")]
     [SerializeField] public CameraManager cameraManager;
-    [SerializeField] public Camera _camera;
+    [HideInInspector] public Camera _camera;
 
     public PlayerControls playerControls { get; private set; }
 
@@ -39,7 +38,7 @@ public class GameManager : MonoBehaviour
     public RadialMenu playerMenu { get; private set; }
     public List<PlayerManager> playerList { get; private set; }
     public List<ItemManager> itemList { get; private set; }
-    public List<ObjectManager> objectList { get; private set; }
+    //public List<ObjectManager> objectList { get; private set; }
 
     [HideInInspector] public float recordingEndTime;
     private int playerIndex = 0;
@@ -55,34 +54,19 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool leftShoulderisPressed = false;
     [HideInInspector] public Coroutine loop;
 
-    private bool initialized = false;
-    private bool isRunning = false;
 
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(this);
-            return;
-        }
-    }
 
-    public void Init()
-    {
         _camera = GetComponent<Camera>();
         controlState = ControlState.Menu;
         playerControls = new PlayerControls();
         playerControls.Player.Disable();
         playerControls.UI.Enable();
 
-        entities = SubSceneManager.instance.entities;
-        playerList = SubSceneManager.instance.playerList;
-        itemList = SubSceneManager.instance.itemList;
-        objectList = SubSceneManager.instance.objectList;
+        playerList = entities.OfType<PlayerManager>().ToList();
+        itemList = entities.OfType<ItemManager>().ToList();
+        //objectList = entities.OfType<ObjectManager>().ToList();
 
         for (int i = 0; i < playerList.Count; i++)
         {
@@ -94,13 +78,10 @@ public class GameManager : MonoBehaviour
             itemList[i].Initialize(this);
         }
 
-        for (int i = 0; i < objectList.Count; i++)
+        /*for (int i = 0; i < objectList.Count; i++)
         {
             objectList[i].Initialize(this);
-        }
-
-        //cameraManager.Init();
-        RadialMenu.instance.Init();
+        }*/
 
         playerList[0].SetIsMainPlayer(true);
         mainPlayer = playerList[0];
@@ -109,7 +90,6 @@ public class GameManager : MonoBehaviour
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
         elapsedTime = 0f;
-        initialized = true;
     }
 
     public void ChangeState(ControlState state)
@@ -178,15 +158,12 @@ public class GameManager : MonoBehaviour
             if (playerList[i].hasBeenRecorded && playerList[i] != mainPlayer)
             {
                 playerList[i].isActive = true;
-                //playerList[i].rigidBody.useGravity = false;
             }
         }
 
         mainPlayer.isActive = true;
         mainPlayer.isRecording = true;
         elapsedTime = 0f;
-
-        loop = StartCoroutine(Loop());
     }
 
     public void SetRunRecord()
@@ -201,7 +178,6 @@ public class GameManager : MonoBehaviour
 
     public void ResetLoop()
     {
-        Debug.Log("ksgjbqs");
         elapsedTime = 0;
 
         cameraManager.SetCameraAim(false);
@@ -210,46 +186,6 @@ public class GameManager : MonoBehaviour
         {
             entities[i].Reset();
         }
-    }
-
-    private IEnumerator Loop()
-    {
-        Physics.simulationMode = SimulationMode.Script;
-        yield return new WaitForFixedUpdate();
-        Physics.Simulate(0.02f);
-        isRunning = true;
-
-        while (isRunning)
-        {
-            Physics.Simulate(0.02f);
-            elapsedTime += 1f;
-
-            if (playerControls.Player.Y.IsPressed() && !buttonNorthIsPressed)
-            {
-                buttonNorthIsPressed = true;
-                SetRunRecord();
-                playerMenu.gameObject.SetActive(true);
-                //ResetLoop();
-                isRunning = false;
-            }
-
-            if (playerControls.Player.LeftShoulder.IsPressed())
-            {
-                leftShoulderisPressed = true;
-                EraseRunRecord(mainPlayer);
-                mainPlayer.isRecording = true;
-                //ResetLoop();
-                isRunning = false;
-            }
-
-            yield return new WaitForFixedUpdate();
-        }
-
-        yield return new WaitForFixedUpdate();
-        ResetLoop();
-        yield return new WaitForFixedUpdate();
-        Physics.Simulate(0.02f);
-        Physics.simulationMode = SimulationMode.FixedUpdate;
     }
 
     private void FixedUpdate()
@@ -266,10 +202,25 @@ public class GameManager : MonoBehaviour
 
         if (controlState == ControlState.World)
         {
+            elapsedTime += 1f;
 
-            //elapsedTime += 1f;
+            if (playerControls.Player.Y.IsPressed() && !buttonNorthIsPressed)
+            {
+                buttonNorthIsPressed = true;
+                SetRunRecord();
+                playerMenu.gameObject.SetActive(true);
+                ResetLoop();
+                return;
+            }
 
-            
+            if (playerControls.Player.LeftShoulder.IsPressed())
+            {
+                leftShoulderisPressed = true;
+                EraseRunRecord(mainPlayer);
+                mainPlayer.isRecording = true;
+                ResetLoop();
+                return;
+            }
         }
         else if (controlState == ControlState.Menu)
         {

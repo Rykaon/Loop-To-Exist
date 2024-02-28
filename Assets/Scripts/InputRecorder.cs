@@ -241,16 +241,16 @@ public class InputRecorder
             }
             else
             {
-                //player.playerCamera.position = posLog.value;
-                //player.playerCamera.rotation = Quaternion.Euler(rotLog.value);
+                player.playerCamera.position = posLog.value;
+                player.playerCamera.rotation = Quaternion.Euler(rotLog.value);
             }
 
             posLog.SetExexcuted(true);
 
-            /*if (rotLog != null)
+            if (rotLog != null)
             {
                 rotLog.SetExexcuted(true);
-            }*/
+            }
         }
     }
 

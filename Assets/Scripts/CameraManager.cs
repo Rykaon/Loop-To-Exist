@@ -38,12 +38,9 @@ public class CameraManager : MonoBehaviour
     [SerializeField] protected RectTransform aimCursor;
     [HideInInspector] public Coroutine aimTransition = null;
 
-    private bool initialized = false;
-
-    public void Awake()
+    private void Awake()
     {
         currentCamera = worldCamera;
-        initialized = true;
 
         /*thirdPersonFollow = currentCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
         cameraSide = thirdPersonFollow.CameraSide;
@@ -60,20 +57,8 @@ public class CameraManager : MonoBehaviour
         currentTarget = follow;
 
         float elapsedTime = 0f;
-        Transform startFollow;
-        Transform startLook;
-
-        if (currentCamera.m_Follow != null)
-        {
-            startFollow = currentCamera.m_Follow;
-            startLook = currentCamera.m_LookAt;
-        }
-        else
-        {
-            startFollow = follow;
-            startLook = look;
-        }
-
+        Transform startFollow = currentCamera.m_Follow;
+        Transform startLook = currentCamera.m_LookAt;
         followTransitionTarget.position = startFollow.position;
         followTransitionTarget.rotation = startFollow.rotation;
         lookTransitionTarget.position = startLook.position;

@@ -172,7 +172,9 @@ public class ItemManager : StateManager
     {
         if (state == State.Sticky && !isSelectedObject/* && collision.transform.tag != "Player"*/)
         {
-            Utilities.StopRigidBody(rigidBody);
+            rigidBody.useGravity = false;
+            rigidBody.velocity = Vector3.zero;
+            rigidBody.angularVelocity = Vector3.zero;
 
             if (joint == null)
             {
