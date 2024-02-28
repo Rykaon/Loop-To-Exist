@@ -92,11 +92,13 @@ public class GameManager : MonoBehaviour
         {
             playerControls.Player.Disable();
             playerControls.UI.Enable();
+            Cursor.lockState = CursorLockMode.None;
         }
         else if (state == ControlState.World)
         {
             playerControls.UI.Disable();
             playerControls.Player.Enable();
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         controlState = state;
