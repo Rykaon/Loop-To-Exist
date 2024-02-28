@@ -137,8 +137,8 @@ public class PlayerManager : StateManager
         {
             if (!RaycastCollision() && value != Vector2.zero)
             {
-                forceDirection += movement.x * Utilities.GetCameraRight(playerCamera) * moveSpeed;
-                forceDirection += movement.z * Utilities.GetCameraForward(playerCamera) * moveSpeed;
+                forceDirection += movement.x * Utilities.GetCameraRight(gameManager.transform) * moveSpeed;
+                forceDirection += movement.z * Utilities.GetCameraForward(gameManager.transform) * moveSpeed;
             }
 
             rigidBody.AddForce(forceDirection, ForceMode.Impulse);
