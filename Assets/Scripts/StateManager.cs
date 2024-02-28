@@ -15,36 +15,37 @@ public class StateManager : MonoBehaviour
     
     public GameManager gameManager { get; private set; }
     public Rigidbody rigidBody { get; private set; }
-    public Vector3 startPosition { get; private set; }
-    public Quaternion startRotation { get; private set; }
+    protected Vector3 startPosition;
+    protected Quaternion startRotation;
+    protected Vector3 startVelocity;
+    protected Vector3 startAngularVelocity;
 
     protected Transform parent;
 
     public virtual void Initialize(GameManager instance)
     {
-        startPosition = transform.position;
-        startRotation = transform.rotation;
-
         gameManager = instance;
         rigidBody = RigidBody;
         parent = transform.parent;
+
+        startPosition = rigidBody.position;
+        startRotation = rigidBody.rotation;
+        startVelocity = rigidBody.velocity;
+        startAngularVelocity = rigidBody.angularVelocity;
     }
 
     public virtual void Reset()
     {
-        ResetState();
-
         if (state != State.FreezeTime)
         {
-            stateToApply = State.Default;
-            rigidBody.velocity = Vector3.zero;
-            rigidBody.angularVelocity = Vector3.zero;
-            rigidBody.angularDrag = 0f;
-            rigidBody.isKinematic = true;
-            rigidBody.isKinematic = false;
+            ResetState();
 
-            transform.position = startPosition;
-            transform.rotation = startRotation;
+            rigidBody.isKinematic = false;
+            stateToApply = State.Default;
+            rigidBody.position = startPosition;
+            rigidBody.rotation = startRotation;
+            rigidBody.velocity = startVelocity;
+            rigidBody.angularVelocity = startAngularVelocity;
         }
     }
 
@@ -68,9 +69,11 @@ public class StateManager : MonoBehaviour
         switch (state)
         {
             case State.Sticky:
-                transform.SetParent(parent, true);
+                if (rigidBody.TryGetComponent<Joint>(out Joint joint))
+                {
+                    Destroy(joint);
+                }
                 rigidBody.useGravity = true;
-                rigidBody.isKinematic = false;
                 break;
 
             case State.FreezePosition:

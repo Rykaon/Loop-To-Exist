@@ -396,6 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   state: 0
+  stateToApply: 0
   RigidBody: {fileID: 882217338985396927}
   head: {fileID: 4194247132682260400}
   feet: {fileID: 5738480824880601504}
@@ -416,15 +417,7 @@ MonoBehaviour:
   maxMoveSpeed: 5
   jumpForce: 7
   collisionDetectionDistance: 0.01
-  cameraAimLockPoint: {fileID: 892975179741287515}
-  cameraAimCursorLockPoint: {fileID: 7340337715647069683}
-  cameraCursorDistance: 1000
-  cameraCursorMoveSpeed: 100
   cameraRotationSpeed: 3
-  cameraMinX: -500
-  cameraMinY: -500
-  cameraMaxX: 500
-  cameraMaxY: 500
 --- !u!33 &2753056825088638641
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -520,9 +513,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!1 &4297755826429850171
 GameObject:
   m_ObjectHideFlags: 0

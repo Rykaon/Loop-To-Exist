@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     public RadialMenu playerMenu { get; private set; }
     public List<PlayerManager> playerList { get; private set; }
     public List<ItemManager> itemList { get; private set; }
-    public List<ObjectManager> objectList { get; private set; }
+    //public List<ObjectManager> objectList { get; private set; }
 
     [HideInInspector] public float recordingEndTime;
     private int playerIndex = 0;
@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool buttonNorthIsPressed = false;
     [HideInInspector] public bool leftShoulderisPressed = false;
     [HideInInspector] public Coroutine loop;
+    public bool isLoopActive = false;
+
 
     private void Awake()
     {
@@ -64,7 +66,6 @@ public class GameManager : MonoBehaviour
 
         playerList = entities.OfType<PlayerManager>().ToList();
         itemList = entities.OfType<ItemManager>().ToList();
-        objectList = entities.OfType<ObjectManager>().ToList();
 
         for (int i = 0; i < playerList.Count; i++)
         {
@@ -74,11 +75,6 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < itemList.Count; i++)
         {
             itemList[i].Initialize(this);
-        }
-
-        for (int i = 0; i < objectList.Count; i++)
-        {
-            objectList[i].Initialize(this);
         }
 
         playerList[0].SetIsMainPlayer(true);
@@ -96,11 +92,13 @@ public class GameManager : MonoBehaviour
         {
             playerControls.Player.Disable();
             playerControls.UI.Enable();
+            Cursor.lockState = CursorLockMode.None;
         }
         else if (state == ControlState.World)
         {
             playerControls.UI.Disable();
             playerControls.Player.Enable();
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         controlState = state;
@@ -116,19 +114,9 @@ public class GameManager : MonoBehaviour
         cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look));
     }
 
-    /*public void SetCameraAim(bool value)
-    {
-        if (cameraManager.aimTransition != null)
-        {
-            StopCoroutine(cameraManager.aimTransition);
-        }
-
-        cameraManager.aimTransition = StartCoroutine(cameraManager.SetCameraAim(value));
-    }*/
-
     public void EraseRunRecord(PlayerManager player)
     {
-        int index = FindIndexInList(player, playerList);
+        int index = Utilities.FindIndexInList(player, playerList);
         playerList[index].recorder.Clean();
         playerList[index].hasBeenRecorded = false;
         playerMenu.elements[index].SetColors();
@@ -136,8 +124,8 @@ public class GameManager : MonoBehaviour
 
     public void SetMainPlayer(PlayerManager player)
     {
-        int previous = FindIndexInList(mainPlayer, playerList);
-        int next = FindIndexInList(player, playerList);
+        int previous = Utilities.FindIndexInList(mainPlayer, playerList);
+        int next = Utilities.FindIndexInList(player, playerList);
 
         playerList[previous].SetIsMainPlayer(false);
         playerMenu.elements[previous].SetColors();
@@ -156,17 +144,19 @@ public class GameManager : MonoBehaviour
             if (playerList[i].hasBeenRecorded && playerList[i] != mainPlayer)
             {
                 playerList[i].isActive = true;
+                playerList[i].rigidBody.isKinematic = true;
             }
         }
 
         mainPlayer.isActive = true;
         mainPlayer.isRecording = true;
         elapsedTime = 0f;
+        isLoopActive = true;
     }
 
     public void SetRunRecord()
     {
-        int index = FindIndexInList(mainPlayer, playerList);
+        int index = Utilities.FindIndexInList(mainPlayer, playerList);
 
         playerList[index].hasBeenRecorded = true;
         playerList[index].isRecording = false;
@@ -184,11 +174,8 @@ public class GameManager : MonoBehaviour
         {
             entities[i].Reset();
         }
-    }
 
-    public static int FindIndexInList<T>(T item, List<T> list)
-    {
-        return list.IndexOf(item);
+        isLoopActive = false;
     }
 
     private void FixedUpdate()
