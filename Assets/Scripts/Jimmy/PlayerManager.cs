@@ -276,7 +276,7 @@ public class PlayerManager : StateManager
             rotation.y = Utilities.ClampAngle(rotation.y, -30, 30);
         }
 
-        cameraTarget.localRotation = rotation;
+        //cameraTarget.localRotation = rotation;
     }
 
     public void Shot(Vector3 direction)
