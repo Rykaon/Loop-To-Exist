@@ -10,7 +10,7 @@ public class CameraManager : MonoBehaviour
     [Header("Component References")]
     [SerializeField] protected GameManager gameManager;
     [SerializeField] public CinemachineFreeLook worldCamera;
-    [SerializeField] public CinemachineVirtualCamera aimCamera;
+    [SerializeField] public CinemachineFreeLook aimCamera;
     [HideInInspector] protected Cinemachine3rdPersonFollow thirdPersonFollow;
     
     [SerializeField] protected RectTransform aimCursor;
@@ -96,7 +96,7 @@ public class CameraManager : MonoBehaviour
         {
             float time = elapsedTime / cameraTransitionDuration;
 
-            gameManager.mainPlayer.cameraTarget.rotation = Quaternion.Slerp(gameManager.mainPlayer.cameraTarget.rotation, gameManager.mainPlayer.transform.rotation, time);
+            //gameManager.mainPlayer.cameraTarget.rotation = Quaternion.Slerp(gameManager.mainPlayer.cameraTarget.rotation, gameManager.mainPlayer.transform.rotation, time);
 
             elapsedTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();

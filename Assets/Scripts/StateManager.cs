@@ -133,14 +133,111 @@ public class StateManager : MonoBehaviour
         rigidBody.useGravity = false;
         
         rigidBody.mass = 0;
-        foreach (GameObject stickedObject in GetStickedObjects(GetFirstStickedObject(this.gameObject)))
+
+        List<GameObject> stickedList = GetStickedObjects(GetFirstStickedObject(this.gameObject));
+
+        foreach (GameObject stickedObject in stickedList)
         {
-            if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager)){
+            if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager))
+            {
                 stateManager.rigidBody.mass = 0f;
             }
         }
 
+        /*List<GameObject> cloneList = new List<GameObject>();
+        List<HoldCheckCollision> collisionList = new List<HoldCheckCollision>(); 
+        GameObject clone = new GameObject();
+
+        clone.transform.position = transform.position;
+
+        foreach (GameObject stickedObject in stickedList)
+        {
+            if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager)){
+                GameObject newStickedObject = new GameObject();
+                newStickedObject.transform.position = stickedObject.transform.position;
+                newStickedObject.transform.SetParent(clone.transform, true);
+                cloneList.Add(newStickedObject);
+                collisionList.Add(SetCollider(stickedObject.GetComponent<Collider>(), newStickedObject));
+                stateManager.rigidBody.mass = 0f;
+            }
+        }
+
+        foreach (HoldCheckCollision hold in collisionList)
+        {
+            hold.canCheck = true;
+        }
+
+        clone.transform.position = endPosition.position;
+        clone.transform.rotation = endPosition.rotation;
+
+        for (int i = 0; i < cloneList.Count; ++i)
+        {
+            if (collisionList[i].hasCollide)
+            {
+                if (stickedList[i].TryGetComponent<StateManager>(out StateManager stateManager))
+                {
+                    if (stateManager.joint != null)
+                    {
+                        Destroy(stateManager.joint);
+                        stateManager.joint = null;
+                        stateManager.isSticked = false;
+
+                        if (objectToStick.TryGetComponent<StateManager>(out StateManager stickedToStateManager))
+                        {
+                            if (stickedToStateManager.stickedObjects.Contains(this.gameObject))
+                            {
+                                stickedToStateManager.stickedObjects.Remove(this.gameObject);
+                            }
+                        }
+
+                        stateManager.objectToStick = null;
+                    }
+                }
+            }
+            Destroy(cloneList[i]);
+        }
+        Destroy(clone);*/
+
         StartCoroutine(HoldObject(endPosition, time));
+    }
+
+    private HoldCheckCollision SetCollider(Collider original, GameObject clone)
+    {
+        System.Type originalColliderType = original.GetType();
+
+        Collider cloneCollider = null;
+
+        if (originalColliderType == typeof(BoxCollider))
+        {
+            BoxCollider originalBoxCollider = original as BoxCollider;
+            BoxCollider cloneBoxCollider = clone.AddComponent<BoxCollider>();
+            cloneBoxCollider.size = originalBoxCollider.size;
+            cloneBoxCollider.center = originalBoxCollider.center;
+            cloneCollider = cloneBoxCollider;
+        }
+        else if (originalColliderType == typeof(CapsuleCollider))
+        {
+            CapsuleCollider originalCapsuleCollider = original as CapsuleCollider;
+            CapsuleCollider cloneCapsuleCollider = clone.AddComponent<CapsuleCollider>();
+            cloneCapsuleCollider.height = originalCapsuleCollider.height;
+            cloneCapsuleCollider.radius = originalCapsuleCollider.radius;
+            cloneCapsuleCollider.center = originalCapsuleCollider.center;
+            cloneCollider = cloneCapsuleCollider;
+        }
+        else if (originalColliderType == typeof(MeshCollider))
+        {
+            MeshCollider originalMeshCollider = original as MeshCollider;
+            MeshCollider cloneMeshCollider = clone.AddComponent<MeshCollider>();
+            // Copie des propriétés spécifiques du mesh collider
+            cloneMeshCollider.sharedMesh = originalMeshCollider.sharedMesh;
+            cloneMeshCollider.convex = originalMeshCollider.convex;
+            // Ajouter d'autres propriétés spécifiques du MeshCollider si nécessaire
+            cloneCollider = cloneMeshCollider;
+        }
+
+        HoldCheckCollision holdCheckCollision = clone.AddComponent<HoldCheckCollision>();
+
+        return holdCheckCollision;
     }
 
     private IEnumerator HoldObject(Transform endPosition, float transitionDuration)
@@ -182,7 +279,8 @@ public class StateManager : MonoBehaviour
         {
             isHeld = false;
             isHeldObject = false;
-            transform.parent = null;
+            holdingPlayer = null;
+            transform.parent = parent;
 
             if (joint != null)
             {

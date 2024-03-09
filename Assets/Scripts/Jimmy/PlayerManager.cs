@@ -162,7 +162,7 @@ public class PlayerManager : StateManager
 
         if (isAiming)
         {
-            LookAt(Vector2.zero);
+            LookAt(value);
         }
         else
         {
@@ -209,6 +209,7 @@ public class PlayerManager : StateManager
         else if (heldObject != null)
         {
             heldObject.DropObject();
+            heldObject = null;
         }
     }
 

@@ -111,7 +111,7 @@ Transform:
   m_GameObject: {fileID: 1459431515119655390}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00001, y: 0.5, z: 0.00001}
+  m_LocalPosition: {x: 1, y: 1, z: 0.00001}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -132,7 +132,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1459431515119655390}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -177,10 +177,10 @@ ParentConstraint:
   m_Enabled: 1
   serializedVersion: 2
   m_Weight: 1
-  m_TranslationAtRest: {x: 0.00001, y: 0.5, z: 0.00001}
+  m_TranslationAtRest: {x: 1, y: 1, z: 0.00001}
   m_RotationAtRest: {x: 0, y: 0, z: 0}
   m_TranslationOffsets:
-  - {x: 0.00001, y: 0.5, z: 0.00001}
+  - {x: 1, y: 1, z: 0.00001}
   m_RotationOffsets:
   - {x: 0, y: 0, z: 0}
   m_AffectTranslationX: 1
@@ -403,6 +403,8 @@ MonoBehaviour:
   ObjectCollider: {fileID: 1124989493730086479}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
+  objectToStick: {fileID: 0}
+  stickedObjects: []
   head: {fileID: 4194247132682260400}
   hand: {fileID: 7310698133081631505}
   feet: {fileID: 5738480824880601504}
