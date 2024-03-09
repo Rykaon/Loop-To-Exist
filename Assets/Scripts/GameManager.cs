@@ -53,7 +53,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        _camera = GetComponent<Camera>();
         controlState = ControlState.Menu;
         playerControls = new PlayerControls();
         playerControls.Player.Disable();

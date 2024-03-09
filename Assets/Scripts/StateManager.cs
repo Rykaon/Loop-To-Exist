@@ -19,7 +19,7 @@ public class StateManager : MonoBehaviour
     [SerializeField] private Collider ObjectCollider;
 
     [Header("Throw Properties")]
-    [SerializeField] public float startThrowForceHorizontal = 8;
+    [SerializeField] public float startThrowForceHorizontal = 5;
     [SerializeField] public float startThrowForceVertical = 5;
 
     public GameManager gameManager { get; private set; }
@@ -202,21 +202,33 @@ public class StateManager : MonoBehaviour
         }
     }
 
-    public virtual void ThrowObject(float throwForceHorizontal, float throwForceVertical)
+    public virtual void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
     {
         DropObject();
-        StartCoroutine(SetThrowForce(throwForceHorizontal, throwForceVertical));
+        StartCoroutine(SetThrowForce(throwForceHorizontal, throwForceVertical, hitpoint));
     }
 
-    private IEnumerator SetThrowForce(float throwForceHorizontal, float throwForceVertical)
+    private IEnumerator SetThrowForce(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
     {
         yield return new WaitForFixedUpdate();
 
         Vector3 throwDirection = Vector3.zero;
-        throwDirection += Vector3.zero.x * holdingPlayer.transform.right.normalized * throwForceHorizontal;
-        throwDirection += Vector3.one.y * holdingPlayer.transform.up.normalized * throwForceVertical;
-        throwDirection += Vector3.one.z * holdingPlayer.transform.forward.normalized * throwForceHorizontal;
 
+        if (hitpoint != Vector3.zero)
+        {
+            // Utiliser le hitpoint pour ajuster la direction du lancer
+            Vector3 playerToHitPoint = hitpoint - transform.position;
+            throwDirection = Vector3.ProjectOnPlane(playerToHitPoint, Vector3.up).normalized * throwForceHorizontal;
+        }
+        else
+        {
+            throwDirection = Camera.main.transform.forward.normalized * throwForceHorizontal;
+        }
+
+        // Ajuster la force verticale (hauteur de l'arc)
+        throwDirection += Vector3.up * throwForceVertical;
+
+        // Appliquer la force au rigidbody
         rigidBody.AddForce(throwDirection, ForceMode.Impulse);
         objectCollider.isTrigger = false;
         holdingPlayer = null;

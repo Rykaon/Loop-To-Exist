@@ -40,9 +40,9 @@ public class MushroomManager : StateManager
         base.InitializeHoldObject(parent);
     }
 
-    public override void ThrowObject(float throwForceHorizontal, float throwForceVertical)
+    public override void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
     {
-        base.ThrowObject(throwForceHorizontal, throwForceVertical);
+        base.ThrowObject(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 
     public override void SetEquipObject(Transform endPosition, float time)

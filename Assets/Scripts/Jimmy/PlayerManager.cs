@@ -92,9 +92,9 @@ public class PlayerManager : StateManager
         base.InitializeHoldObject(parent);
     }
 
-    public override void ThrowObject(float throwForceHorizontal, float throwForceVertical)
+    public override void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
     {
-        base.ThrowObject(throwForceHorizontal, throwForceVertical);
+        base.ThrowObject(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 
     public override void SetEquipObject(Transform endPosition, float time)
@@ -273,7 +273,17 @@ public class PlayerManager : StateManager
 
         if (isStillAiming)
         {
-            heldObject.ThrowObject(startThrowForceHorizontal, startThrowForceVertical);
+            Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+            Vector3 hitPoint = Vector3.zero;
+            Ray ray = Camera.main.ScreenPointToRay(screenCenter);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                hitPoint = hit.point;
+            }
+
+            heldObject.ThrowObject(startThrowForceHorizontal, startThrowForceVertical, hitPoint);
             heldObject = null;
         }
     }
@@ -308,7 +318,7 @@ public class PlayerManager : StateManager
     {
         Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
         Vector3 hitPoint = Vector3.zero;
-        Ray ray = gameManager._camera.ScreenPointToRay(screenCenter);
+        Ray ray = Camera.main.ScreenPointToRay(screenCenter);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit))
