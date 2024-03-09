@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     public PlayerControls playerControls { get; private set; }
 
-    public PlayerManager mainPlayer { get; private set; }
+    public PlayerManager mainPlayer { get; set; }
 
     [Header("Menu References")]
     [SerializeField] private RadialMenu PlayerMenu;
@@ -37,10 +37,9 @@ public class GameManager : MonoBehaviour
 
     public RadialMenu playerMenu { get; private set; }
     public List<PlayerManager> playerList { get; private set; }
-    public List<ItemManager> itemList { get; private set; }
-    //public List<ObjectManager> objectList { get; private set; }
+    public List<MushroomManager> mushroomList { get; private set; }
+    public List<ObjectManager> objectList { get; private set; }
 
-    [HideInInspector] public float recordingEndTime;
     private int playerIndex = 0;
     private int playerMaxIndex;
     private InputActionReference action;
@@ -48,13 +47,9 @@ public class GameManager : MonoBehaviour
 
     private bool firstRun = true;
 
-    public float elapsedTime { get; private set; }
-
     [HideInInspector] public bool buttonNorthIsPressed = false;
     [HideInInspector] public bool leftShoulderisPressed = false;
     [HideInInspector] public Coroutine loop;
-    public bool isLoopActive = false;
-
 
     private void Awake()
     {
@@ -65,16 +60,22 @@ public class GameManager : MonoBehaviour
         playerControls.UI.Enable();
 
         playerList = entities.OfType<PlayerManager>().ToList();
-        itemList = entities.OfType<ItemManager>().ToList();
+        mushroomList = entities.OfType<MushroomManager>().ToList();
+        objectList = entities.OfType<ObjectManager>().ToList();
 
         for (int i = 0; i < playerList.Count; i++)
         {
             playerList[i].Initialize(this);
         }
 
-        for (int i = 0; i < itemList.Count; i++)
+        for (int i = 0; i < mushroomList.Count; i++)
         {
-            itemList[i].Initialize(this);
+            mushroomList[i].Initialize(this);
+        }
+
+        for (int i = 0; i < objectList.Count; i++)
+        {
+            objectList[i].Initialize(this);
         }
 
         playerList[0].SetIsMainPlayer(true);
@@ -83,7 +84,6 @@ public class GameManager : MonoBehaviour
 
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
-        elapsedTime = 0f;
     }
 
     public void ChangeState(ControlState state)
@@ -114,15 +114,7 @@ public class GameManager : MonoBehaviour
         cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look));
     }
 
-    public void EraseRunRecord(PlayerManager player)
-    {
-        int index = Utilities.FindIndexInList(player, playerList);
-        playerList[index].recorder.Clean();
-        playerList[index].hasBeenRecorded = false;
-        playerMenu.elements[index].SetColors();
-    }
-
-    public void SetMainPlayer(PlayerManager player)
+    public void SetMainPlayer(PlayerManager player, bool startRun)
     {
         int previous = Utilities.FindIndexInList(mainPlayer, playerList);
         int next = Utilities.FindIndexInList(player, playerList);
@@ -132,83 +124,54 @@ public class GameManager : MonoBehaviour
         mainPlayer = player;
         playerList[next].SetIsMainPlayer(true);
         playerMenu.elements[next].SetColors();
+
+        SetCameraTarget(mainPlayer.transform, mainPlayer.transform);
+
+        if (startRun)
+        {
+            StartRun();
+        }
     }
 
     public void StartRun()
     {
         SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
-        EraseRunRecord(mainPlayer);
         
         for (int i = 0; i < playerList.Count; i++)
         {
-            if (playerList[i].hasBeenRecorded && playerList[i] != mainPlayer)
+            if (playerList[i] != mainPlayer)
             {
-                playerList[i].isActive = true;
-                playerList[i].rigidBody.isKinematic = true;
+                playerList[i].isActive = false;
             }
         }
 
         mainPlayer.isActive = true;
-        mainPlayer.isRecording = true;
-        elapsedTime = 0f;
-        isLoopActive = true;
     }
 
-    public void SetRunRecord()
-    {
-        int index = Utilities.FindIndexInList(mainPlayer, playerList);
-
-        playerList[index].hasBeenRecorded = true;
-        playerList[index].isRecording = false;
-        playerMenu.elements[index].SetColors();
-        elapsedTime = 0;
-    }
-
-    public void ResetLoop()
-    {
-        elapsedTime = 0;
-
-        cameraManager.SetCameraAim(false);
-
-        for (int i = 0; i < entities.Count; i++)
-        {
-            entities[i].Reset();
-        }
-
-        isLoopActive = false;
-    }
-
-    private void FixedUpdate()
+    private void ResetInputState()
     {
         if (buttonNorthIsPressed && !playerControls.Player.Y.IsPressed())
         {
             buttonNorthIsPressed = false;
         }
 
-        if (leftShoulderisPressed && !playerControls.Player.LeftShoulder.IsPressed())
+        if (leftShoulderisPressed && !playerControls.Player.LB.IsPressed())
         {
             leftShoulderisPressed = false;
         }
+    }
+
+    private void FixedUpdate()
+    {
+        ResetInputState();
 
         if (controlState == ControlState.World)
         {
-            elapsedTime += 1f;
-
-            if (playerControls.Player.Y.IsPressed() && !buttonNorthIsPressed)
-            {
-                buttonNorthIsPressed = true;
-                SetRunRecord();
-                playerMenu.gameObject.SetActive(true);
-                ResetLoop();
-                return;
-            }
-
-            if (playerControls.Player.LeftShoulder.IsPressed())
+            if (playerControls.Player.LB.IsPressed() && !leftShoulderisPressed)
             {
                 leftShoulderisPressed = true;
-                EraseRunRecord(mainPlayer);
-                mainPlayer.isRecording = true;
-                ResetLoop();
+                playerMenu.gameObject.SetActive(true);
+                cameraManager.SetCameraAim(false);
                 return;
             }
         }
@@ -242,14 +205,9 @@ public class GameManager : MonoBehaviour
                             SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget);
                         }
 
-                        if (playerControls.UI.B.IsPressed())
-                        {
-                            EraseRunRecord(playerMenu.elements[playerMenu.index].player);
-                        }
-
                         if (playerControls.UI.X.IsPressed())
                         {
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player);
+                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, false);
                         }
 
                         if (playerControls.UI.Y.IsPressed())
@@ -260,9 +218,8 @@ public class GameManager : MonoBehaviour
 
                         if (playerControls.UI.A.IsPressed())
                         {
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player);
                             playerMenu.gameObject.SetActive(false);
-                            StartRun();
+                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, true);
                         }
                     }
                     else

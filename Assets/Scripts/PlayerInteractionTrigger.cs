@@ -4,33 +4,34 @@ using UnityEngine;
 
 public class PlayerInteractionTrigger : MonoBehaviour
 {
-    public List<ItemManager> triggeredObjectsList { get; private set; }
+    [SerializeField] private PlayerManager player;
+    public List<StateManager> triggeredObjectsList { get; private set; }
 
     private void Awake()
     {
-        triggeredObjectsList = new List<ItemManager>();
+        triggeredObjectsList = new List<StateManager>();
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.transform.tag == "Wall")
+        if ((collision.transform.tag == "Player" || collision.transform.tag == "Mushroom" || collision.transform.tag == "Object") && collision.transform != player.transform)
         {
-            if (collision.transform.TryGetComponent<ItemManager>(out ItemManager catchObject))
+            if (collision.transform.TryGetComponent<StateManager>(out StateManager holdObject))
             {
-                triggeredObjectsList.Add(catchObject);
+                triggeredObjectsList.Add(holdObject);
             }
         }
     }
 
     private void OnTriggerExit(Collider collision)
     {
-        if (collision.transform.tag == "Wall")
+        if ((collision.transform.tag == "Player" || collision.transform.tag == "Mushroom" || collision.transform.tag == "Object") && collision.transform != player.transform)
         {
-            if (collision.transform.TryGetComponent<ItemManager>(out ItemManager catchObject))
+            if (collision.transform.TryGetComponent<StateManager>(out StateManager holdObject))
             {
-                if (triggeredObjectsList.Contains(catchObject))
+                if (triggeredObjectsList.Contains(holdObject))
                 {
-                    triggeredObjectsList.Remove(catchObject);
+                    triggeredObjectsList.Remove(holdObject);
                 }
             }
         }

@@ -1,16 +1,23 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations;
+using UnityEngine.Profiling;
 
-public class ObjectManager : StateManager
+public class MushroomManager : StateManager
 {
+    [Header("Mushrooms References")]
+    public State stateToApply;
+
     ///////////////////////////////////////////////////
     ///            FONCTIONS HÉRITÉES               ///
     ///////////////////////////////////////////////////
-
+    
     public override void Initialize(GameManager instance)
     {
-        base.Initialize(instance);
+        base.Initialize(instance);       
     }
 
     public override void SetState(State state)
