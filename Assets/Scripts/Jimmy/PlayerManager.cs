@@ -297,7 +297,7 @@ public class PlayerManager : StateManager
 
     public void MoveCamera(Vector2 value)
     {
-        Quaternion rotation = cameraTarget.localRotation;
+        /*Quaternion rotation = cameraTarget.localRotation;
 
         if (isAiming)
         {
@@ -312,7 +312,7 @@ public class PlayerManager : StateManager
             rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, transform.right);
         }
 
-        cameraTarget.localRotation = rotation;
+        cameraTarget.localRotation = rotation;*/
     }
 
     public void Shot(InputAction action)
