@@ -346,11 +346,14 @@ public class PlayerManager : StateManager
                 {
                     if (hit.collider.TryGetComponent<PlayerManager>(out PlayerManager playerManager))
                     {
-                        Aim(false);
-                        gameManager.cameraManager.aimCamera.m_Follow = playerManager.cameraTarget;
-                        gameManager.cameraManager.aimCamera.m_LookAt = playerManager.cameraTarget;
-                        gameManager.SetMainPlayer(playerManager, true);
-                        return;
+                        if (playerManager.position == Position.Default)
+                        {
+                            Aim(false);
+                            gameManager.cameraManager.aimCamera.m_Follow = playerManager.cameraTarget;
+                            gameManager.cameraManager.aimCamera.m_LookAt = playerManager.cameraTarget;
+                            gameManager.SetMainPlayer(playerManager, true);
+                            return;
+                        }
                     }
                 }
             }

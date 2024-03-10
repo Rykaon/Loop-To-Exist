@@ -9,7 +9,7 @@ public class StateManager : MonoBehaviour
 {
     public enum Type { Player, Mushroom, Object }
     public enum State { Default, Sticky, Link }
-    public enum Position { Default, Hold, Equip }
+    public enum Position { Default, Held, Equipped }
 
     [Header("StateManager References")]
     public Type type;
@@ -102,6 +102,7 @@ public class StateManager : MonoBehaviour
 
     public virtual void SetHoldObject(Transform endPosition, float time)
     {
+        position = Position.Held;
         if (state == State.Sticky)
         {
             transform.SetParent(parent, true);
@@ -279,6 +280,7 @@ public class StateManager : MonoBehaviour
     {
         if (isHeldObject && isHeld)
         {
+            position = Position.Default;
             isHeld = false;
             isHeldObject = false;
             holdingPlayer = null;
@@ -340,6 +342,7 @@ public class StateManager : MonoBehaviour
 
     public virtual void SetEquipObject(Transform endPosition, float time)
     {
+        position = Position.Equipped;
         if (joint != null)
         {
             Destroy(joint);
