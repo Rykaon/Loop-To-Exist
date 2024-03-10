@@ -18,7 +18,6 @@ public class PlayerInteractionTrigger : MonoBehaviour
         {
             if (collision.transform.TryGetComponent<StateManager>(out StateManager holdObject))
             {
-                Debug.Log(collision.transform.name);
                 triggeredObjectsList.Add(holdObject);
             }
         }

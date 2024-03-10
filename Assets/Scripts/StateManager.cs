@@ -30,9 +30,11 @@ public class StateManager : MonoBehaviour
 
     [HideInInspector] public GameObject objectToStick = null;
     [HideInInspector] public List<GameObject> stickedObjects = new List<GameObject>();
+    [HideInInspector] public GameObject link = null;
+    [HideInInspector] public GameObject linkedObject = null;
 
-    public bool isSticked { get; private set; }
-    public bool isLinked { get; private set; }
+    public bool isSticked { get; set; }
+    public bool isLinked { get; set; }
 
     protected PlayerManager holdingPlayer = null;
     protected PlayerManager equippingPlayer = null;

@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
 
         playerList[0].SetIsMainPlayer(true);
         mainPlayer = playerList[0];
-        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
+        SetCameraTarget(mainPlayer.transform, mainPlayer.transform);
 
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
@@ -124,11 +124,13 @@ public class GameManager : MonoBehaviour
         playerList[next].SetIsMainPlayer(true);
         playerMenu.elements[next].SetColors();
 
-        SetCameraTarget(mainPlayer.transform, mainPlayer.transform);
-
         if (startRun)
         {
             StartRun();
+        }
+        else
+        {
+            SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
         }
     }
 
@@ -170,7 +172,7 @@ public class GameManager : MonoBehaviour
             {
                 leftShoulderisPressed = true;
                 playerMenu.gameObject.SetActive(true);
-                cameraManager.SetCameraAim(false);
+                cameraManager.SetCameraAim(false, Vector3.zero);
                 return;
             }
         }

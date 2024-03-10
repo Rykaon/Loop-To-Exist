@@ -51,6 +51,15 @@ public class PlayerManager : StateManager
     [Header("Camera Properties")]
     [SerializeField] public float cameraRotationSpeed;
 
+    [Header("Link Properties")]
+    [SerializeField] private float linkUnitHeight = 0.1f;
+    [SerializeField] private int nbrOfAddingUnits = 0;
+    [SerializeField] private float jointSpring = 1f;
+    [SerializeField] private float jointDamper = 100f;
+    [SerializeField] private float jointPosition = 0.05f;
+    [HideInInspector] private Rigidbody linkStart = null;
+    [HideInInspector] private Rigidbody linkEnd = null;
+
     public InputAction moveAction { get; private set; }
     public InputAction jumpAction { get; private set; }
     public InputAction grabAction { get; private set; }
@@ -160,9 +169,9 @@ public class PlayerManager : StateManager
             rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
         }
 
-        if (isAiming)
+        if (isLinked)
         {
-            LookAt(value);
+            LookAt(Vector2.zero);
         }
         else
         {
@@ -292,12 +301,19 @@ public class PlayerManager : StateManager
     public void Aim(bool value)
     {
         isAiming = value;
-        gameManager.cameraManager.SetCameraAim(value);
+
+        Vector3 cameraTargetPos = Vector3.zero;
+        if (isAiming)
+        {
+            cameraTargetPos = new Vector3(0, 2, 0);
+        }
+
+        gameManager.cameraManager.SetCameraAim(value, cameraTargetPos);
     }
 
-    public void MoveCamera(Vector2 value)
+    /*public void MoveCamera(Vector2 value)
     {
-        /*Quaternion rotation = cameraTarget.localRotation;
+        Quaternion rotation = cameraTarget.localRotation;
 
         if (isAiming)
         {
@@ -312,8 +328,8 @@ public class PlayerManager : StateManager
             rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, transform.right);
         }
 
-        cameraTarget.localRotation = rotation;*/
-    }
+        cameraTarget.localRotation = rotation;
+    }*/
 
     public void Shot(InputAction action)
     {
@@ -362,17 +378,202 @@ public class PlayerManager : StateManager
             {
                 if (equippedObject.type == Type.Mushroom)
                 {
-                    if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object") && hit.collider.transform != transform)
+                    MushroomManager equippedMushroom = (MushroomManager)equippedObject;
+                    if (equippedMushroom.stateToApply == State.Sticky)
                     {
-                        if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                        if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object") && hit.collider.transform != transform)
                         {
-                            MushroomManager equippedMushroom = (MushroomManager)equippedObject;
-                            stateManager.SetState(equippedMushroom.stateToApply);
+                            if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                            {
+                                stateManager.SetState(equippedMushroom.stateToApply);
+                            }
                         }
+                    }
+                    else if (equippedMushroom.stateToApply == State.Link)
+                    {
+                        if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object") && hit.collider.transform != transform)
+                        {
+                            if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                            {
+                                stateManager.SetState(equippedMushroom.stateToApply);
+                            }
+                        }
+
+                        SetState(equippedMushroom.stateToApply);
+                        StartCoroutine(Link(hit.collider.gameObject, hitPoint));
                     }
                 }
             }
         }
+    }
+
+    private IEnumerator Link(GameObject linkedObject, Vector3 hitPoint)
+    {
+        float distance = Vector3.Distance(hitPoint, hand.position);
+        Vector3 direction = hitPoint - hand.position;
+        float nbrOfUnits = (distance / linkUnitHeight) + nbrOfAddingUnits;
+
+        rigidBody.isKinematic = true;
+        rigidBody.useGravity = false;
+
+        Rigidbody previousRigidbody = null;
+        List<Rigidbody> linkUnitsRigidBody = new List<Rigidbody>();
+        List<CapsuleCollider> linkUnitsCollider = new List<CapsuleCollider>();
+
+        if (link == null)
+        {
+            link = new GameObject();
+        }
+        else
+        {
+            previousRigidbody = link.transform.GetChild(link.transform.childCount - 1).GetComponent<Rigidbody>();
+        }
+
+        for (int i = 0; i < nbrOfUnits; i++)
+        {
+            GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            cylinder.transform.localScale = new Vector3(0.1f, linkUnitHeight / 2.1f, 0.1f);
+            cylinder.transform.position = hitPoint - (direction.normalized * (i * linkUnitHeight));
+            cylinder.transform.rotation = Quaternion.LookRotation(direction.normalized);
+            cylinder.transform.rotation = Quaternion.Euler(cylinder.transform.rotation.eulerAngles + new Vector3(90, 0f, 0f));
+
+            cylinder.transform.SetParent(link.transform, true);
+            cylinder.transform.SetAsFirstSibling();
+
+            Rigidbody rb = cylinder.AddComponent<Rigidbody>();
+            rb.isKinematic = true;
+            linkUnitsRigidBody.Add(rb);
+            linkUnitsCollider.Add(cylinder.GetComponent<CapsuleCollider>());
+
+            HingeJoint hingeJoint = cylinder.AddComponent<HingeJoint>();
+            hingeJoint.useSpring = true;
+
+            JointSpring jointSpring = hingeJoint.spring;
+            jointSpring.spring = this.jointSpring;
+            jointSpring.damper = jointDamper;
+            jointSpring.targetPosition = jointPosition;
+
+            hingeJoint.spring = jointSpring;
+
+            if (i > 0 && i < nbrOfUnits - 1)
+            {
+                hingeJoint.connectedBody = previousRigidbody;
+                
+
+                //rb.isKinematic = false;
+                //rb.useGravity = true;
+            }
+            else
+            {
+                if (i == 0)
+                {
+                    linkStart = rb;
+                    
+                    hingeJoint.connectedBody = linkedObject.GetComponent<Rigidbody>();
+
+                    //rb.isKinematic = false;
+                    //rb.useGravity = true;
+                }
+                else
+                {
+                    if (isLinked == false)
+                    {
+                        jointSpring.spring = 10;
+                        jointSpring.damper = 500f;
+                        jointSpring.targetPosition = 0.1f;
+
+                        hingeJoint.spring = jointSpring;
+
+                        linkEnd = rb;
+                        hingeJoint.connectedBody = previousRigidbody;
+                    }
+                    else
+                    {
+                        Destroy(hingeJoint);
+                        ConfigurableJoint cj = cylinder.AddComponent<ConfigurableJoint>();
+
+                        cj.axis = new Vector3(1, 1, 1); // Axe autour duquel le joint peut se déplacer
+                        cj.angularXMotion = ConfigurableJointMotion.Limited;
+                        cj.angularYMotion = ConfigurableJointMotion.Limited;
+                        cj.angularZMotion = ConfigurableJointMotion.Limited;// Liberté angulaire limitée
+
+                        // Appliquez des ressorts et amortisseurs pour simuler un comportement réaliste
+                        JointDrive jointDrive = new JointDrive();
+                        jointDrive.positionSpring = jointPosition; // Réglage du ressort
+                        jointDrive.positionDamper = jointDamper; // Réglage de l'amortisseur
+                        cj.slerpDrive = jointDrive;
+                        cj.connectedBody = linkEnd;
+                    }
+                }
+                
+            }
+
+            previousRigidbody = rb;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        for (int i = 0; i < linkUnitsRigidBody.Count; ++i)
+        {
+            linkUnitsRigidBody[i].isKinematic = false;
+            linkUnitsRigidBody[i].useGravity = true;
+            //linkUnitsCollider[i].isTrigger = true;
+        }
+
+        if (isLinked)
+        {
+            isLinked = false;
+
+            if (linkedObject.TryGetComponent<StateManager>(out StateManager stateManager))
+            {
+                stateManager.linkedObject = this.linkedObject;
+            }
+
+            if (transform.TryGetComponent<HingeJoint>(out HingeJoint joint))
+            {
+                Destroy(joint);
+            }
+            
+
+            this.linkedObject = null;
+            link = null;
+            linkStart = null;
+            linkEnd = null;
+        }
+        else
+        {
+            isLinked = true;
+
+            if (linkedObject.TryGetComponent<StateManager>(out StateManager stateManager))
+            {
+                stateManager.linkedObject = gameObject;
+            }
+
+            this.linkedObject = linkedObject;
+
+            HingeJoint hingeJoint = transform.AddComponent<HingeJoint>();
+            hingeJoint.useSpring = true;
+
+            JointSpring jointSpring = hingeJoint.spring;
+            jointSpring.spring = this.jointSpring;
+            jointSpring.damper = jointDamper;
+            jointSpring.targetPosition = jointPosition;
+
+            hingeJoint.spring = jointSpring;
+
+            hingeJoint.connectedBody = linkEnd;
+        }
+
+        yield return new WaitForEndOfFrame();
+        rigidBody.isKinematic = false;
+        rigidBody.useGravity = true;
+    }
+
+    private IEnumerator Wait(float time)
+    {
+        yield return new WaitForSeconds(time);
+        rigidBody.isKinematic = false;
+        rigidBody.useGravity = true;
     }
 
     ///////////////////////////////////////////////////
@@ -386,7 +587,7 @@ public class PlayerManager : StateManager
 
         if (value.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
         {
-            rigidBody.rotation = Quaternion.LookRotation(direction, Vector3.up);
+            rigidBody.MoveRotation(Quaternion.LookRotation(direction, Vector3.up));
         }
         else
         {
@@ -480,7 +681,7 @@ public class PlayerManager : StateManager
 
                 if (playerControls.Player.RightStick.ReadValue<Vector2>() != Vector2.zero)
                 {
-                    MoveCamera(playerControls.Player.RightStick.ReadValue<Vector2>());
+                    //MoveCamera(playerControls.Player.RightStick.ReadValue<Vector2>());
                 }
 
                 if (!isAiming)

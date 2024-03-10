@@ -63,13 +63,12 @@ public class CameraManager : MonoBehaviour
         cameraTransition = null;
     }
 
-    public void SetCameraAim(bool value)
+    public void SetCameraAim(bool value, Vector3 targetPos)
     {
         if (value)
         {
             worldCamera.Priority = 0;
             aimCamera.Priority = 100;
-            StartCoroutine(ClampAimTargetRotation());
             StartCoroutine(ShowHideCursor(aimTransitionDuration, true));
         }
         else if (!value)
@@ -78,6 +77,8 @@ public class CameraManager : MonoBehaviour
             aimCamera.Priority = 0;
             StartCoroutine(ShowHideCursor(0f, false));
         }
+
+        StartCoroutine(SetAimTarget(targetPos));
     }
 
     private IEnumerator ShowHideCursor(float time, bool value)
@@ -88,7 +89,7 @@ public class CameraManager : MonoBehaviour
 
     }
 
-    private IEnumerator ClampAimTargetRotation()
+    private IEnumerator SetAimTarget(Vector3 targetPos)
     {
         float elapsedTime = 0f;
 
@@ -96,7 +97,7 @@ public class CameraManager : MonoBehaviour
         {
             float time = elapsedTime / cameraTransitionDuration;
 
-            //gameManager.mainPlayer.cameraTarget.rotation = Quaternion.Slerp(gameManager.mainPlayer.cameraTarget.rotation, gameManager.mainPlayer.transform.rotation, time);
+            gameManager.mainPlayer.cameraTarget.localPosition = Vector3.Slerp(gameManager.mainPlayer.cameraTarget.localPosition, targetPos, time);
 
             elapsedTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();
