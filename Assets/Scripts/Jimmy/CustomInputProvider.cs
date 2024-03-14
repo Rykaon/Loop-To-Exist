@@ -15,7 +15,7 @@ public class CustomInputProvider : MonoBehaviour, IInputAxisProvider
     {
         if (axis == 0)
         {
-            return 0;
+            return gameManager.playerControls.Player.RightStick.ReadValue<Vector2>().x * rotationSpeed;
         }
         else if (axis == 1)
         {
