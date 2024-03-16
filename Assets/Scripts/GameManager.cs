@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 using static Cinemachine.CinemachineFreeLook;
 using static UnityEngine.Rendering.VolumeComponent;
 using System.Linq;
+using Obi;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,10 +36,15 @@ public class GameManager : MonoBehaviour
     [Header("Entities References")]
     [SerializeField] private List<StateManager> entities;
 
+    [Header("Obi's Réferences")]
+    [SerializeField] private ObiSolver ObiSolver;
+
     public RadialMenu playerMenu { get; private set; }
     public List<PlayerManager> playerList { get; private set; }
     public List<MushroomManager> mushroomList { get; private set; }
     public List<ObjectManager> objectList { get; private set; }
+
+    public ObiSolver obiSolver { get; private set; }
 
     private int playerIndex = 0;
     private int playerMaxIndex;
@@ -58,6 +64,7 @@ public class GameManager : MonoBehaviour
         playerControls.Player.Disable();
         playerControls.UI.Enable();
 
+        obiSolver = ObiSolver;
         playerList = entities.OfType<PlayerManager>().ToList();
         mushroomList = entities.OfType<MushroomManager>().ToList();
         objectList = entities.OfType<ObjectManager>().ToList();

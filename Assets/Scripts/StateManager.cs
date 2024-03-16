@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Obi;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -13,10 +14,12 @@ public class StateManager : MonoBehaviour
 
     [Header("StateManager References")]
     public Type type;
-    public State state;
+    public List<State> states;
     public Position position;
     [SerializeField] protected Rigidbody RigidBody;
+    [SerializeField] private ObiRigidbody ObiRigidBody;
     [SerializeField] private Collider ObjectCollider;
+    [SerializeField] private ObiCollider ObiCollider;
 
     [Header("Throw Properties")]
     [SerializeField] public float startThrowForceHorizontal = 5;
@@ -24,21 +27,25 @@ public class StateManager : MonoBehaviour
 
     public GameManager gameManager { get; private set; }
     public Rigidbody rigidBody { get; private set; }
+    public ObiRigidbody obiRigidBody { get; set; }
     public Collider objectCollider { get; private set; }
+    public ObiCollider obiCollider { get; private set; }
 
     protected Transform parent;
 
     [HideInInspector] public GameObject objectToStick = null;
     [HideInInspector] public List<GameObject> stickedObjects = new List<GameObject>();
     [HideInInspector] public GameObject link = null;
-    [HideInInspector] public GameObject linkedObject = null;
-
+    [HideInInspector] public StateManager linkedObject = null;
+    [HideInInspector] public Rigidbody linkAttachment = null;
+    [HideInInspector] public FixedJoint linkJoint = null;
     public bool isSticked { get; set; }
     public bool isLinked { get; set; }
 
     protected PlayerManager holdingPlayer = null;
     protected PlayerManager equippingPlayer = null;
     protected Joint joint = null;
+
 
     public bool isHeldObject { get; private set; }
     public bool isHeld { get; private set; }
@@ -55,6 +62,8 @@ public class StateManager : MonoBehaviour
         rigidBody = RigidBody;
         parent = transform.parent;
         objectCollider = ObjectCollider;
+        obiRigidBody = ObiRigidBody;
+        obiCollider = ObiCollider;
         isHeldObject = false;
         isHeld = false;
     }
@@ -65,35 +74,76 @@ public class StateManager : MonoBehaviour
 
     public virtual void SetState(State state)
     {
-        switch (state)
+        if (states.Contains(state))
         {
-            case State.Sticky:
-                if (this.state == State.Sticky)
-                {
-                    ResetState();
-                }
-                break;
-        }
+            if (state == State.Sticky)
+            {
 
-        this.state = state;
+            }
+            else if (state == State.Link)
+            {
+                isLinked = false;
+                if (linkedObject != null)
+                {
+                    linkedObject.isLinked = false;
+                    linkedObject.linkedObject = null;
+                    linkedObject.link = null;
+                }
+                
+                if (link != null)
+                {
+                    Destroy(link.GetComponent<CustomRope>().end.gameObject);
+                    Destroy(link.GetComponent<CustomRope>().start.gameObject);
+                    Destroy(link.gameObject);
+                }
+                
+                linkedObject = null;
+                link = null;
+
+                states.Remove(state);
+            }
+        }
+        else
+        {
+            states.Add(state);
+        }
     }
 
     public virtual void ResetState()
     {
-        switch (state)
+        if (states.Contains(State.Sticky))
         {
-            case State.Sticky:
-                if (rigidBody.TryGetComponent<Joint>(out Joint joint))
-                {
-                    Destroy(joint);
-                }
-                joint = null;
-                isSticked = false;
-                rigidBody.useGravity = true;
-                break;
+            if (rigidBody.TryGetComponent<Joint>(out Joint joint))
+            {
+                Destroy(joint);
+            }
+            joint = null;
+            isSticked = false;
+            rigidBody.useGravity = true;
+        }
+        else if (states.Contains(State.Link))
+        {
+            isLinked = false;
+            if (linkedObject != null)
+            {
+                linkedObject.isLinked = false;
+                linkedObject.linkedObject = null;
+                linkedObject.link = null;
+            }
+
+            if (link != null)
+            {
+                Destroy(link.GetComponent<CustomRope>().end.gameObject);
+                Destroy(link.GetComponent<CustomRope>().start.gameObject);
+                Destroy(link.gameObject);
+            }
+
+            linkedObject = null;
+            link = null;
         }
 
-        state = State.Default;
+        states = new List<State>();
+        states.Add(State.Default);
     }
 
     ///////////////////////////////////////////////////
@@ -103,7 +153,7 @@ public class StateManager : MonoBehaviour
     public virtual void SetHoldObject(Transform endPosition, float time)
     {
         position = Position.Held;
-        if (state == State.Sticky)
+        if (states.Contains(State.Sticky))
         {
             transform.SetParent(parent, true);
             
@@ -443,9 +493,8 @@ public class StateManager : MonoBehaviour
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
-        if (state == State.Sticky && !isHeldObject  && !isEquipped && !isSticked)
+        if (states.Contains(State.Sticky) && !isHeldObject  && !isEquipped && !isSticked)
         {
-            Debug.Log("yeah");
             rigidBody.useGravity = false;
             rigidBody.velocity = Vector3.zero;
             rigidBody.angularVelocity = Vector3.zero;

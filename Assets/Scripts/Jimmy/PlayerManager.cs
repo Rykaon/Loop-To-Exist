@@ -1,5 +1,6 @@
 using Cinemachine;
 using DG.Tweening;
+using Obi;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,19 +53,11 @@ public class PlayerManager : StateManager
     [SerializeField] public float cameraRotationSpeed;
 
     [Header("Link Properties")]
-    [SerializeField] private float linkUnitHeight = 0.1f;
-    [SerializeField] private int nbrOfAddingUnits = 0;
-    [SerializeField] private float jointSpring = 1f;
-    [SerializeField] private float jointDamper = 100f;
-    [SerializeField] private float jointPosition = 0.05f;
-    [HideInInspector] private Rigidbody linkStart = null;
-    [HideInInspector] private Rigidbody linkEnd = null;
-
-    public InputAction moveAction { get; private set; }
-    public InputAction jumpAction { get; private set; }
-    public InputAction grabAction { get; private set; }
-    public InputAction throwAction { get; private set; }
-    public InputAction shotAction { get; private set; }
+    [SerializeField] private GameObject ropePrefab;
+    [SerializeField] private GameObject sphere;
+    [SerializeField] private float ropeParticlesDistance = 0.5f;
+    [SerializeField] private float ropeParticleMoovingSpeed = 0.1f;
+    [HideInInspector] public CustomRope rope = null;
 
     ///////////////////////////////////////////////////
     ///            FONCTIONS HÉRITÉES               ///
@@ -169,14 +162,12 @@ public class PlayerManager : StateManager
             rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
         }
 
-        if (isLinked)
+        LookAt(value);
+
+        /*if (isLinked)
         {
-            LookAt(Vector2.zero);
-        }
-        else
-        {
-            LookAt(value);
-        }
+            rope.InitializeRope(linkStart, linkEnd);
+        }*/
 
         forceDirection = Vector3.zero;
     }
@@ -394,190 +385,153 @@ public class PlayerManager : StateManager
                     }
                     else if (equippedMushroom.stateToApply == State.Link)
                     {
-                        if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object") && hit.collider.transform != transform)
+                        if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object"))
                         {
                             if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
                             {
                                 stateManager.SetState(equippedMushroom.stateToApply);
+                                
+                                if (stateManager.states.Contains(State.Link))
+                                {
+                                    StartCoroutine(Link(stateManager, hitPoint));
+                                }
                             }
                         }
-
-                        SetState(equippedMushroom.stateToApply);
-                        StartCoroutine(Link(hit.collider.gameObject, hitPoint));
                     }
                 }
             }
         }
     }
 
-    private IEnumerator Link(GameObject linkedObject, Vector3 hitPoint)
+    private IEnumerator Link(StateManager linkedObject, Vector3 hitPoint)
     {
-        float distance = Vector3.Distance(hitPoint, hand.position);
-        Vector3 direction = hitPoint - hand.position;
-        float nbrOfUnits = (distance / linkUnitHeight) + nbrOfAddingUnits;
-
-        rigidBody.isKinematic = true;
-        rigidBody.useGravity = false;
-
-        Rigidbody previousRigidbody = null;
-        List<Rigidbody> linkUnitsRigidBody = new List<Rigidbody>();
-        List<CapsuleCollider> linkUnitsCollider = new List<CapsuleCollider>();
-
-        if (link == null)
+        if (!isLinked)
         {
-            link = new GameObject();
+            linkAttachment = Instantiate(sphere, hand.position, Quaternion.identity, transform).GetComponent<Rigidbody>();
+            ObiCollider startCollider = linkAttachment.GetComponent<ObiCollider>();
+            linkJoint = transform.AddComponent<FixedJoint>();
+            linkJoint.connectedBody = linkAttachment;
+
+            linkedObject.linkAttachment = Instantiate(sphere, hitPoint, Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
+            ObiCollider endCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
+            linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
+            linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
+
+            link = Instantiate(ropePrefab, hand.position, Quaternion.identity, gameManager.obiSolver.transform);
+            rope = link.GetComponent<CustomRope>();
+            rope.solver = gameManager.obiSolver;
+
+            rope.Initialize(startCollider, null, endCollider);
+
+            isLinked = true;
+            this.linkedObject = linkedObject;
+            this.linkedObject.link = link;
+            this.linkedObject.linkedObject = this;
         }
         else
         {
-            previousRigidbody = link.transform.GetChild(link.transform.childCount - 1).GetComponent<Rigidbody>();
+            Destroy(linkJoint);
+            linkJoint = null;
+            Destroy(linkAttachment.gameObject);
+            linkAttachment = null;
+
+            ObiCollider endCollider = this.linkedObject.linkAttachment.GetComponent<ObiCollider>();
+
+            linkedObject.linkAttachment = Instantiate(sphere, hitPoint, Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
+            ObiCollider startCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
+            linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
+            linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
+
+            Destroy(rope.gameObject);
+            link = Instantiate(ropePrefab, hand.position, Quaternion.identity, gameManager.obiSolver.transform);
+            rope = link.GetComponent<CustomRope>();
+            rope.solver = gameManager.obiSolver;
+            rope.Initialize(startCollider, hand, endCollider);
+
+            isLinked = false;
+            this.linkedObject.linkedObject = linkedObject;
+            this.linkedObject.linkedObject.linkedObject = this.linkedObject;
+            this.linkedObject.linkedObject.link = link;
+            this.linkedObject = null;
         }
 
-        for (int i = 0; i < nbrOfUnits; i++)
+        Destroy(linkedObject.obiRigidBody);
+        yield return new WaitForEndOfFrame();
+        linkedObject.obiRigidBody = linkedObject.AddComponent<ObiRigidbody>();
+        linkedObject.obiRigidBody.kinematicForParticles = false;
+    }
+
+    //private IEnumerator Link(StateManager linkedObject, Vector3 hitPoint)
+    //{
+        /*float distance = Vector3.Distance(hitPoint, hand.position);
+        Vector3 direction = hitPoint - hand.position;
+        float nbrOfParticles = (distance / ropeParticlesDistance);
+        float nbrOfMoves = nbrOfMoves = distance / ropeParticleMoovingSpeed;*/
+
+        //if (!isLinked)
+        //{
+        /*linkStart = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+        linkStart.name = "LinkStart";
+        linkStart.localScale = Vector3.one / 5;
+        ObiCollider startCollider = linkStart.AddComponent<ObiCollider>();
+        startCollider.sourceCollider = linkStart.GetComponent<CapsuleCollider>();
+        linkStart.position = hand.position;*/
+        //linkStart.SetParent(transform.transform, true);
+
+        /*linkEnd = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+        linkEnd.name = "LinkEnd";
+        linkEnd.localScale = Vector3.one / 5;
+        ObiCollider endCollider = linkEnd.AddComponent<ObiCollider>();
+        endCollider.sourceCollider = linkEnd.GetComponent<CapsuleCollider>();
+        linkEnd.position = hitPoint;*/
+        //linkEnd.SetParent(linkedObject.transform, true);
+        //}
+        //else
+        //{
+        //rope.SetAttachDynamic(false);
+
+        /* linkAttachment.transform.position = hitPoint;
+         linkAttachment.position = hitPoint;
+         linkAttachment.velocity = Vector3.zero;
+         this.linkedObject.linkAttachment.velocity = Vector3.zero;
+
+         linkAttachment.isKinematic = false;
+         this.linkedObject.linkAttachment.isKinematic = false;
+         rigidBody.isKinematic = false;
+         this.linkedObject.rigidBody.isKinematic = false;
+         linkedObject.rigidBody.isKinematic = false;
+
+         linkedObject.linkAttachment = linkAttachment;
+         linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
+         linkedObject.linkJoint.connectedBody = linkAttachment;
+         linkAttachment.transform.SetParent(linkedObject.transform, true);
+         this.linkedObject.linkJoint = this.linkedObject.AddComponent<FixedJoint>();
+         this.linkedObject.linkJoint.connectedBody = this.linkedObject.linkAttachment;*/
+
+        //rope.SetAttachDynamic(true);
+
+        //this.linkedObject.linkAttachment.transform.SetParent(null, true);
+        //this.linkedObject.linkAttachment.position = hitPoint;
+        //this.linkedObject.linkAttachment.transform.SetParent(linkedObject.transform, true);
+
+        //rope.InitializeRope(linkStart, linkEnd);
+        //}
+
+        /*for (int i = 0; i < nbrOfMoves; i++)
         {
-            GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            cylinder.transform.localScale = new Vector3(0.1f, linkUnitHeight / 2.1f, 0.1f);
-            cylinder.transform.position = hitPoint - (direction.normalized * (i * linkUnitHeight));
-            cylinder.transform.rotation = Quaternion.LookRotation(direction.normalized);
-            cylinder.transform.rotation = Quaternion.Euler(cylinder.transform.rotation.eulerAngles + new Vector3(90, 0f, 0f));
-
-            cylinder.transform.SetParent(link.transform, true);
-            cylinder.transform.SetAsFirstSibling();
-
-            Rigidbody rb = cylinder.AddComponent<Rigidbody>();
-            rb.isKinematic = true;
-            linkUnitsRigidBody.Add(rb);
-            linkUnitsCollider.Add(cylinder.GetComponent<CapsuleCollider>());
-
-            HingeJoint hingeJoint = cylinder.AddComponent<HingeJoint>();
-            hingeJoint.useSpring = true;
-
-            JointSpring jointSpring = hingeJoint.spring;
-            jointSpring.spring = this.jointSpring;
-            jointSpring.damper = jointDamper;
-            jointSpring.targetPosition = jointPosition;
-
-            hingeJoint.spring = jointSpring;
-
-            if (i > 0 && i < nbrOfUnits - 1)
+            if (!isLinked)
             {
-                hingeJoint.connectedBody = previousRigidbody;
-                
-
-                //rb.isKinematic = false;
-                //rb.useGravity = true;
+                linkEnd.position = Vector3.Lerp(hand.position, hitPoint, i / nbrOfMoves);
             }
             else
             {
-                if (i == 0)
-                {
-                    linkStart = rb;
-                    
-                    hingeJoint.connectedBody = linkedObject.GetComponent<Rigidbody>();
-
-                    //rb.isKinematic = false;
-                    //rb.useGravity = true;
-                }
-                else
-                {
-                    if (isLinked == false)
-                    {
-                        jointSpring.spring = 10;
-                        jointSpring.damper = 500f;
-                        jointSpring.targetPosition = 0.1f;
-
-                        hingeJoint.spring = jointSpring;
-
-                        linkEnd = rb;
-                        hingeJoint.connectedBody = previousRigidbody;
-                    }
-                    else
-                    {
-                        Destroy(hingeJoint);
-                        ConfigurableJoint cj = cylinder.AddComponent<ConfigurableJoint>();
-
-                        cj.axis = new Vector3(1, 1, 1); // Axe autour duquel le joint peut se déplacer
-                        cj.angularXMotion = ConfigurableJointMotion.Limited;
-                        cj.angularYMotion = ConfigurableJointMotion.Limited;
-                        cj.angularZMotion = ConfigurableJointMotion.Limited;// Liberté angulaire limitée
-
-                        // Appliquez des ressorts et amortisseurs pour simuler un comportement réaliste
-                        JointDrive jointDrive = new JointDrive();
-                        jointDrive.positionSpring = jointPosition; // Réglage du ressort
-                        jointDrive.positionDamper = jointDamper; // Réglage de l'amortisseur
-                        cj.slerpDrive = jointDrive;
-                        cj.connectedBody = linkEnd;
-                    }
-                }
-                
+                linkStart.position = Vector3.Lerp(hand.position, hitPoint, i / nbrOfMoves);
             }
-
-            previousRigidbody = rb;
 
             yield return new WaitForEndOfFrame();
-        }
-
-        for (int i = 0; i < linkUnitsRigidBody.Count; ++i)
-        {
-            linkUnitsRigidBody[i].isKinematic = false;
-            linkUnitsRigidBody[i].useGravity = true;
-            //linkUnitsCollider[i].isTrigger = true;
-        }
-
-        if (isLinked)
-        {
-            isLinked = false;
-
-            if (linkedObject.TryGetComponent<StateManager>(out StateManager stateManager))
-            {
-                stateManager.linkedObject = this.linkedObject;
-            }
-
-            if (transform.TryGetComponent<HingeJoint>(out HingeJoint joint))
-            {
-                Destroy(joint);
-            }
-            
-
-            this.linkedObject = null;
-            link = null;
-            linkStart = null;
-            linkEnd = null;
-        }
-        else
-        {
-            isLinked = true;
-
-            if (linkedObject.TryGetComponent<StateManager>(out StateManager stateManager))
-            {
-                stateManager.linkedObject = gameObject;
-            }
-
-            this.linkedObject = linkedObject;
-
-            HingeJoint hingeJoint = transform.AddComponent<HingeJoint>();
-            hingeJoint.useSpring = true;
-
-            JointSpring jointSpring = hingeJoint.spring;
-            jointSpring.spring = this.jointSpring;
-            jointSpring.damper = jointDamper;
-            jointSpring.targetPosition = jointPosition;
-
-            hingeJoint.spring = jointSpring;
-
-            hingeJoint.connectedBody = linkEnd;
-        }
-
-        yield return new WaitForEndOfFrame();
-        rigidBody.isKinematic = false;
-        rigidBody.useGravity = true;
-    }
-
-    private IEnumerator Wait(float time)
-    {
-        yield return new WaitForSeconds(time);
-        rigidBody.isKinematic = false;
-        rigidBody.useGravity = true;
-    }
+            rope.InitializeRope(linkStart, linkEnd);
+        }*/
+    //}
 
     ///////////////////////////////////////////////////
     ///          FONCTIONS UTILITAIRES              ///
@@ -751,6 +705,15 @@ public class PlayerManager : StateManager
                     }
                 }
             }
+        }
+        else
+        {
+            /*if (transform.name == "Player_08")
+            {
+                Debug.Log(obiRigidBody.linearVelocity);
+                Debug.Log(obiRigidBody.angularVelocity);
+            }
+            obiRigidBody.UpdateVelocities(-obiRigidBody.linearVelocity, -obiRigidBody.angularVelocity);*/
         }
     }
 }
