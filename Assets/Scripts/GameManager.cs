@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 using static Cinemachine.CinemachineFreeLook;
 using static UnityEngine.Rendering.VolumeComponent;
 using System.Linq;
+using Obi;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,10 +24,11 @@ public class GameManager : MonoBehaviour
 
     [Header("Cinemachine Properties")]
     [SerializeField] public CameraManager cameraManager;
+    [HideInInspector] public Camera _camera;
 
     public PlayerControls playerControls { get; private set; }
 
-    public PlayerManager mainPlayer { get; private set; }
+    public PlayerManager mainPlayer { get; set; }
 
     [Header("Menu References")]
     [SerializeField] private RadialMenu PlayerMenu;
@@ -34,12 +36,16 @@ public class GameManager : MonoBehaviour
     [Header("Entities References")]
     [SerializeField] private List<StateManager> entities;
 
+    [Header("Obi's Réferences")]
+    [SerializeField] private ObiSolver ObiSolver;
+
     public RadialMenu playerMenu { get; private set; }
     public List<PlayerManager> playerList { get; private set; }
-    public List<ItemManager> itemList { get; private set; }
+    public List<MushroomManager> mushroomList { get; private set; }
     public List<ObjectManager> objectList { get; private set; }
 
-    [HideInInspector] public float recordingEndTime;
+    public ObiSolver obiSolver { get; private set; }
+
     private int playerIndex = 0;
     private int playerMaxIndex;
     private InputActionReference action;
@@ -47,10 +53,9 @@ public class GameManager : MonoBehaviour
 
     private bool firstRun = true;
 
-    public float elapsedTime { get; private set; }
-
     [HideInInspector] public bool buttonNorthIsPressed = false;
     [HideInInspector] public bool leftShoulderisPressed = false;
+    [HideInInspector] public Coroutine loop;
 
     private void Awake()
     {
@@ -59,8 +64,9 @@ public class GameManager : MonoBehaviour
         playerControls.Player.Disable();
         playerControls.UI.Enable();
 
+        obiSolver = ObiSolver;
         playerList = entities.OfType<PlayerManager>().ToList();
-        itemList = entities.OfType<ItemManager>().ToList();
+        mushroomList = entities.OfType<MushroomManager>().ToList();
         objectList = entities.OfType<ObjectManager>().ToList();
 
         for (int i = 0; i < playerList.Count; i++)
@@ -68,9 +74,9 @@ public class GameManager : MonoBehaviour
             playerList[i].Initialize(this);
         }
 
-        for (int i = 0; i < itemList.Count; i++)
+        for (int i = 0; i < mushroomList.Count; i++)
         {
-            itemList[i].Initialize(this);
+            mushroomList[i].Initialize(this);
         }
 
         for (int i = 0; i < objectList.Count; i++)
@@ -80,12 +86,10 @@ public class GameManager : MonoBehaviour
 
         playerList[0].SetIsMainPlayer(true);
         mainPlayer = playerList[0];
-
-        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget, mainPlayer.cameraAimLockPoint);
+        SetCameraTarget(mainPlayer.transform, mainPlayer.transform);
 
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
-        elapsedTime = 0f;
     }
 
     public void ChangeState(ControlState state)
@@ -94,132 +98,88 @@ public class GameManager : MonoBehaviour
         {
             playerControls.Player.Disable();
             playerControls.UI.Enable();
+            Cursor.lockState = CursorLockMode.None;
         }
         else if (state == ControlState.World)
         {
             playerControls.UI.Disable();
             playerControls.Player.Enable();
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         controlState = state;
     }
 
-    public void SetCameraTarget(Transform follow, Transform look, Transform cameraAimLockPoint)
+    public void SetCameraTarget(Transform follow, Transform look)
     {
         if (cameraManager.cameraTransition != null)
         {
             StopCoroutine(cameraManager.cameraTransition);
         }
 
-        cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look, cameraAimLockPoint));
+        cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look));
     }
 
-    /*public void SetCameraAim(bool value)
+    public void SetMainPlayer(PlayerManager player, bool startRun)
     {
-        if (cameraManager.aimTransition != null)
-        {
-            StopCoroutine(cameraManager.aimTransition);
-        }
-
-        cameraManager.aimTransition = StartCoroutine(cameraManager.SetCameraAim(value));
-    }*/
-
-    public void EraseRunRecord(PlayerManager player)
-    {
-        int index = FindIndexInList(player, playerList);
-        playerList[index].recorder.Clean();
-        playerList[index].hasBeenRecorded = false;
-        playerMenu.elements[index].SetColors();
-    }
-
-    public void SetMainPlayer(PlayerManager player)
-    {
-        int previous = FindIndexInList(mainPlayer, playerList);
-        int next = FindIndexInList(player, playerList);
+        int previous = Utilities.FindIndexInList(mainPlayer, playerList);
+        int next = Utilities.FindIndexInList(player, playerList);
 
         playerList[previous].SetIsMainPlayer(false);
         playerMenu.elements[previous].SetColors();
         mainPlayer = player;
         playerList[next].SetIsMainPlayer(true);
         playerMenu.elements[next].SetColors();
+
+        if (startRun)
+        {
+            StartRun();
+        }
+        else
+        {
+            SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
+        }
     }
 
     public void StartRun()
     {
-        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget, mainPlayer.cameraAimLockPoint);
-        EraseRunRecord(mainPlayer);
+        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
         
         for (int i = 0; i < playerList.Count; i++)
         {
-            if (playerList[i].hasBeenRecorded && playerList[i] != mainPlayer)
+            if (playerList[i] != mainPlayer)
             {
-                playerList[i].isActive = true;
+                playerList[i].isActive = false;
             }
         }
 
         mainPlayer.isActive = true;
-        mainPlayer.isRecording = true;
-        elapsedTime = 0f;
     }
 
-    public void SetRunRecord()
-    {
-        int index = FindIndexInList(mainPlayer, playerList);
-
-        playerList[index].hasBeenRecorded = true;
-        playerList[index].isRecording = false;
-        playerMenu.elements[index].SetColors();
-        elapsedTime = 0;
-    }
-
-    public void ResetLoop()
-    {
-        elapsedTime = 0;
-
-        cameraManager.SetCameraAim(false);
-
-        for (int i = 0; i < entities.Count; i++)
-        {
-            entities[i].Reset();
-        }
-    }
-
-    public static int FindIndexInList<T>(T item, List<T> list)
-    {
-        return list.IndexOf(item);
-    }
-
-    private void FixedUpdate()
+    private void ResetInputState()
     {
         if (buttonNorthIsPressed && !playerControls.Player.Y.IsPressed())
         {
             buttonNorthIsPressed = false;
         }
 
-        if (leftShoulderisPressed && !playerControls.Player.LeftShoulder.IsPressed())
+        if (leftShoulderisPressed && !playerControls.Player.LB.IsPressed())
         {
             leftShoulderisPressed = false;
         }
+    }
+
+    private void FixedUpdate()
+    {
+        ResetInputState();
 
         if (controlState == ControlState.World)
         {
-            elapsedTime += 1f;
-
-            if (playerControls.Player.Y.IsPressed() && !buttonNorthIsPressed)
-            {
-                buttonNorthIsPressed = true;
-                SetRunRecord();
-                playerMenu.gameObject.SetActive(true);
-                ResetLoop();
-                return;
-            }
-
-            if (playerControls.Player.LeftShoulder.IsPressed())
+            if (playerControls.Player.LB.IsPressed() && !leftShoulderisPressed)
             {
                 leftShoulderisPressed = true;
-                EraseRunRecord(mainPlayer);
-                mainPlayer.isRecording = true;
-                ResetLoop();
+                playerMenu.gameObject.SetActive(true);
+                cameraManager.SetCameraAim(false, Vector3.zero);
                 return;
             }
         }
@@ -250,31 +210,24 @@ public class GameManager : MonoBehaviour
 
                         if (cameraManager.currentTarget != playerMenu.elements[playerMenu.index].player.transform)
                         {
-                            SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraAimLockPoint);
-                        }
-
-                        if (playerControls.UI.B.IsPressed())
-                        {
-                            EraseRunRecord(playerMenu.elements[playerMenu.index].player);
+                            SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget);
                         }
 
                         if (playerControls.UI.X.IsPressed())
                         {
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player);
+                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, false);
                         }
 
                         if (playerControls.UI.Y.IsPressed())
                         {
                             playerMenu.gameObject.SetActive(false);
-                            Cursor.lockState = CursorLockMode.Locked;
                             StartRun();
                         }
 
                         if (playerControls.UI.A.IsPressed())
                         {
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player);
                             playerMenu.gameObject.SetActive(false);
-                            StartRun();
+                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, true);
                         }
                     }
                     else

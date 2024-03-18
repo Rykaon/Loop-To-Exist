@@ -1,8 +1,10 @@
 using Cinemachine;
 using DG.Tweening;
+using Obi;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,37 +13,33 @@ using UnityEngine.Tilemaps;
 
 public class PlayerManager : StateManager
 {
-    [Header("Component References")]
+    [Header("Player References")]
     [SerializeField] private Transform head;
+    [SerializeField] private Transform hand;
     [SerializeField] private Transform feet;
     [SerializeField] private Transform eye;
     [SerializeField] public Transform cameraTarget;
 
     public Transform playerCamera { get; private set; }
 
-    [SerializeField] private Transform VirtualCamera;
-    public Transform virtualCamera { get; private set; }
-
     [SerializeField] private PlayerInteractionTrigger Trigger;
     public PlayerInteractionTrigger trigger { get; private set; }
 
     public PlayerControls playerControls { get; private set; }
-    public InputRecorder recorder { get; private set; }
+    public StateManager heldObject { get; private set; }
+    public StateManager equippedObject { get; private set; }
+
+    [Header("Status")]
+    public bool isMainPlayer;
+    public bool isActive;
+    private bool isAiming = false;
 
     [HideInInspector] public bool buttonSouthIsPressed = false;
     [HideInInspector] public bool buttonWestIsPressed = false;
     [HideInInspector] public bool buttonEastIsPressed = false;
-    [HideInInspector] public bool aimIsPressed = false;
-    [HideInInspector] public bool shotIsPressed = false;
-
-    [Header("Status")]
-    public bool isMainPlayer;
-    public bool hasBeenRecorded;
-    public bool isActive;
-    public bool isRecording = true;
-    private bool isGrounded;
-    private bool wasJumpingLastFrame = false;
-    private bool isAiming = false;
+    [HideInInspector] public bool buttonNorthIsPressed = false;
+    [HideInInspector] public bool leftTriggerIsPressed = false;
+    [HideInInspector] public bool rightTriggerIsPressed = false;
 
     [Header("Move Properties")]
     [SerializeField] protected float moveSpeed;
@@ -51,90 +49,102 @@ public class PlayerManager : StateManager
     [HideInInspector] protected Vector3 forceDirection = Vector3.zero;
     [HideInInspector] protected Vector2 jumpFrameMovementSave;
 
-    [HideInInspector] protected ItemManager selectedObject = null;
-    [HideInInspector] protected ItemManager previousSelectedObject = null;
-
     [Header("Camera Properties")]
-    [SerializeField] public Transform cameraAimLockPoint;
-    [SerializeField] public Transform cameraAimCursorLockPoint;
-    [SerializeField] public float cameraCursorDistance;
-    [SerializeField] public float cameraCursorMoveSpeed;
     [SerializeField] public float cameraRotationSpeed;
 
-    [SerializeField] public float cameraMinX;
-    [SerializeField] public float cameraMinY;
-    [SerializeField] public float cameraMaxX;
-    [SerializeField] public float cameraMaxY;
+    [Header("Link Properties")]
+    [SerializeField] private GameObject ropePrefab;
+    [SerializeField] private GameObject sphere;
+    [SerializeField] private float ropeParticlesDistance = 0.5f;
+    [SerializeField] private float ropeParticleMoovingSpeed = 0.1f;
+    [HideInInspector] public CustomRope rope = null;
 
-    public InputAction moveAction { get; private set; }
-    public InputAction jumpAction { get; private set; }
-    public InputAction grabAction { get; private set; }
-    public InputAction throwAction { get; private set; }
-    public InputAction shotAction { get; private set; }
+    ///////////////////////////////////////////////////
+    ///            FONCTIONS HÉRITÉES               ///
+    ///////////////////////////////////////////////////
 
     public override void Initialize(GameManager instance)
     {
         base.Initialize(instance);
 
-        recorder = new InputRecorder(this);
-
-        virtualCamera = VirtualCamera;
         trigger = Trigger;
+        heldObject = null;
+        equippedObject = null;
 
         playerControls = gameManager.playerControls;
-
-        moveAction = playerControls.Player.Move;
-        jumpAction = playerControls.Player.Jump;
-        grabAction = playerControls.Player.Grab;
-        throwAction = playerControls.Player.Throw;
-        shotAction = playerControls.Player.Shot;
     }
-    
-    public override void Reset()
+
+    public override void SetState(State state)
     {
-        recorder.ResetExecution();
-
-        base.Reset();
-
-        isAiming = false;
-        selectedObject = null;
-        previousSelectedObject = null;
-        cameraAimCursorLockPoint.localPosition = new Vector3(0, 0, cameraCursorDistance);
+        base.SetState(state);
     }
+
+    public override void ResetState()
+    {
+        base.ResetState();
+    }
+
+    public override void SetHoldObject(Transform endPosition, float time)
+    {
+        base.SetHoldObject(endPosition, time);
+    }
+
+    public override void InitializeHoldObject(Transform parent)
+    {
+        base.InitializeHoldObject(parent);
+    }
+
+    public override void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
+    {
+        base.ThrowObject(throwForceHorizontal, throwForceVertical, hitpoint);
+    }
+
+    public override void SetEquipObject(Transform endPosition, float time)
+    {
+        base.SetEquipObject(endPosition, time);
+    }
+
+    public override void InitializeEquipObject(Transform parent)
+    {
+        base.InitializeEquipObject(parent);
+    }
+
+    protected override void OnCollisionEnter(Collision collision)
+    {
+        base.OnCollisionEnter(collision);
+    }
+
+    ///////////////////////////////////////////////////
+    ///          FONCTIONS DE GESTIONS              ///
+    ///////////////////////////////////////////////////
 
     public void SetIsMainPlayer(bool value)
     {
         if (value)
         {
-            playerCamera = gameManager.cameraManager.currentCamera.transform;
+            playerCamera = gameManager.cameraManager.worldCamera.transform;
             playerControls = gameManager.playerControls;
             isMainPlayer = true;
         }
         else
         {
-            playerCamera = virtualCamera;
             playerControls = null;
             isMainPlayer = false;
         }
     }
 
+    ///////////////////////////////////////////////////
+    ///           FONCTIONS D'ACTIONS               ///
+    ///////////////////////////////////////////////////
+
     public void Move(Vector2 value)
     {
         Vector3 movement = new Vector3(value.x, 0f, value.y);
 
-        if (isRecording && value != Vector2.zero)
-        {
-            recorder.RecordInput(playerControls.Player.Move);
-        }
-
         if (!RaycastCollision() && value != Vector2.zero)
         {
-            //Debug.Log(playerCamera.ToString());
-
-            forceDirection += ConvertToCameraSpace(movement) * moveSpeed;
-
-            //forceDirection += movement.x * GetCameraRight(playerCamera) * moveSpeed;
-            //forceDirection += movement.z * GetCameraForward(playerCamera) * moveSpeed;
+            forceDirection += movement.x * Utilities.GetCameraRight(gameManager.transform) * moveSpeed;
+            forceDirection += movement.z * Utilities.GetCameraForward(gameManager.transform) * moveSpeed;
         }
 
         rigidBody.AddForce(forceDirection, ForceMode.Impulse);
@@ -152,25 +162,18 @@ public class PlayerManager : StateManager
             rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
         }
 
-        if (isAiming)
+        LookAt(value);
+
+        /*if (isLinked)
         {
-            LookAt(Vector2.zero);
-        }
-        else
-        {
-            LookAt(value);
-        }
+            rope.InitializeRope(linkStart, linkEnd);
+        }*/
 
         forceDirection = Vector3.zero;
     }
 
     public void Jump()
     {
-        if (isRecording)
-        {
-            recorder.RecordInput(playerControls.Player.Jump);
-        }
-
         if (RaycastGrounded())
         {
             jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
@@ -178,159 +181,361 @@ public class PlayerManager : StateManager
         }
     }
 
-    public void Grab()
+    public void Hold()
     {
-        if (isRecording)
+        if (heldObject == null)
         {
-            recorder.RecordInput(playerControls.Player.Grab);
-        }
-
-        if (trigger.triggeredObjectsList.Count > 0 && selectedObject == null)
-        {
-            float startDistance = float.MaxValue;
-            int index = -1;
-            for (int i = 0; i < trigger.triggeredObjectsList.Count; i++)
+            if (trigger.triggeredObjectsList.Count > 0 && heldObject == null)
             {
-                float distance = Vector3.Distance(trigger.transform.position, trigger.triggeredObjectsList[i].transform.position);
-                if (distance < startDistance)
+                float startDistance = float.MaxValue;
+                int index = -1;
+                for (int i = 0; i < trigger.triggeredObjectsList.Count; i++)
                 {
-                    index = i;
-                    startDistance = distance;
+                    float distance = Vector3.Distance(trigger.transform.position, trigger.triggeredObjectsList[i].transform.position);
+                    if (distance < startDistance)
+                    {
+                        index = i;
+                        startDistance = distance;
+                    }
+                }
+
+                if (index >= 0)
+                {
+                    heldObject = trigger.triggeredObjectsList[index];
+                    heldObject.SetHoldObject(hand, 0.25f);
                 }
             }
-            
-            if (index >= 0)
-            {
-                SetSelectedObject(trigger.triggeredObjectsList[index]);
-            }
+        }
+        else if (heldObject != null)
+        {
+            heldObject.DropObject();
+            heldObject = null;
         }
     }
 
-    public void SetSelectedObject(ItemManager grab)
+    public void Equip()
     {
-        selectedObject = grab;
-        Transform[] path = new Transform[2];
-        path[0] = grab.transform; path[1] = head;
-        Debug.Log(grab.gameObject);
-        grab.SetSelectedObject(path, 0.25f);
+        if (equippedObject == null && heldObject != null)
+        {
+            equippedObject = heldObject;
+            equippedObject.SetEquipObject(head, 0.25f);
+            heldObject = null;
+        }
+        else if (equippedObject != null && heldObject == null)
+        {
+            heldObject = equippedObject;
+            equippedObject.SetHoldObject(hand, 0.25f);
+            equippedObject = null;
+        }
     }
 
     public void Throw()
     {
-        if (isRecording)
+        if (heldObject != null)
         {
-            recorder.RecordInput(playerControls.Player.Throw);
+            if (heldObject.isHeld)
+            {
+                StartCoroutine(CalculateThrowForce());
+            }
+        }
+    }
+
+    private IEnumerator CalculateThrowForce()
+    {
+        float startThrowForceHorizontal = heldObject.startThrowForceHorizontal;
+        float startThrowForceVertical = heldObject.startThrowForceVertical;
+        float maxThrowForceHorizontal = 10;
+        float maxThrowForceVertical = 7;
+
+        while (isAiming && playerControls.Player.X.IsPressed())
+        {
+            startThrowForceHorizontal += (1 + Time.fixedDeltaTime);
+            startThrowForceVertical += (1 + Time.fixedDeltaTime);
+
+            if (startThrowForceHorizontal > maxThrowForceHorizontal)
+            {
+                startThrowForceHorizontal = maxThrowForceHorizontal;
+            }
+
+            if (startThrowForceVertical > maxThrowForceVertical)
+            {
+                startThrowForceVertical = maxThrowForceVertical;
+            }
+
+            yield return new WaitForFixedUpdate();
         }
 
-        if (selectedObject != null)
+        bool isStillAiming = true;
+
+        if (!isAiming)
         {
-            if (selectedObject.isSet)
+            isStillAiming = false;
+        }
+
+        if (isStillAiming)
+        {
+            Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+            Vector3 hitPoint = Vector3.zero;
+            Ray ray = Camera.main.ScreenPointToRay(screenCenter);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
             {
-                selectedObject.ThrowObject();
-                previousSelectedObject = selectedObject;
-                selectedObject = null;
+                hitPoint = hit.point;
             }
+
+            heldObject.ThrowObject(startThrowForceHorizontal, startThrowForceVertical, hitPoint);
+            heldObject = null;
         }
     }
 
     public void Aim(bool value)
     {
-        if (value)
+        isAiming = value;
+
+        Vector3 cameraTargetPos = Vector3.zero;
+        if (isAiming)
         {
-            isAiming = true;
+            cameraTargetPos = new Vector3(0, 2, 0);
         }
-        else
-        {
-            isAiming = false;
-        }
-        
-        gameManager.cameraManager.SetCameraAim(value);
-        //gameManager.SetCameraAim(value);
+
+        gameManager.cameraManager.SetCameraAim(value, cameraTargetPos);
     }
 
-    public void MoveCamera(Vector2 value)
+    /*public void MoveCamera(Vector2 value)
     {
-        Quaternion rotation = cameraAimLockPoint.rotation;
-        rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, Vector3.up);
-        rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, Vector3.right);
+        Quaternion rotation = cameraTarget.localRotation;
 
         if (isAiming)
         {
-            rotation = ClampCameraRotation(rotation);
+            rotation *= Quaternion.AngleAxis(value.x * cameraRotationSpeed, transform.up);
+            rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, transform.right);
+            rotation.x = Utilities.ClampAngle(rotation.x, -30, 30);
+            rotation.y = Utilities.ClampAngle(rotation.y, -30, 30);
         }
-
-        cameraAimLockPoint.rotation = rotation;
-    }
-
-    private Quaternion ClampCameraRotation(Quaternion rotation)
-    {
-        Vector3 eulers = rotation.eulerAngles;
-        eulers.x = ClampAngle(eulers.x, transform.rotation.eulerAngles.x - 30f, transform.rotation.eulerAngles.x + 30f);
-        eulers.y = ClampAngle(eulers.y, transform.rotation.eulerAngles.y - 30f, transform.rotation.eulerAngles.y + 30f);
-
-        return Quaternion.Euler(eulers);
-    }
-
-    private float ClampAngle(float current, float min, float max)
-    {
-        float dtAngle = Mathf.Abs(((min - max) + 180) % 360 - 180);
-        float hdtAngle = dtAngle * 0.5f;
-        float midAngle = min + hdtAngle;
-
-        float offset = Mathf.Abs(Mathf.DeltaAngle(current, midAngle)) - hdtAngle;
-        if (offset > 0)
-            current = Mathf.MoveTowardsAngle(current, midAngle, offset);
-        return current;
-    }
-
-    public void Shot()
-    {
-        if (isRecording)
+        else
         {
-            recorder.RecordInput(playerControls.Player.Shot);
+            rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, transform.up);
+            rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, transform.right);
         }
 
+        cameraTarget.localRotation = rotation;
+    }*/
+
+    public void Shot(InputAction action)
+    {
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        Vector3 hitPoint = Vector3.zero;
+        Ray ray = Camera.main.ScreenPointToRay(screenCenter);
         RaycastHit hit;
-        if (Physics.Raycast(eye.position, (cameraAimCursorLockPoint.position - eye.position), out hit, cameraCursorDistance))
+
+        if (Physics.Raycast(ray, out hit))
         {
-            if ((hit.collider.tag == "Wall" || hit.collider.tag == "Player"))
+            if (action == playerControls.Player.B)
             {
-                Debug.Log(hit.transform.name);
+                if (hit.collider.tag == "Player" && hit.collider.transform != transform)
+                {
+                    if (hit.collider.TryGetComponent<PlayerManager>(out PlayerManager playerManager))
+                    {
+                        if (playerManager.position == Position.Default)
+                        {
+                            Aim(false);
+                            gameManager.cameraManager.aimCamera.m_Follow = playerManager.cameraTarget;
+                            gameManager.cameraManager.aimCamera.m_LookAt = playerManager.cameraTarget;
+                            gameManager.SetMainPlayer(playerManager, true);
+                            return;
+                        }
+                    }
+                }
+            }
+
+            hitPoint = hit.point;
+        }
+
+        Vector3 rayDirection;
+
+        if (hitPoint == Vector3.zero)
+        {
+            rayDirection = eye.forward;
+        }
+        else
+        {
+            rayDirection = hitPoint - eye.position;
+        }
+
+        ray.origin = eye.position;
+        ray.direction = rayDirection;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (action == playerControls.Player.RT)
+            {
+                if (equippedObject.type == Type.Mushroom)
+                {
+                    MushroomManager equippedMushroom = (MushroomManager)equippedObject;
+                    if (equippedMushroom.stateToApply == State.Sticky)
+                    {
+                        if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object") && hit.collider.transform != transform)
+                        {
+                            if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                            {
+                                stateManager.SetState(equippedMushroom.stateToApply);
+                            }
+                        }
+                    }
+                    else if (equippedMushroom.stateToApply == State.Link)
+                    {
+                        if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object"))
+                        {
+                            if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                            {
+                                stateManager.SetState(equippedMushroom.stateToApply);
+                                
+                                if (stateManager.states.Contains(State.Link))
+                                {
+                                    StartCoroutine(Link(stateManager, hitPoint));
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
-    public Vector3 ConvertToCameraSpace(Vector3 vectorToRotate)
+    private IEnumerator Link(StateManager linkedObject, Vector3 hitPoint)
     {
-        Vector3 cameraForward = gameManager.gameObject.transform.forward;
-        Vector3 cameraRight = gameManager.gameObject.transform.right;
+        if (!isLinked)
+        {
+            linkAttachment = Instantiate(sphere, hand.position, Quaternion.identity, transform).GetComponent<Rigidbody>();
+            ObiCollider startCollider = linkAttachment.GetComponent<ObiCollider>();
+            linkJoint = transform.AddComponent<FixedJoint>();
+            linkJoint.connectedBody = linkAttachment;
 
-        cameraForward.y = 0;
-        cameraRight.y = 0;
+            linkedObject.linkAttachment = Instantiate(sphere, hitPoint, Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
+            ObiCollider endCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
+            linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
+            linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
 
-        cameraForward = cameraForward.normalized;
-        cameraRight =cameraRight.normalized;
+            link = Instantiate(ropePrefab, hand.position, Quaternion.identity, gameManager.obiSolver.transform);
+            rope = link.GetComponent<CustomRope>();
+            rope.solver = gameManager.obiSolver;
 
-        Vector3 cameraForwardZProduct = vectorToRotate.z * cameraForward;
-        Vector3 cameraRightXProduct = vectorToRotate.x * cameraRight;
+            rope.Initialize(startCollider, null, endCollider);
 
-        Vector3 vectorRotatedToCameraSpace = cameraForwardZProduct + cameraRightXProduct;
-        return vectorRotatedToCameraSpace;
+            isLinked = true;
+            this.linkedObject = linkedObject;
+            this.linkedObject.link = link;
+            this.linkedObject.linkedObject = this;
+        }
+        else
+        {
+            Destroy(linkJoint);
+            linkJoint = null;
+            Destroy(linkAttachment.gameObject);
+            linkAttachment = null;
+
+            ObiCollider endCollider = this.linkedObject.linkAttachment.GetComponent<ObiCollider>();
+
+            linkedObject.linkAttachment = Instantiate(sphere, hitPoint, Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
+            ObiCollider startCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
+            linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
+            linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
+
+            Destroy(rope.gameObject);
+            link = Instantiate(ropePrefab, hand.position, Quaternion.identity, gameManager.obiSolver.transform);
+            rope = link.GetComponent<CustomRope>();
+            rope.solver = gameManager.obiSolver;
+            rope.Initialize(startCollider, hand, endCollider);
+
+            isLinked = false;
+            this.linkedObject.linkedObject = linkedObject;
+            this.linkedObject.linkedObject.linkedObject = this.linkedObject;
+            this.linkedObject.linkedObject.link = link;
+            this.linkedObject = null;
+        }
+
+        Destroy(linkedObject.obiRigidBody);
+        yield return new WaitForEndOfFrame();
+        linkedObject.obiRigidBody = linkedObject.AddComponent<ObiRigidbody>();
+        linkedObject.obiRigidBody.kinematicForParticles = false;
     }
 
-    //public Vector3 GetCameraForward(Transform camera)
+    //private IEnumerator Link(StateManager linkedObject, Vector3 hitPoint)
     //{
-    //    Vector3 forward = camera.forward;
-    //    forward.y = 0f;
-    //    return forward.normalized;
+        /*float distance = Vector3.Distance(hitPoint, hand.position);
+        Vector3 direction = hitPoint - hand.position;
+        float nbrOfParticles = (distance / ropeParticlesDistance);
+        float nbrOfMoves = nbrOfMoves = distance / ropeParticleMoovingSpeed;*/
+
+        //if (!isLinked)
+        //{
+        /*linkStart = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+        linkStart.name = "LinkStart";
+        linkStart.localScale = Vector3.one / 5;
+        ObiCollider startCollider = linkStart.AddComponent<ObiCollider>();
+        startCollider.sourceCollider = linkStart.GetComponent<CapsuleCollider>();
+        linkStart.position = hand.position;*/
+        //linkStart.SetParent(transform.transform, true);
+
+        /*linkEnd = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+        linkEnd.name = "LinkEnd";
+        linkEnd.localScale = Vector3.one / 5;
+        ObiCollider endCollider = linkEnd.AddComponent<ObiCollider>();
+        endCollider.sourceCollider = linkEnd.GetComponent<CapsuleCollider>();
+        linkEnd.position = hitPoint;*/
+        //linkEnd.SetParent(linkedObject.transform, true);
+        //}
+        //else
+        //{
+        //rope.SetAttachDynamic(false);
+
+        /* linkAttachment.transform.position = hitPoint;
+         linkAttachment.position = hitPoint;
+         linkAttachment.velocity = Vector3.zero;
+         this.linkedObject.linkAttachment.velocity = Vector3.zero;
+
+         linkAttachment.isKinematic = false;
+         this.linkedObject.linkAttachment.isKinematic = false;
+         rigidBody.isKinematic = false;
+         this.linkedObject.rigidBody.isKinematic = false;
+         linkedObject.rigidBody.isKinematic = false;
+
+         linkedObject.linkAttachment = linkAttachment;
+         linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
+         linkedObject.linkJoint.connectedBody = linkAttachment;
+         linkAttachment.transform.SetParent(linkedObject.transform, true);
+         this.linkedObject.linkJoint = this.linkedObject.AddComponent<FixedJoint>();
+         this.linkedObject.linkJoint.connectedBody = this.linkedObject.linkAttachment;*/
+
+        //rope.SetAttachDynamic(true);
+
+        //this.linkedObject.linkAttachment.transform.SetParent(null, true);
+        //this.linkedObject.linkAttachment.position = hitPoint;
+        //this.linkedObject.linkAttachment.transform.SetParent(linkedObject.transform, true);
+
+        //rope.InitializeRope(linkStart, linkEnd);
+        //}
+
+        /*for (int i = 0; i < nbrOfMoves; i++)
+        {
+            if (!isLinked)
+            {
+                linkEnd.position = Vector3.Lerp(hand.position, hitPoint, i / nbrOfMoves);
+            }
+            else
+            {
+                linkStart.position = Vector3.Lerp(hand.position, hitPoint, i / nbrOfMoves);
+            }
+
+            yield return new WaitForEndOfFrame();
+            rope.InitializeRope(linkStart, linkEnd);
+        }*/
     //}
 
-    //public Vector3 GetCameraRight(Transform camera)
-    //{
-    //    Vector3 right = camera.right;
-    //    right.y = 0f;
-    //    return right.normalized;
-    //}
+    ///////////////////////////////////////////////////
+    ///          FONCTIONS UTILITAIRES              ///
+    ///////////////////////////////////////////////////
 
     public void LookAt(Vector2 value)
     {
@@ -339,7 +544,7 @@ public class PlayerManager : StateManager
 
         if (value.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
         {
-            this.rigidBody.rotation = Quaternion.LookRotation(direction, Vector3.up);
+            rigidBody.MoveRotation(Quaternion.LookRotation(direction, Vector3.up));
         }
         else
         {
@@ -384,141 +589,131 @@ public class PlayerManager : StateManager
         return isCollisionDetected;
     }
 
-    protected override void OnCollisionEnter(Collision collision)
+    private void ResetInputState()
     {
+        if (buttonSouthIsPressed && !playerControls.Player.A.IsPressed())
+        {
+            buttonSouthIsPressed = false;
+        }
 
+        if (buttonWestIsPressed && !playerControls.Player.X.IsPressed())
+        {
+            buttonWestIsPressed = false;
+        }
+
+        if (buttonEastIsPressed && !playerControls.Player.B.IsPressed())
+        {
+            buttonEastIsPressed = false;
+        }
+
+        if (buttonNorthIsPressed && !playerControls.Player.Y.IsPressed())
+        {
+            buttonNorthIsPressed = false;
+        }
+
+        if (rightTriggerIsPressed && !playerControls.Player.RT.IsPressed())
+        {
+            rightTriggerIsPressed = false;
+        }
     }
 
     private void FixedUpdate()
-    {
-        cameraTarget.position = rigidBody.position + (Vector3.up / 2);
-        
+    {        
         if (playerControls != null)
         {
-            if (buttonSouthIsPressed && !playerControls.Player.Jump.IsPressed())
-            {
-                buttonSouthIsPressed = false;
-            }
-
-            if (buttonWestIsPressed && !playerControls.Player.Grab.IsPressed())
-            {
-                buttonWestIsPressed = false;
-            }
-
-            if (buttonEastIsPressed && !playerControls.Player.Throw.IsPressed())
-            {
-                buttonEastIsPressed = false;
-            }
-
-            if (shotIsPressed && !playerControls.Player.Shot.IsPressed())
-            {
-                shotIsPressed = false;
-            }
+            ResetInputState();
         }
 
         if (isActive)
         {
-            if (selectedObject != null)
-            {
-                selectedObject.transform.position = head.position;
-            }
-
             if (isMainPlayer)
             {
-                if (isRecording)
-                {
-                    recorder.RecordInput(null);
-                }
+                Move(playerControls.Player.LeftStick.ReadValue<Vector2>());
 
-                Move(playerControls.Player.Move.ReadValue<Vector2>());
-
-                if (playerControls.Player.Jump.IsPressed() && !buttonSouthIsPressed)
+                if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
                 {
                     buttonSouthIsPressed = true;
                     Jump();
                 }
 
-                if (playerControls.Player.MoveCamera.ReadValue<Vector2>() != Vector2.zero)
+                if (playerControls.Player.RightStick.ReadValue<Vector2>() != Vector2.zero)
                 {
-                    MoveCamera(playerControls.Player.MoveCamera.ReadValue<Vector2>());
+                    //MoveCamera(playerControls.Player.RightStick.ReadValue<Vector2>());
                 }
 
                 if (!isAiming)
                 {
-                    if (playerControls.Player.Grab.IsPressed() && !buttonWestIsPressed)
+                    if (playerControls.Player.Y.IsPressed() && !buttonNorthIsPressed)
+                    {
+                        buttonNorthIsPressed = true;
+                        Equip();
+                    }
+
+                    if (playerControls.Player.X.IsPressed() && !buttonWestIsPressed)
                     {
                         buttonWestIsPressed = true;
-                        Grab();
+                        Hold();
                     }
 
-                    if (playerControls.Player.Throw.IsPressed() && !buttonEastIsPressed)
-                    {
-                        buttonEastIsPressed = true;
-                        Throw();
-                    }
+                    
 
-                    if (playerControls.Player.Aim.IsPressed() && !aimIsPressed)
+                    if (playerControls.Player.LT.IsPressed() && !leftTriggerIsPressed)
                     {
-
-                        aimIsPressed = true;
+                        leftTriggerIsPressed = true;
                         Aim(true);
+                    }
+
+                    if (playerControls.Player.RT.IsPressed() && !rightTriggerIsPressed)
+                    {
+                        rightTriggerIsPressed = true;
+
+                        if (equippedObject != null && heldObject != null)
+                        {
+                            MushroomManager equippedMushroom = (MushroomManager)equippedObject;
+                            heldObject.SetState(equippedMushroom.stateToApply);
+                        }
                     }
                 }
                 else
                 {
-                    if (!playerControls.Player.Aim.IsPressed() && aimIsPressed)
+                    if (!playerControls.Player.LT.IsPressed() && leftTriggerIsPressed)
                     {
-                        aimIsPressed = false;
+                        leftTriggerIsPressed = false;
                         Aim(false);
                     }
 
-                    if (playerControls.Player.Shot.IsPressed() && !shotIsPressed)
+                    if (playerControls.Player.X.IsPressed() && !buttonWestIsPressed)
                     {
-                        shotIsPressed = true;
-                        Shot();
+                        buttonWestIsPressed = true;
+                        Throw();
+                    }
+
+                    if (playerControls.Player.RT.IsPressed() && !rightTriggerIsPressed)
+                    {
+                        rightTriggerIsPressed = true;
+
+                        if (equippedObject != null && heldObject == null)
+                        {
+                            Shot(playerControls.Player.RT);
+                        }
+                    }
+
+                    if (playerControls.Player.B.IsPressed() && !buttonEastIsPressed)
+                    {
+                        buttonEastIsPressed = true;
+                        Shot(playerControls.Player.B);
                     }
                 }
             }
-            else
+        }
+        else
+        {
+            /*if (transform.name == "Player_08")
             {
-                if (recorder.CheckLog(gameManager.elapsedTime, null, null, recorder.cameraPosLogs))
-                {
-                    recorder.ExecuteCameraLog(recorder.GetCameraInputLogs(gameManager.elapsedTime, recorder.cameraPosLogs), false);
-                    recorder.ExecuteCameraLog(recorder.GetCameraInputLogs(gameManager.elapsedTime, recorder.cameraRotLogs), true);
-                }
-
-                if (recorder.GetInputActions(gameManager.elapsedTime) != null)
-                {
-                    for (int i = 0; i < recorder.GetInputActions(gameManager.elapsedTime).Count; ++i)
-                    {
-                        if (recorder.GetInputActions(gameManager.elapsedTime)[i] == moveAction)
-                        {
-                            recorder.ExecuteVectorLog(recorder.GetVectorInputLogs(gameManager.elapsedTime, recorder.moveLogs));
-                        }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == jumpAction)
-                        {
-                            recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.jumpLogs));
-                        }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == grabAction)
-                        {
-                            recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.catchLogs));
-                        }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == throwAction)
-                        {
-                            recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.throwLogs));
-                        }
-                        else if (recorder.GetInputActions(gameManager.elapsedTime)[i] == shotAction)
-                        {
-                            recorder.ExecuteFloatLog(recorder.GetFloatInputLogs(gameManager.elapsedTime, recorder.shotLogs));
-                        }
-                    }
-                }
-
-                if (!recorder.CheckLog(gameManager.elapsedTime, recorder.moveLogs, null, null))
-                {
-                    Move(Vector2.zero);
-                }
+                Debug.Log(obiRigidBody.linearVelocity);
+                Debug.Log(obiRigidBody.angularVelocity);
             }
+            obiRigidBody.UpdateVelocities(-obiRigidBody.linearVelocity, -obiRigidBody.angularVelocity);*/
         }
     }
 }

@@ -125,27 +125,13 @@ public class RadialMenuElement : MonoBehaviour
     {
         if (image != null)
         {
-            if (player.hasBeenRecorded)
+            if (player.isMainPlayer)
             {
-                if (player.isMainPlayer)
-                {
-                    image.color = m_recorded;
-                }
-                else
-                {
-                    image.color = d_recorded;
-                }
+                image.color = m_unrecorded;
             }
             else
             {
-                if (player.isMainPlayer)
-                {
-                    image.color = m_unrecorded;
-                }
-                else
-                {
-                    image.color = d_unrecorded;
-                }
+                image.color = d_unrecorded;
             }
         }
     }

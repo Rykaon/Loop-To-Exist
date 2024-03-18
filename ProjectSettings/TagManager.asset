@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Wall
   - Ground
+  - Mushroom
+  - Object
   layers:
   - Default
   - TransparentFX
