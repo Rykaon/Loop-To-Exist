@@ -26,8 +26,8 @@ public class PlayerManager : StateManager
     public PlayerInteractionTrigger trigger { get; private set; }
 
     public PlayerControls playerControls { get; private set; }
-    public StateManager heldObject { get; private set; }
-    public StateManager equippedObject { get; private set; }
+    public StateManager heldObject { get; set; }
+    public StateManager equippedObject { get; set; }
 
     [Header("Status")]
     public bool isMainPlayer;
@@ -112,6 +112,11 @@ public class PlayerManager : StateManager
     protected override void OnCollisionEnter(Collision collision)
     {
         base.OnCollisionEnter(collision);
+    }
+
+    protected override void OnJointBreak(float breakForce)
+    {
+        base.OnJointBreak(breakForce);
     }
 
     ///////////////////////////////////////////////////
@@ -405,15 +410,21 @@ public class PlayerManager : StateManager
 
     private IEnumerator Link(StateManager linkedObject, Vector3 hitPoint)
     {
+        Vector3 direction = hitPoint - hand.position;
+
         if (!isLinked)
         {
             linkAttachment = Instantiate(sphere, hand.position, Quaternion.identity, transform).GetComponent<Rigidbody>();
             ObiCollider startCollider = linkAttachment.GetComponent<ObiCollider>();
+            //linkSnap = linkAttachment.AddComponent<SnapRigidbodyPosition>();
+            //linkSnap.Initialize(linkAttachment, transform);
             linkJoint = transform.AddComponent<FixedJoint>();
             linkJoint.connectedBody = linkAttachment;
 
-            linkedObject.linkAttachment = Instantiate(sphere, hitPoint, Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
+            linkedObject.linkAttachment = Instantiate(sphere, hitPoint - (direction.normalized * 0.1f), Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
             ObiCollider endCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
+            //linkedObject.linkSnap = linkedObject.linkAttachment.AddComponent<SnapRigidbodyPosition>();
+            //linkedObject.linkSnap.Initialize(linkedObject.linkAttachment, linkedObject.transform);
             linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
             linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
 
@@ -430,15 +441,17 @@ public class PlayerManager : StateManager
         }
         else
         {
-            Destroy(linkJoint);
-            linkJoint = null;
+            //Destroy(linkJoint);
+            //linkJoint = null;
             Destroy(linkAttachment.gameObject);
             linkAttachment = null;
 
             ObiCollider endCollider = this.linkedObject.linkAttachment.GetComponent<ObiCollider>();
 
-            linkedObject.linkAttachment = Instantiate(sphere, hitPoint, Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
+            linkedObject.linkAttachment = Instantiate(sphere, hitPoint - (direction.normalized * 0.1f), Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
             ObiCollider startCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
+            //linkedObject.linkSnap = linkedObject.linkAttachment.AddComponent<SnapRigidbodyPosition>();
+            //linkedObject.linkSnap.Initialize(linkedObject.linkAttachment, linkedObject.transform);
             linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
             linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
 
@@ -617,8 +630,10 @@ public class PlayerManager : StateManager
         }
     }
 
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {        
+        base.FixedUpdate();
+
         if (playerControls != null)
         {
             ResetInputState();
@@ -670,7 +685,10 @@ public class PlayerManager : StateManager
                         if (equippedObject != null && heldObject != null)
                         {
                             MushroomManager equippedMushroom = (MushroomManager)equippedObject;
-                            heldObject.SetState(equippedMushroom.stateToApply);
+                            if (!heldObject.states.Contains(equippedMushroom.stateToApply))
+                            {
+                                heldObject.SetState(equippedMushroom.stateToApply);
+                            }
                         }
                     }
                 }

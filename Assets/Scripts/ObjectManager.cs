@@ -52,4 +52,14 @@ public class ObjectManager : StateManager
     {
         base.OnCollisionEnter(collision);
     }
+
+    protected override void OnJointBreak(float breakForce)
+    {
+        base.OnJointBreak(breakForce);
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
 }

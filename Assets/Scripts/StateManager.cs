@@ -35,17 +35,22 @@ public class StateManager : MonoBehaviour
 
     [HideInInspector] public GameObject objectToStick = null;
     [HideInInspector] public List<GameObject> stickedObjects = new List<GameObject>();
+    //[HideInInspector] public SnapRigidbodyPosition stickSnap = null;
+
     [HideInInspector] public GameObject link = null;
     [HideInInspector] public StateManager linkedObject = null;
     [HideInInspector] public Rigidbody linkAttachment = null;
+    //[HideInInspector] public SnapRigidbodyPosition linkSnap = null;
     [HideInInspector] public FixedJoint linkJoint = null;
     public bool isSticked { get; set; }
     public bool isLinked { get; set; }
 
     protected PlayerManager holdingPlayer = null;
+    //[HideInInspector] public SnapRigidbodyPosition holdingSnap = null;
     protected PlayerManager equippingPlayer = null;
+    //[HideInInspector] public SnapRigidbodyPosition equippingSnap = null;
     protected Joint joint = null;
-
+    [SerializeField] private float jointBreakTreshold = 0.0001f;
 
     public bool isHeldObject { get; private set; }
     public bool isHeld { get; private set; }
@@ -78,7 +83,23 @@ public class StateManager : MonoBehaviour
         {
             if (state == State.Sticky)
             {
+                if (rigidBody.TryGetComponent<Joint>(out Joint joint))
+                {
+                    if (joint.connectedBody == objectToStick.GetComponent<Rigidbody>())
+                    {
+                        Destroy(joint);
+                        joint = null;
+                    }
+                }
 
+                if (objectToStick.TryGetComponent<StateManager>(out StateManager stateManager))
+                {
+                    stateManager.stickedObjects.Remove(gameObject);
+                }
+
+                objectToStick = null;
+                isSticked = false;
+                rigidBody.useGravity = true;
             }
             else if (state == State.Link)
             {
@@ -99,9 +120,9 @@ public class StateManager : MonoBehaviour
                 
                 linkedObject = null;
                 link = null;
-
-                states.Remove(state);
             }
+
+            states.Remove(state);
         }
         else
         {
@@ -115,9 +136,19 @@ public class StateManager : MonoBehaviour
         {
             if (rigidBody.TryGetComponent<Joint>(out Joint joint))
             {
-                Destroy(joint);
+                if (joint.connectedBody == objectToStick.GetComponent<Rigidbody>())
+                {
+                    Destroy(joint);
+                    joint = null;
+                }
             }
-            joint = null;
+
+            if (objectToStick.TryGetComponent<StateManager>(out StateManager stateManager))
+            {
+                stateManager.stickedObjects.Remove(gameObject);
+            }
+
+            objectToStick = null;
             isSticked = false;
             rigidBody.useGravity = true;
         }
@@ -177,6 +208,9 @@ public class StateManager : MonoBehaviour
 
         if (joint != null)
         {
+            isEquipped = false;
+            isEquippedObject = false;
+            equippingPlayer = null;
             Destroy(joint);
             joint = null;
         }
@@ -324,6 +358,8 @@ public class StateManager : MonoBehaviour
             joint = transform.AddComponent<FixedJoint>();
         }
         joint.connectedBody = holdingPlayer.transform.GetComponent<Rigidbody>();
+        joint.breakForce = jointBreakTreshold;
+        joint.breakTorque = jointBreakTreshold;
     }
 
     public virtual void DropObject()
@@ -337,7 +373,7 @@ public class StateManager : MonoBehaviour
             transform.parent = parent;
 
             if (joint != null)
-            {
+            { 
                 Destroy(joint);
                 joint = null;
             }
@@ -393,6 +429,9 @@ public class StateManager : MonoBehaviour
     public virtual void SetEquipObject(Transform endPosition, float time)
     {
         position = Position.Equipped;
+        isHeld = false;
+        holdingPlayer = null;
+
         if (joint != null)
         {
             Destroy(joint);
@@ -437,8 +476,9 @@ public class StateManager : MonoBehaviour
         {
             joint = transform.AddComponent<FixedJoint>();
         }
-        
         joint.connectedBody = equippingPlayer.transform.GetComponent<Rigidbody>();
+        joint.breakForce = jointBreakTreshold;
+        joint.breakTorque = jointBreakTreshold;
     }
 
     private GameObject GetFirstStickedObject(GameObject currentObject)
@@ -504,6 +544,14 @@ public class StateManager : MonoBehaviour
                 joint = transform.AddComponent<FixedJoint>();
             }
             joint.connectedBody = collision.transform.GetComponent<Rigidbody>();
+            joint.breakForce = jointBreakTreshold;
+            joint.breakTorque = jointBreakTreshold;
+
+            /*if (stickSnap == null)
+            {
+                stickSnap = transform.AddComponent<SnapRigidbodyPosition>();
+                stickSnap.Initialize(rigidBody, collision.transform);
+            }*/
 
             objectToStick = collision.gameObject;
             isSticked = true;
@@ -515,5 +563,98 @@ public class StateManager : MonoBehaviour
 
             Debug.Log(collision.transform.name);
         }
+    }
+
+    protected virtual void OnJointBreak(float breakForce)
+    {
+        /*if (joint != null)
+        {
+            if (transform.name == "Grab_04")
+            {
+                Debug.Log(joint.currentForce.magnitude + " // " + jointBreakTreshold);
+            }
+            if (joint.currentForce.magnitude >= jointBreakTreshold || joint.currentTorque.magnitude >= jointBreakTreshold)
+            {
+                Debug.Log("yeaaaaaaah");
+            }
+        }*/
+
+        if (isHeld)
+        {
+            if (joint.connectedBody == holdingPlayer.rigidBody)
+            {
+                Debug.Log("yo");
+                position = Position.Default;
+                isHeld = false;
+                isHeldObject = false;
+
+                holdingPlayer.heldObject = null;
+                holdingPlayer = null;
+                transform.parent = parent;
+
+                Destroy(joint);
+                joint = null;
+
+                rigidBody.mass = 1f;
+                foreach (GameObject stickedObject in GetStickedObjects(GetFirstStickedObject(this.gameObject)))
+                {
+                    if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager))
+                    {
+                        stateManager.rigidBody.mass = 1f;
+                    }
+                }
+
+                rigidBody.useGravity = true;
+            }
+        }
+        else if (isEquipped)
+        {
+            if (joint.connectedBody == equippingPlayer.rigidBody)
+            {
+                position = Position.Default;
+                isEquipped = false;
+                isEquippedObject = false;
+
+                equippingPlayer.equippedObject = null;
+                equippingPlayer = null;
+                transform.parent = parent;
+
+                Destroy(joint);
+                joint = null;
+
+                rigidBody.mass = 1f;
+                foreach (GameObject stickedObject in GetStickedObjects(GetFirstStickedObject(this.gameObject)))
+                {
+                    if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager))
+                    {
+                        stateManager.rigidBody.mass = 1f;
+                    }
+                }
+
+                rigidBody.useGravity = true;
+            }
+        }
+        else if (isSticked)
+        {
+            if (joint.connectedBody == objectToStick.GetComponent<Rigidbody>())
+            {
+                Destroy(joint);
+                joint = null;
+            }
+
+            if (objectToStick.TryGetComponent<StateManager>(out StateManager stateManager))
+            {
+                stateManager.stickedObjects.Remove(gameObject);
+            }
+
+            objectToStick = null;
+            isSticked = false;
+            rigidBody.useGravity = true;
+        }
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        
     }
 }

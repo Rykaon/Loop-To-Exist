@@ -301,6 +301,9 @@ MonoBehaviour:
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
+  jointBreakTreshold: 0.001
   head: {fileID: 4194247132682260400}
   hand: {fileID: 7310698133081631505}
   feet: {fileID: 5738480824880601504}
@@ -325,6 +328,7 @@ MonoBehaviour:
   sphere: {fileID: 79148536965143018, guid: 6132ff0eac769f544a8a240b2202b0af, type: 3}
   ropeParticlesDistance: 0.5
   ropeParticleMoovingSpeed: 0.1
+  rope: {fileID: 0}
 --- !u!33 &2753056825088638641
 MeshFilter:
   m_ObjectHideFlags: 0
