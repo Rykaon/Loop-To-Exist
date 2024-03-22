@@ -57,9 +57,4 @@ public class ObjectManager : StateManager
     {
         base.OnJointBreak(breakForce);
     }
-
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
 }

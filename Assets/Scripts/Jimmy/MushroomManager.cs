@@ -64,9 +64,4 @@ public class MushroomManager : StateManager
     {
         base.OnJointBreak(breakForce);
     }
-
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
 }

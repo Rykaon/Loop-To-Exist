@@ -522,14 +522,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
   stateToApply: 1
 --- !u!114 &73639052
 MonoBehaviour:
@@ -720,14 +716,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
   stateToApply: 2
 --- !u!114 &109217751
 MonoBehaviour:
@@ -784,7 +776,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 129925924}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07976709, y: 0.8613227, z: -0.34542572, w: -0.36392516}
+  m_LocalRotation: {x: 0.07976711, y: 0.8613227, z: -0.34542572, w: -0.3639252}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1105,6 +1097,11 @@ PrefabInstance:
       propertyPath: ObiRigidBody
       value: 
       objectReference: {fileID: 1130151090}
+    - target: {fileID: 4329433310726354432, guid: 58ae7d5fe61dfde4087deebdde445e9c,
+        type: 3}
+      propertyPath: jointBreakTreshold
+      value: 10000
+      objectReference: {fileID: 0}
     - target: {fileID: 6661602020122977299, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1574,14 +1571,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
   stateToApply: 2
 --- !u!114 &318599439
 MonoBehaviour:
@@ -1702,7 +1695,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.030818721, y: 0.92482585, z: -0.07676514, w: -0.3712876}
+  m_LocalRotation: {x: -0.030818725, y: 0.92482585, z: -0.07676515, w: -0.37128764}
   m_LocalPosition: {x: -10.841093, y: 2, z: -11.325651}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1976,7 +1969,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 397957541}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.077980876, y: 0.000000059604645, z: -0.000000013038516, w: 0.99695486}
+  m_LocalRotation: {x: 0.077980906, y: -0, z: 0.000000009313226, w: 0.9969549}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2189,14 +2182,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
   stateToApply: 1
 --- !u!114 &400802791
 MonoBehaviour:
@@ -2979,14 +2968,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
 --- !u!114 &549887128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3347,7 +3332,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 786537218}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.087055035, y: 0.868082, z: -0.32806933, w: -0.36225095}
+  m_LocalRotation: {x: 0.087055035, y: 0.868082, z: -0.32806936, w: -0.36225095}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4341,14 +4326,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
 --- !u!114 &1055874717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4481,8 +4462,8 @@ Transform:
   m_GameObject: {fileID: 1089382219}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -21.2, y: 0.5, z: -33}
-  m_LocalScale: {x: 5, y: 2, z: 4}
+  m_LocalPosition: {x: -21.2, y: -1, z: -33}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1101385165}
@@ -5319,14 +5300,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
 --- !u!114 &1188122575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5528,7 +5505,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -25.5, y: 1, z: -27}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1101385165}
@@ -6149,6 +6126,11 @@ PrefabInstance:
         type: 3}
       propertyPath: isMainPlayer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329433310726354432, guid: 58ae7d5fe61dfde4087deebdde445e9c,
+        type: 3}
+      propertyPath: jointBreakTreshold
+      value: 10000
       objectReference: {fileID: 0}
     - target: {fileID: 7564528092768683038, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -7406,14 +7388,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
 --- !u!114 &1713480599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8714,14 +8692,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
   stateToApply: 1
 --- !u!114 &1985791056
 MonoBehaviour:
@@ -9137,14 +9111,10 @@ MonoBehaviour:
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
-  stickSnap: {fileID: 0}
   link: {fileID: 0}
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
-  linkSnap: {fileID: 0}
   linkJoint: {fileID: 0}
-  heldSnap: {fileID: 0}
-  equippedSnap: {fileID: 0}
   stateToApply: 2
 --- !u!114 &2108705788
 MonoBehaviour:
