@@ -35,7 +35,7 @@ public class PlayerManager : StateManager
     [Header("Status")]
     public bool isMainPlayer;
     public bool isActive;
-    private bool isAiming = false;
+    public bool isAiming = false;
 
     [HideInInspector] public bool buttonSouthIsPressed = false;
     [HideInInspector] public bool buttonWestIsPressed = false;
@@ -363,8 +363,8 @@ public class PlayerManager : StateManager
                         if (playerManager.position == Position.Default)
                         {
                             Aim(false);
-                            gameManager.cameraManager.aimCamera.m_Follow = playerManager.cameraTarget;
-                            gameManager.cameraManager.aimCamera.m_LookAt = playerManager.cameraTarget;
+                            //gameManager.cameraManager.aimCamera.m_Follow = playerManager.cameraTarget;
+                            //gameManager.cameraManager.aimCamera.m_LookAt = playerManager.cameraTarget;
                             gameManager.SetMainPlayer(playerManager, true);
                             return;
                         }
@@ -671,6 +671,16 @@ public class PlayerManager : StateManager
         {
             rightTriggerIsPressed = false;
         }
+
+        if (leftTriggerIsPressed && !playerControls.Player.LT.IsPressed())
+        {
+            leftTriggerIsPressed = false;
+
+            if (isAiming)
+            {
+                Aim(false);
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -735,11 +745,11 @@ public class PlayerManager : StateManager
                 }
                 else
                 {
-                    if (!playerControls.Player.LT.IsPressed() && leftTriggerIsPressed)
+                    /*if (!playerControls.Player.LT.IsPressed() && leftTriggerIsPressed)
                     {
                         leftTriggerIsPressed = false;
                         Aim(false);
-                    }
+                    }*/
 
                     if (playerControls.Player.X.IsPressed() && !buttonWestIsPressed)
                     {
