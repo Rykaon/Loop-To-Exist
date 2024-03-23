@@ -74,7 +74,7 @@ public class StateManager : MonoBehaviour
         isHeldObject = false;
         isHeld = false;
 
-        linkThrowMultiplier = 2.5f; // On multiplie la force de lancer par cette valeur si l'objet lancé est linké.
+        linkThrowMultiplier = 2.5f; // On multiplie la force de lancer par cette valeur si l'objet lancé est linké. 
         playerMoveMassMultiplier = 0.075f; // Le joueur qui porte l'objet a un multiplier de base de 1. Pour chaque objet porté, on lui ajoute cette valeur. On lui retire lorsqu'il drop l'item. Sert pour les fonctions Move() et Jump().
     }
 
@@ -361,7 +361,26 @@ public class StateManager : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        InitializeHoldObject(endPosition.parent);
+        isHeld = true;
+
+        objectCollider.isTrigger = false;
+        if (joint == null)
+        {
+            joint = transform.AddComponent<FixedJoint>();
+        }
+        joint.connectedBody = holdingPlayer.transform.GetComponent<Rigidbody>();
+        joint.enableCollision = true;
+
+        if (states.Contains(State.Link))
+        {
+            joint.breakForce = float.PositiveInfinity;//jointBreakTreshold * 100;
+            joint.breakTorque = float.PositiveInfinity;//jointBreakTreshold * 100;
+        }
+        else
+        {
+            joint.breakForce = jointBreakTreshold;
+            joint.breakTorque = jointBreakTreshold;
+        }
     }
 
     public virtual void InitializeHoldObject(Transform parent)
@@ -386,7 +405,6 @@ public class StateManager : MonoBehaviour
             joint.breakForce = jointBreakTreshold;
             joint.breakTorque = jointBreakTreshold;
         }
-        
     }
 
     public virtual void DropObject()
@@ -417,6 +435,7 @@ public class StateManager : MonoBehaviour
             transform.parent = parent;
 
             rigidBody.useGravity = true;
+            rigidBody.angularVelocity = Vector3.zero;
         }
     }
 

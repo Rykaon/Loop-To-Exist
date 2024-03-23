@@ -77,7 +77,7 @@ public class PlayerManager : StateManager
         heldObject = null;
         equippedObject = null;
         moveMassMultiplier = 1; //Ne pas toucher.
-        linkMoveMultiplier = 1.75f; //Le multiplieur associé à la fonction Move() si le joueur est link
+        linkMoveMultiplier = 1.75f; //Le multiplieur associé à la fonction Move() si le joueur est link. Vérifier le cas où le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-être que ça mérite une valeur dissociée
         linkJumpMultiplier = 5.25f; //Le multiplieur associé à la fonction Jump() si le joueur est link
 
         playerControls = gameManager.playerControls;
@@ -162,9 +162,16 @@ public class PlayerManager : StateManager
 
             forceDirection = forceDirection * moveMassMultiplier;
             
-            if (isLinked)
+            if (link != null)
             {
                 forceDirection = forceDirection * linkMoveMultiplier;
+            }
+            else if (heldObject != null)
+            {
+                if (heldObject.link != null)
+                {
+                    forceDirection = forceDirection * (linkMoveMultiplier / 2);
+                }
             }
         }
 
@@ -198,6 +205,20 @@ public class PlayerManager : StateManager
             if (isLinked)
             {
                 jumpForce = jumpForce * linkMoveMultiplier;
+            }
+            else if (heldObject != null)
+            {
+                if (heldObject.link != null)
+                {
+                    jumpForce = jumpForce * linkMoveMultiplier;
+                }
+            }
+            else if (equippedObject != null)
+            {
+                if (equippedObject.link != null)
+                {
+                    jumpForce = jumpForce * linkMoveMultiplier;
+                }
             }
 
             rigidBody.AddForce(jumpForce, ForceMode.Impulse);
@@ -456,13 +477,13 @@ public class PlayerManager : StateManager
 
             linkAttachment = Instantiate(sphere, linkTarget.position + (Vector3.up * 0.1f), Quaternion.identity).GetComponent<Rigidbody>();
             ObiCollider startCollider = linkAttachment.GetComponent<ObiCollider>();
-            linkJoint = linkAttachment.AddComponent<FixedJoint>();
-            linkJoint.connectedBody = rigidBody;
+            linkJoint = transform.AddComponent<FixedJoint>();
+            linkJoint.connectedBody = linkAttachment;
 
             linkedObject.linkAttachment = Instantiate(sphere, hitPoint - (direction.normalized * 0.1f), Quaternion.identity).GetComponent<Rigidbody>();
             ObiCollider endCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
-            linkedObject.linkJoint = linkedObject.linkAttachment.AddComponent<FixedJoint>();
-            linkedObject.linkJoint.connectedBody = linkedObject.rigidBody;
+            linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
+            linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
 
             link = Instantiate(ropePrefab, hand.position, Quaternion.identity, gameManager.obiSolver.transform);
             rope = link.GetComponent<CustomRope>();
@@ -488,8 +509,8 @@ public class PlayerManager : StateManager
 
             linkedObject.linkAttachment = Instantiate(sphere, hitPoint - (direction.normalized * 0.1f), Quaternion.identity).GetComponent<Rigidbody>();
             ObiCollider startCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
-            linkedObject.linkJoint = linkedObject.linkAttachment.AddComponent<FixedJoint>();
-            linkedObject.linkJoint.connectedBody = linkedObject.rigidBody;
+            linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
+            linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
 
             Destroy(rope.gameObject);
             link = Instantiate(ropePrefab, hand.position, Quaternion.identity, gameManager.obiSolver.transform);
