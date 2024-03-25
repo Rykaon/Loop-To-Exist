@@ -403,11 +403,6 @@ MonoBehaviour:
   buttonNorthIsPressed: 0
   leftTriggerIsPressed: 0
   rightTriggerIsPressed: 0
-  moveSpeed: 0.75
-  maxMoveSpeed: 12
-  jumpForce: 7
-  collisionDetectionDistance: 0.01
-  moveMassMultiplier: 1
   cameraRotationSpeed: 3
   ropePrefab: {fileID: 8780796632633694259, guid: 225b69a2b27545340b3f30bb90ef7a0d,
     type: 3}
@@ -415,6 +410,17 @@ MonoBehaviour:
   ropeParticlesDistance: 0.5
   ropeParticleMoovingSpeed: 0.1
   rope: {fileID: 0}
+  moveSpeed: 12
+  maxMoveSpeed: 12
+  acceleration: 7
+  deceleration: 7
+  velPower: 0.9
+  jumpForce: 7
+  jumpCutMultiplier: 0.5
+  customGravity: {x: 0, y: -9.81, z: 0}
+  fallGravityMultiplier: 2
+  collisionDetectionDistance: 0.01
+  moveMassMultiplier: 1
 --- !u!33 &2753056825088638641
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -508,7 +514,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 80

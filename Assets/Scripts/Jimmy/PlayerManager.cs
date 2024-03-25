@@ -71,6 +71,8 @@ public class PlayerManager : StateManager
         linkMoveMultiplier = 1.75f; //Le multiplieur associé à la fonction Move() si le joueur est link. Vérifier le cas où le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-être que ça mérite une valeur dissociée
         linkJumpMultiplier = 5.25f; //Le multiplieur associé à la fonction Jump() si le joueur est link
 
+        customGravity = new Vector3(0f, -9.81f, 0f);
+
         playerControls = gameManager.playerControls;
     }
 
@@ -149,6 +151,12 @@ public class PlayerManager : StateManager
     [SerializeField] protected float velPower = 0.9f; //inférieur à 1
 
     [SerializeField] protected float jumpForce;
+    [Range(0f, 0.99f)] [SerializeField] protected float jumpCutMultiplier;
+
+    [SerializeField] protected Vector3 customGravity;
+    [SerializeField] protected float fallGravityMultiplier;
+
+
     [SerializeField] protected float collisionDetectionDistance;
     [HideInInspector] protected Vector3 direction = Vector3.zero;
     [HideInInspector] protected Vector2 jumpFrameMovementSave;
@@ -202,14 +210,10 @@ public class PlayerManager : StateManager
         //On applique la force au GO
         rigidBody.AddForce(movement, ForceMode.Force);
 
-        if (rigidBody.velocity.y < 0f)
-        {
-            rigidBody.velocity += Vector3.down * -Physics.gravity.y * Time.fixedDeltaTime;
-        }
-
+        
+        //Limit la Speed du joueur à la speed Max (Pas necessaire)
         Vector3 horizontalVelocity = rigidBody.velocity;
         horizontalVelocity.y = 0f;
-
         if (horizontalVelocity.sqrMagnitude > maxMoveSpeed * maxMoveSpeed)
         {
             rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
@@ -226,6 +230,7 @@ public class PlayerManager : StateManager
         {
             jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
             Vector3 jumpForce = new Vector3(rigidBody.velocity.x, this.jumpForce, rigidBody.velocity.z);
+
             jumpForce = jumpForce * moveMassMultiplier;
             if (isLinked)
             {
@@ -248,6 +253,12 @@ public class PlayerManager : StateManager
 
             rigidBody.AddForce(jumpForce, ForceMode.Impulse);
         }
+    }
+
+    public void OnJumpUp()
+    {
+        //JumpCut
+        rigidBody.AddForce(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier), ForceMode.Impulse);
     }
 
     public void Hold()
@@ -370,26 +381,6 @@ public class PlayerManager : StateManager
 
         gameManager.cameraManager.SetCameraAim(value, cameraTargetPos);
     }
-
-    /*public void MoveCamera(Vector2 value)
-    {
-        Quaternion rotation = cameraTarget.localRotation;
-
-        if (isAiming)
-        {
-            rotation *= Quaternion.AngleAxis(value.x * cameraRotationSpeed, transform.up);
-            rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, transform.right);
-            rotation.x = Utilities.ClampAngle(rotation.x, -30, 30);
-            rotation.y = Utilities.ClampAngle(rotation.y, -30, 30);
-        }
-        else
-        {
-            rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, transform.up);
-            rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, transform.right);
-        }
-
-        cameraTarget.localRotation = rotation;
-    }*/
 
     public void Shot(InputAction action)
     {
@@ -563,78 +554,6 @@ public class PlayerManager : StateManager
         linkedObject.obiRigidBody.kinematicForParticles = false;
     }
 
-    //private IEnumerator Link(StateManager linkedObject, Vector3 hitPoint)
-    //{
-    /*float distance = Vector3.Distance(hitPoint, hand.position);
-    Vector3 direction = hitPoint - hand.position;
-    float nbrOfParticles = (distance / ropeParticlesDistance);
-    float nbrOfMoves = nbrOfMoves = distance / ropeParticleMoovingSpeed;*/
-
-    //if (!isLinked)
-    //{
-    /*linkStart = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-    linkStart.name = "LinkStart";
-    linkStart.localScale = Vector3.one / 5;
-    ObiCollider startCollider = linkStart.AddComponent<ObiCollider>();
-    startCollider.sourceCollider = linkStart.GetComponent<CapsuleCollider>();
-    linkStart.position = hand.position;*/
-    //linkStart.SetParent(transform.transform, true);
-
-    /*linkEnd = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-    linkEnd.name = "LinkEnd";
-    linkEnd.localScale = Vector3.one / 5;
-    ObiCollider endCollider = linkEnd.AddComponent<ObiCollider>();
-    endCollider.sourceCollider = linkEnd.GetComponent<CapsuleCollider>();
-    linkEnd.position = hitPoint;*/
-    //linkEnd.SetParent(linkedObject.transform, true);
-    //}
-    //else
-    //{
-    //rope.SetAttachDynamic(false);
-
-    /* linkAttachment.transform.position = hitPoint;
-     linkAttachment.position = hitPoint;
-     linkAttachment.velocity = Vector3.zero;
-     this.linkedObject.linkAttachment.velocity = Vector3.zero;
-
-     linkAttachment.isKinematic = false;
-     this.linkedObject.linkAttachment.isKinematic = false;
-     rigidBody.isKinematic = false;
-     this.linkedObject.rigidBody.isKinematic = false;
-     linkedObject.rigidBody.isKinematic = false;
-
-     linkedObject.linkAttachment = linkAttachment;
-     linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
-     linkedObject.linkJoint.connectedBody = linkAttachment;
-     linkAttachment.transform.SetParent(linkedObject.transform, true);
-     this.linkedObject.linkJoint = this.linkedObject.AddComponent<FixedJoint>();
-     this.linkedObject.linkJoint.connectedBody = this.linkedObject.linkAttachment;*/
-
-    //rope.SetAttachDynamic(true);
-
-    //this.linkedObject.linkAttachment.transform.SetParent(null, true);
-    //this.linkedObject.linkAttachment.position = hitPoint;
-    //this.linkedObject.linkAttachment.transform.SetParent(linkedObject.transform, true);
-
-    //rope.InitializeRope(linkStart, linkEnd);
-    //}
-
-    /*for (int i = 0; i < nbrOfMoves; i++)
-    {
-        if (!isLinked)
-        {
-            linkEnd.position = Vector3.Lerp(hand.position, hitPoint, i / nbrOfMoves);
-        }
-        else
-        {
-            linkStart.position = Vector3.Lerp(hand.position, hitPoint, i / nbrOfMoves);
-        }
-
-        yield return new WaitForEndOfFrame();
-        rope.InitializeRope(linkStart, linkEnd);
-    }*/
-    //}
-
     ///////////////////////////////////////////////////
     ///          FONCTIONS UTILITAIRES              ///
     ///////////////////////////////////////////////////
@@ -729,6 +648,18 @@ public class PlayerManager : StateManager
         }
     }
 
+    public void FallGravity()//Ajoute une gravité fictive/ Lorsque le personnage retombe, donne un feeling avec plus de répondant.
+    {
+        //On applique la gravité custom
+        if (rigidBody.velocity.y < 0f)
+        {
+            rigidBody.AddForce(customGravity * fallGravityMultiplier, ForceMode.Acceleration);
+        }
+        else
+        {
+            rigidBody.AddForce(customGravity, ForceMode.Acceleration);
+        }
+    }
     private void FixedUpdate()
     {
         if (playerControls != null)
@@ -741,12 +672,20 @@ public class PlayerManager : StateManager
             if (isMainPlayer)
             {
                 Move(playerControls.Player.LeftStick.ReadValue<Vector2>());
+                FallGravity();
 
                 if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
                 {
                     buttonSouthIsPressed = true;
                     Jump();
                 }
+                if(!playerControls.Player.A.IsPressed() && !buttonSouthIsPressed && rigidBody.velocity.y > 0)
+                {
+                    //Debug.Log("JumpCut!");
+                    OnJumpUp();
+                }
+
+
 
                 if (playerControls.Player.RightStick.ReadValue<Vector2>() != Vector2.zero)
                 {
