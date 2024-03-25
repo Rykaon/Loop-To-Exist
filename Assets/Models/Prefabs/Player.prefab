@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 648727540322238299}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1.25, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -230,6 +230,89 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!1 &1632116444172278121
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1221360560406827052}
+  - component: {fileID: 5526427160053085654}
+  - component: {fileID: 4707867648875132248}
+  m_Layer: 0
+  m_Name: LinkTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1221360560406827052
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632116444172278121}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 6661602020122977299}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5526427160053085654
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632116444172278121}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &4707867648875132248
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632116444172278121}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: ea10eaab93460044b9bca8403ba5a780, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &2292988574588036909
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,6 +351,7 @@ Transform:
   m_Children:
   - {fileID: 7608442625863202712}
   - {fileID: 4194247132682260400}
+  - {fileID: 1221360560406827052}
   - {fileID: 7310698133081631505}
   - {fileID: 5738480824880601504}
   - {fileID: 6802360651946524692}
@@ -301,30 +385,36 @@ MonoBehaviour:
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
   head: {fileID: 4194247132682260400}
   hand: {fileID: 7310698133081631505}
   feet: {fileID: 5738480824880601504}
   eye: {fileID: 6802360651946524692}
+  linkTarget: {fileID: 1221360560406827052}
   cameraTarget: {fileID: 7608442625863202712}
   Trigger: {fileID: 1122349625628603236}
   isMainPlayer: 0
   isActive: 0
+  isAiming: 0
   buttonSouthIsPressed: 0
   buttonWestIsPressed: 0
   buttonEastIsPressed: 0
   buttonNorthIsPressed: 0
   leftTriggerIsPressed: 0
   rightTriggerIsPressed: 0
-  moveSpeed: 1
-  maxMoveSpeed: 10
+  moveSpeed: 0.75
+  maxMoveSpeed: 12
   jumpForce: 7
   collisionDetectionDistance: 0.01
+  moveMassMultiplier: 1
   cameraRotationSpeed: 3
   ropePrefab: {fileID: 8780796632633694259, guid: 225b69a2b27545340b3f30bb90ef7a0d,
     type: 3}
   sphere: {fileID: 79148536965143018, guid: 6132ff0eac769f544a8a240b2202b0af, type: 3}
   ropeParticlesDistance: 0.5
   ropeParticleMoovingSpeed: 0.1
+  rope: {fileID: 0}
 --- !u!33 &2753056825088638641
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -480,7 +570,7 @@ Transform:
   m_GameObject: {fileID: 6095508214992525309}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.35, z: 1.35}
+  m_LocalPosition: {x: 0, y: 0.5, z: 1.35}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children: []

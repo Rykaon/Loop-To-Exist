@@ -4,8 +4,10 @@ using Obi;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
@@ -18,6 +20,7 @@ public class PlayerManager : StateManager
     [SerializeField] private Transform hand;
     [SerializeField] private Transform feet;
     [SerializeField] private Transform eye;
+    [SerializeField] private Transform linkTarget;
     [SerializeField] public Transform cameraTarget;
 
     public Transform playerCamera { get; private set; }
@@ -26,13 +29,13 @@ public class PlayerManager : StateManager
     public PlayerInteractionTrigger trigger { get; private set; }
 
     public PlayerControls playerControls { get; private set; }
-    public StateManager heldObject { get; private set; }
-    public StateManager equippedObject { get; private set; }
+    public StateManager heldObject { get; set; }
+    public StateManager equippedObject { get; set; }
 
     [Header("Status")]
     public bool isMainPlayer;
     public bool isActive;
-    private bool isAiming = false;
+    public bool isAiming = false;
 
     [HideInInspector] public bool buttonSouthIsPressed = false;
     [HideInInspector] public bool buttonWestIsPressed = false;
@@ -48,6 +51,9 @@ public class PlayerManager : StateManager
     [SerializeField] protected float collisionDetectionDistance;
     [HideInInspector] protected Vector3 forceDirection = Vector3.zero;
     [HideInInspector] protected Vector2 jumpFrameMovementSave;
+    [HideInInspector] protected float linkMoveMultiplier;
+    [HideInInspector] protected float linkJumpMultiplier;
+    public float moveMassMultiplier;
 
     [Header("Camera Properties")]
     [SerializeField] public float cameraRotationSpeed;
@@ -70,6 +76,9 @@ public class PlayerManager : StateManager
         trigger = Trigger;
         heldObject = null;
         equippedObject = null;
+        moveMassMultiplier = 1; //Ne pas toucher.
+        linkMoveMultiplier = 1.75f; //Le multiplieur associé à la fonction Move() si le joueur est link. Vérifier le cas où le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-être que ça mérite une valeur dissociée
+        linkJumpMultiplier = 5.25f; //Le multiplieur associé à la fonction Jump() si le joueur est link
 
         playerControls = gameManager.playerControls;
     }
@@ -114,6 +123,11 @@ public class PlayerManager : StateManager
         base.OnCollisionEnter(collision);
     }
 
+    protected override void OnJointBreak(float breakForce)
+    {
+        base.OnJointBreak(breakForce);
+    }
+
     ///////////////////////////////////////////////////
     ///          FONCTIONS DE GESTIONS              ///
     ///////////////////////////////////////////////////
@@ -145,6 +159,20 @@ public class PlayerManager : StateManager
         {
             forceDirection += movement.x * Utilities.GetCameraRight(gameManager.transform) * moveSpeed;
             forceDirection += movement.z * Utilities.GetCameraForward(gameManager.transform) * moveSpeed;
+
+            forceDirection = forceDirection * moveMassMultiplier;
+            
+            if (link != null)
+            {
+                forceDirection = forceDirection * linkMoveMultiplier;
+            }
+            else if (heldObject != null)
+            {
+                if (heldObject.link != null)
+                {
+                    forceDirection = forceDirection * (linkMoveMultiplier / 2);
+                }
+            }
         }
 
         rigidBody.AddForce(forceDirection, ForceMode.Impulse);
@@ -164,11 +192,6 @@ public class PlayerManager : StateManager
 
         LookAt(value);
 
-        /*if (isLinked)
-        {
-            rope.InitializeRope(linkStart, linkEnd);
-        }*/
-
         forceDirection = Vector3.zero;
     }
 
@@ -177,7 +200,28 @@ public class PlayerManager : StateManager
         if (RaycastGrounded())
         {
             jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
-            rigidBody.AddForce(new Vector3(rigidBody.velocity.x, jumpForce, rigidBody.velocity.z), ForceMode.Impulse);
+            Vector3 jumpForce = new Vector3(rigidBody.velocity.x, this.jumpForce, rigidBody.velocity.z);
+            jumpForce = jumpForce * moveMassMultiplier;
+            if (isLinked)
+            {
+                jumpForce = jumpForce * linkMoveMultiplier;
+            }
+            else if (heldObject != null)
+            {
+                if (heldObject.link != null)
+                {
+                    jumpForce = jumpForce * linkMoveMultiplier;
+                }
+            }
+            else if (equippedObject != null)
+            {
+                if (equippedObject.link != null)
+                {
+                    jumpForce = jumpForce * linkMoveMultiplier;
+                }
+            }
+
+            rigidBody.AddForce(jumpForce, ForceMode.Impulse);
         }
     }
 
@@ -340,8 +384,8 @@ public class PlayerManager : StateManager
                         if (playerManager.position == Position.Default)
                         {
                             Aim(false);
-                            gameManager.cameraManager.aimCamera.m_Follow = playerManager.cameraTarget;
-                            gameManager.cameraManager.aimCamera.m_LookAt = playerManager.cameraTarget;
+                            //gameManager.cameraManager.aimCamera.m_Follow = playerManager.cameraTarget;
+                            //gameManager.cameraManager.aimCamera.m_LookAt = playerManager.cameraTarget;
                             gameManager.SetMainPlayer(playerManager, true);
                             return;
                         }
@@ -390,7 +434,7 @@ public class PlayerManager : StateManager
                             if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
                             {
                                 stateManager.SetState(equippedMushroom.stateToApply);
-                                
+
                                 if (stateManager.states.Contains(State.Link))
                                 {
                                     StartCoroutine(Link(stateManager, hitPoint));
@@ -405,14 +449,38 @@ public class PlayerManager : StateManager
 
     private IEnumerator Link(StateManager linkedObject, Vector3 hitPoint)
     {
+        Vector3 direction = hitPoint - hand.position;
+
         if (!isLinked)
         {
-            linkAttachment = Instantiate(sphere, hand.position, Quaternion.identity, transform).GetComponent<Rigidbody>();
+            if (this.linkedObject != null)
+            {
+                this.linkedObject.isLinked = false;
+                this.linkedObject.linkedObject = null;
+                this.linkedObject.link = null;
+            }
+
+            if (link != null)
+            {
+                Destroy(link.GetComponent<CustomRope>().end.gameObject);
+                Destroy(link.GetComponent<CustomRope>().start.gameObject);
+                Destroy(link.gameObject);
+            }
+
+            if (states.Contains(State.Link))
+            {
+                states.Remove(State.Link);
+            }
+
+            this.linkedObject = null;
+            link = null;
+
+            linkAttachment = Instantiate(sphere, linkTarget.position + (Vector3.up * 0.1f), Quaternion.identity).GetComponent<Rigidbody>();
             ObiCollider startCollider = linkAttachment.GetComponent<ObiCollider>();
             linkJoint = transform.AddComponent<FixedJoint>();
             linkJoint.connectedBody = linkAttachment;
 
-            linkedObject.linkAttachment = Instantiate(sphere, hitPoint, Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
+            linkedObject.linkAttachment = Instantiate(sphere, hitPoint - (direction.normalized * 0.1f), Quaternion.identity).GetComponent<Rigidbody>();
             ObiCollider endCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
             linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
             linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
@@ -424,20 +492,22 @@ public class PlayerManager : StateManager
             rope.Initialize(startCollider, null, endCollider);
 
             isLinked = true;
+            
             this.linkedObject = linkedObject;
             this.linkedObject.link = link;
             this.linkedObject.linkedObject = this;
+
+            SetState(State.Link);
+            
         }
         else
         {
-            Destroy(linkJoint);
-            linkJoint = null;
             Destroy(linkAttachment.gameObject);
             linkAttachment = null;
 
             ObiCollider endCollider = this.linkedObject.linkAttachment.GetComponent<ObiCollider>();
 
-            linkedObject.linkAttachment = Instantiate(sphere, hitPoint, Quaternion.identity, linkedObject.transform).GetComponent<Rigidbody>();
+            linkedObject.linkAttachment = Instantiate(sphere, hitPoint - (direction.normalized * 0.1f), Quaternion.identity).GetComponent<Rigidbody>();
             ObiCollider startCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
             linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
             linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
@@ -449,10 +519,17 @@ public class PlayerManager : StateManager
             rope.Initialize(startCollider, hand, endCollider);
 
             isLinked = false;
+            this.linkedObject.link = link;
             this.linkedObject.linkedObject = linkedObject;
             this.linkedObject.linkedObject.linkedObject = this.linkedObject;
             this.linkedObject.linkedObject.link = link;
             this.linkedObject = null;
+            link = null;
+
+            if (states.Contains(State.Link))
+            {
+                states.Remove(State.Link);
+            }
         }
 
         Destroy(linkedObject.obiRigidBody);
@@ -544,7 +621,7 @@ public class PlayerManager : StateManager
 
         if (value.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
         {
-            rigidBody.MoveRotation(Quaternion.LookRotation(direction, Vector3.up));
+            rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 800 * Time.fixedDeltaTime));
         }
         else
         {
@@ -615,6 +692,16 @@ public class PlayerManager : StateManager
         {
             rightTriggerIsPressed = false;
         }
+
+        if (leftTriggerIsPressed && !playerControls.Player.LT.IsPressed())
+        {
+            leftTriggerIsPressed = false;
+
+            if (isAiming)
+            {
+                Aim(false);
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -670,17 +757,20 @@ public class PlayerManager : StateManager
                         if (equippedObject != null && heldObject != null)
                         {
                             MushroomManager equippedMushroom = (MushroomManager)equippedObject;
-                            heldObject.SetState(equippedMushroom.stateToApply);
+                            if (!heldObject.states.Contains(equippedMushroom.stateToApply))
+                            {
+                                heldObject.SetState(equippedMushroom.stateToApply);
+                            }
                         }
                     }
                 }
                 else
                 {
-                    if (!playerControls.Player.LT.IsPressed() && leftTriggerIsPressed)
+                    /*if (!playerControls.Player.LT.IsPressed() && leftTriggerIsPressed)
                     {
                         leftTriggerIsPressed = false;
                         Aim(false);
-                    }
+                    }*/
 
                     if (playerControls.Player.X.IsPressed() && !buttonWestIsPressed)
                     {
