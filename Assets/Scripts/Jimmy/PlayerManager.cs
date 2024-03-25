@@ -151,7 +151,7 @@ public class PlayerManager : StateManager
     [SerializeField] protected float velPower = 0.9f; //inférieur à 1
 
     [SerializeField] protected float jumpForce;
-    [Range(0f, 0.99f)] [SerializeField] protected float jumpCutMultiplier;
+    [Range(0f, 1f)] [SerializeField] protected float jumpCutMultiplier;
 
     [SerializeField] protected Vector3 customGravity;
     [SerializeField] protected float fallGravityMultiplier;
