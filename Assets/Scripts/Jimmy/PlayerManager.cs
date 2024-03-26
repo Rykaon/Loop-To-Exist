@@ -44,16 +44,7 @@ public class PlayerManager : StateManager
     [HideInInspector] public bool leftTriggerIsPressed = false;
     [HideInInspector] public bool rightTriggerIsPressed = false;
 
-    [Header("Move Properties")]
-    [SerializeField] protected float moveSpeed;
-    [SerializeField] protected float maxMoveSpeed;
-    [SerializeField] protected float jumpForce;
-    [SerializeField] protected float collisionDetectionDistance;
-    [HideInInspector] protected Vector3 forceDirection = Vector3.zero;
-    [HideInInspector] protected Vector2 jumpFrameMovementSave;
-    [HideInInspector] protected float linkMoveMultiplier;
-    [HideInInspector] protected float linkJumpMultiplier;
-    public float moveMassMultiplier;
+
 
     [Header("Camera Properties")]
     [SerializeField] public float cameraRotationSpeed;
@@ -66,7 +57,7 @@ public class PlayerManager : StateManager
     [HideInInspector] public CustomRope rope = null;
 
     ///////////////////////////////////////////////////
-    ///            FONCTIONS HÉRITÉES               ///
+    ///            FONCTIONS Hï¿½RITï¿½ES               ///
     ///////////////////////////////////////////////////
 
     public override void Initialize(GameManager instance)
@@ -77,8 +68,10 @@ public class PlayerManager : StateManager
         heldObject = null;
         equippedObject = null;
         moveMassMultiplier = 1; //Ne pas toucher.
-        linkMoveMultiplier = 1.75f; //Le multiplieur associé à la fonction Move() si le joueur est link. Vérifier le cas où le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-être que ça mérite une valeur dissociée
-        linkJumpMultiplier = 5.25f; //Le multiplieur associé à la fonction Jump() si le joueur est link
+        linkMoveMultiplier = 1.75f; //Le multiplieur associï¿½ ï¿½ la fonction Move() si le joueur est link. Vï¿½rifier le cas oï¿½ le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-ï¿½tre que ï¿½a mï¿½rite une valeur dissociï¿½e
+        linkJumpMultiplier = 5.25f; //Le multiplieur associï¿½ ï¿½ la fonction Jump() si le joueur est link
+
+        customGravity = new Vector3(0f, -9.81f, 0f);
 
         playerControls = gameManager.playerControls;
     }
@@ -150,27 +143,48 @@ public class PlayerManager : StateManager
     ///////////////////////////////////////////////////
     ///           FONCTIONS D'ACTIONS               ///
     ///////////////////////////////////////////////////
+    [Header("Move Properties")]
+    [SerializeField] protected float moveSpeed = 20f;
+    [SerializeField] protected float maxMoveSpeed;
+    [SerializeField] protected float acceleration = 7f;
+    [SerializeField] protected float deceleration = 7f;
+    [SerializeField] protected float velPower = 0.9f; //infï¿½rieur ï¿½ 1
 
-    public void Move(Vector2 value)
+    [SerializeField] protected float jumpForce;
+    [Range(0f, 1f)] [SerializeField] protected float jumpCutMultiplier;
+
+    [SerializeField] protected Vector3 customGravity;
+    [SerializeField] protected float fallGravityMultiplier;
+
+
+    [SerializeField] protected float collisionDetectionDistance;
+    [HideInInspector] protected Vector3 direction = Vector3.zero;
+    [HideInInspector] protected Vector2 jumpFrameMovementSave;
+    [HideInInspector] protected float linkMoveMultiplier;
+    [HideInInspector] protected float linkJumpMultiplier;
+    public float moveMassMultiplier;
+    public void Move(Vector2 inputValue)
     {
-        Vector3 movement = new Vector3(value.x, 0f, value.y);
+        //On rï¿½cupï¿½re la direction donnï¿½ par le joystick
+        Vector3 inputDirection = new Vector3(inputValue.x, 0f, inputValue.y);
 
-        if (!RaycastCollision() && value != Vector2.zero)
+        if (!RaycastCollision() && inputValue != Vector2.zero)
         {
-            forceDirection += movement.x * Utilities.GetCameraRight(gameManager.transform) * moveSpeed;
-            forceDirection += movement.z * Utilities.GetCameraForward(gameManager.transform) * moveSpeed;
+            //On y multiplie la direction du forward et du right de la camï¿½ra pour avoir la direction globale du joueur.
+            direction += inputDirection.x * Utilities.GetCameraRight(gameManager.transform);
+            direction += inputDirection.z * Utilities.GetCameraForward(gameManager.transform);
 
-            forceDirection = forceDirection * moveMassMultiplier;
-            
+            direction *= moveMassMultiplier;
+
             if (link != null)
             {
-                forceDirection = forceDirection * linkMoveMultiplier;
+                direction = direction * linkMoveMultiplier;
             }
             else if (heldObject != null)
             {
                 if (heldObject.link != null)
                 {
-                    forceDirection = forceDirection * (linkMoveMultiplier / 2);
+                    direction = direction * (linkMoveMultiplier / 2);
                 }
             }
 
@@ -180,25 +194,41 @@ public class PlayerManager : StateManager
         {
             //Debug.Log("yo");
         }
+        //On calcule le vecteur de dï¿½placement dï¿½sirï¿½.
+        Vector3 TargetSpeed = new Vector3(direction.x * moveSpeed, 0f, direction.z * moveSpeed);
+        //On prends la diffï¿½rence en le vecteur dï¿½sirï¿½ et le vecteur actuel.
+        Vector3 SpeedDiff = TargetSpeed - new Vector3(rigidBody.velocity.x, 0f, rigidBody.velocity.z);
 
-        //rigidBody.AddForce(forceDirection, ForceMode.Impulse);
+        //On calcule check si il faut accelerer ou decelerer.
+        float AccelRate;
+        if (Mathf.Abs(TargetSpeed.x) > 0.01f || Mathf.Abs(TargetSpeed.z) > 0.01f)
 
-        if (rigidBody.velocity.y < 0f)
         {
-            rigidBody.velocity += Vector3.down * -Physics.gravity.y * Time.fixedDeltaTime;
+            AccelRate = acceleration;
         }
+        else
+        {
+            AccelRate = deceleration;
+        }
+        //On applique l'acceleration ï¿½ la SpeedDiff, La puissance permet d'augmenter l'acceleration si la vitesse est plus ï¿½levï¿½e.
+        //Enfin on multiplie par le signe de SpeedDiff pour avoir la bonne direction.
+        Vector3 movement = new Vector3(Mathf.Pow(Mathf.Abs(SpeedDiff.x) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.x), 0f, Mathf.Pow(Mathf.Abs(SpeedDiff.z) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.z));
 
+        //On applique la force au GO
+        rigidBody.AddForce(movement, ForceMode.Force);
+
+        
+        //Limit la Speed du joueur ï¿½ la speed Max (Pas necessaire)
         Vector3 horizontalVelocity = rigidBody.velocity;
         horizontalVelocity.y = 0f;
-
         if (horizontalVelocity.sqrMagnitude > maxMoveSpeed * maxMoveSpeed)
         {
             rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
         }
 
-        LookAt(value);
+        LookAt(inputValue);
 
-        forceDirection = Vector3.zero;
+        direction = Vector3.zero;
     }
 
     public void Jump()
@@ -207,6 +237,7 @@ public class PlayerManager : StateManager
         {
             jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
             Vector3 jumpForce = new Vector3(rigidBody.velocity.x, this.jumpForce, rigidBody.velocity.z);
+
             jumpForce = jumpForce * moveMassMultiplier;
             if (isLinked)
             {
@@ -229,6 +260,12 @@ public class PlayerManager : StateManager
 
             rigidBody.AddForce(jumpForce, ForceMode.Impulse);
         }
+    }
+
+    public void OnJumpUp()
+    {
+        //JumpCut
+        rigidBody.AddForce(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier), ForceMode.Impulse);
     }
 
     public void Hold()
@@ -351,26 +388,6 @@ public class PlayerManager : StateManager
 
         gameManager.cameraManager.SetCameraAim(value, cameraTargetPos);
     }
-
-    /*public void MoveCamera(Vector2 value)
-    {
-        Quaternion rotation = cameraTarget.localRotation;
-
-        if (isAiming)
-        {
-            rotation *= Quaternion.AngleAxis(value.x * cameraRotationSpeed, transform.up);
-            rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, transform.right);
-            rotation.x = Utilities.ClampAngle(rotation.x, -30, 30);
-            rotation.y = Utilities.ClampAngle(rotation.y, -30, 30);
-        }
-        else
-        {
-            rotation *= Quaternion.AngleAxis(-value.x * cameraRotationSpeed, transform.up);
-            rotation *= Quaternion.AngleAxis(-value.y * cameraRotationSpeed, transform.right);
-        }
-
-        cameraTarget.localRotation = rotation;
-    }*/
 
     public void Shot(InputAction action)
     {
@@ -498,13 +515,13 @@ public class PlayerManager : StateManager
             rope.Initialize(startCollider, null, endCollider);
 
             isLinked = true;
-            
+
             this.linkedObject = linkedObject;
             this.linkedObject.link = link;
             this.linkedObject.linkedObject = this;
 
             SetState(State.Link);
-            
+
         }
         else
         {
@@ -537,6 +554,7 @@ public class PlayerManager : StateManager
                 states.Remove(State.Link);
             }
         }
+
 
         /*for (int i = 0; i < nbrOfMoves; i++)
         {
@@ -594,7 +612,7 @@ public class PlayerManager : StateManager
 
         RaycastHit hit;
         if (Physics.Raycast(eye.position, eye.forward, out hit, collisionDetectionDistance))
-        {            
+        {
             if ((hit.collider.tag == "Wall" || hit.collider.tag == "Ground") && rigidBody.velocity.sqrMagnitude > maxMoveSpeed)
             {
                 isCollisionDetected = true;
@@ -660,8 +678,20 @@ public class PlayerManager : StateManager
         }
     }
 
+    public void FallGravity()//Ajoute une gravitï¿½ fictive/ Lorsque le personnage retombe, donne un feeling avec plus de rï¿½pondant.
+    {
+        //On applique la gravitï¿½ custom
+        if (rigidBody.velocity.y < 0f)
+        {
+            rigidBody.AddForce(customGravity * fallGravityMultiplier, ForceMode.Acceleration);
+        }
+        else
+        {
+            rigidBody.AddForce(customGravity, ForceMode.Acceleration);
+        }
+    }
     private void FixedUpdate()
-    {        
+    {
         if (playerControls != null)
         {
             ResetInputState();
@@ -672,12 +702,20 @@ public class PlayerManager : StateManager
             if (isMainPlayer)
             {
                 Move(playerControls.Player.LeftStick.ReadValue<Vector2>());
+                FallGravity();
 
                 if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
                 {
                     buttonSouthIsPressed = true;
                     Jump();
                 }
+                if(!playerControls.Player.A.IsPressed() && !buttonSouthIsPressed && rigidBody.velocity.y > 0)
+                {
+                    //Debug.Log("JumpCut!");
+                    OnJumpUp();
+                }
+
+
 
                 if (playerControls.Player.RightStick.ReadValue<Vector2>() != Vector2.zero)
                 {
@@ -698,7 +736,7 @@ public class PlayerManager : StateManager
                         Hold();
                     }
 
-                    
+
 
                     if (playerControls.Player.LT.IsPressed() && !leftTriggerIsPressed)
                     {
