@@ -188,7 +188,7 @@ public class PlayerManager : StateManager
                 }
             }
 
-            rigidBody.AddForce(forceDirection, ForceMode.Impulse);
+            rigidBody.AddForce(direction, ForceMode.Impulse);
         }
         else
         {
