@@ -48,6 +48,8 @@ MonoBehaviour:
   solver: {fileID: 0}
   meshRenderer: {fileID: 5153856918424041683}
   rope: {fileID: 0}
+  start: {fileID: 0}
+  end: {fileID: 0}
   resolution: 1
   pooledParticles: 100
   maxBending: 0.02
@@ -59,7 +61,7 @@ MonoBehaviour:
   stretchingScale: 1
   ropeThickness: 0.5
   ropeParticleInverseMass: 100
-  extraLenght: 3
+  extraLenght: 0
   ropeShootSpeed: 1
 --- !u!23 &5153856918424041683
 MeshRenderer:

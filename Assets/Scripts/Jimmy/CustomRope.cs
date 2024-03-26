@@ -78,12 +78,12 @@ public class CustomRope : MonoBehaviour
         int filter = ObiUtils.MakeFilter(65535, 0);
         ObiUtils.MakeFilter(0, 0);
         blueprint.path.Clear();
-        blueprint.path.AddControlPoint((startCollider.transform.position - transform.position)/*Vector3.zero*/, Vector3.zero, Vector3.zero, Vector3.up, 1f / ropeParticleInverseMass, 0.1f, ropeThickness, filter, Color.white, "Start");
+        blueprint.path.AddControlPoint((startCollider.transform.position - transform.position), Vector3.zero, Vector3.zero, Vector3.up, 1f / ropeParticleInverseMass, 0.1f, ropeThickness, filter, Color.white, "Start");
         if (middle != null)
         {
             blueprint.path.AddControlPoint((middle.position - transform.position), Vector3.zero, Vector3.zero, Vector3.up, 1f / ropeParticleInverseMass, 0.1f, ropeThickness, filter, Color.white, "Middle");
         }
-        blueprint.path.AddControlPoint((endCollider.transform.position - transform.position)/*forward.normalized * 0.5f*/, Vector3.zero, Vector3.zero, Vector3.up, 1f / ropeParticleInverseMass, 0.1f, ropeThickness, filter, Color.white, "End");
+        blueprint.path.AddControlPoint((endCollider.transform.position - transform.position), Vector3.zero, Vector3.zero, Vector3.up, 1f / ropeParticleInverseMass, 0.1f, ropeThickness, filter, Color.white, "End");
 
         blueprint.path.FlushEvents();
 
@@ -95,10 +95,8 @@ public class CustomRope : MonoBehaviour
 
     public void AttachRope(ObiCollider startCollider, ObiCollider endCollider)
     {
-        bool firstIteration = false;
         if (startAttachment == null)
         {
-            firstIteration = true; 
             startAttachment = rope.AddComponent<ObiParticleAttachment>();
             startAttachment.attachmentType = ObiParticleAttachment.AttachmentType.Dynamic;
             startAttachment.compliance = 0;
@@ -117,19 +115,16 @@ public class CustomRope : MonoBehaviour
         endAttachment.target = endCollider.transform;
 
 
-        if (firstIteration)
+        List<ObiParticleGroup> particleGroups = blueprint.groups;
+        foreach (ObiParticleGroup group in particleGroups)
         {
-            List<ObiParticleGroup> particleGroups = blueprint.groups;
-            foreach (ObiParticleGroup group in particleGroups)
+            if (group.name == "Start")
             {
-                if (group.name == "Start")
-                {
-                    startAttachment.particleGroup = group;
-                }
-                else if (group.name == "End")
-                {
-                    endAttachment.particleGroup = group;
-                }
+                startAttachment.particleGroup = group;
+            }
+            else if (group.name == "End")
+            {
+                endAttachment.particleGroup = group;
             }
         }
     }

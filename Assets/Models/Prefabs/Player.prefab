@@ -376,9 +376,9 @@ MonoBehaviour:
   states: 
   position: 0
   RigidBody: {fileID: 882217338985396927}
-  ObiRigidBody: {fileID: 0}
+  ObiRigidBody: {fileID: 5156531840387393910}
   ObjectCollider: {fileID: 1124989493730086479}
-  ObiCollider: {fileID: 0}
+  ObiCollider: {fileID: 1288221829478390717}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}

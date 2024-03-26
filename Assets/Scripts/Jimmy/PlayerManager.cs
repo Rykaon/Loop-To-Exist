@@ -173,9 +173,15 @@ public class PlayerManager : StateManager
                     forceDirection = forceDirection * (linkMoveMultiplier / 2);
                 }
             }
+
+            rigidBody.AddForce(forceDirection, ForceMode.Impulse);
+        }
+        else
+        {
+            //Debug.Log("yo");
         }
 
-        rigidBody.AddForce(forceDirection, ForceMode.Impulse);
+        //rigidBody.AddForce(forceDirection, ForceMode.Impulse);
 
         if (rigidBody.velocity.y < 0f)
         {
@@ -532,68 +538,6 @@ public class PlayerManager : StateManager
             }
         }
 
-        Destroy(linkedObject.obiRigidBody);
-        yield return new WaitForEndOfFrame();
-        linkedObject.obiRigidBody = linkedObject.AddComponent<ObiRigidbody>();
-        linkedObject.obiRigidBody.kinematicForParticles = false;
-    }
-
-    //private IEnumerator Link(StateManager linkedObject, Vector3 hitPoint)
-    //{
-        /*float distance = Vector3.Distance(hitPoint, hand.position);
-        Vector3 direction = hitPoint - hand.position;
-        float nbrOfParticles = (distance / ropeParticlesDistance);
-        float nbrOfMoves = nbrOfMoves = distance / ropeParticleMoovingSpeed;*/
-
-        //if (!isLinked)
-        //{
-        /*linkStart = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-        linkStart.name = "LinkStart";
-        linkStart.localScale = Vector3.one / 5;
-        ObiCollider startCollider = linkStart.AddComponent<ObiCollider>();
-        startCollider.sourceCollider = linkStart.GetComponent<CapsuleCollider>();
-        linkStart.position = hand.position;*/
-        //linkStart.SetParent(transform.transform, true);
-
-        /*linkEnd = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-        linkEnd.name = "LinkEnd";
-        linkEnd.localScale = Vector3.one / 5;
-        ObiCollider endCollider = linkEnd.AddComponent<ObiCollider>();
-        endCollider.sourceCollider = linkEnd.GetComponent<CapsuleCollider>();
-        linkEnd.position = hitPoint;*/
-        //linkEnd.SetParent(linkedObject.transform, true);
-        //}
-        //else
-        //{
-        //rope.SetAttachDynamic(false);
-
-        /* linkAttachment.transform.position = hitPoint;
-         linkAttachment.position = hitPoint;
-         linkAttachment.velocity = Vector3.zero;
-         this.linkedObject.linkAttachment.velocity = Vector3.zero;
-
-         linkAttachment.isKinematic = false;
-         this.linkedObject.linkAttachment.isKinematic = false;
-         rigidBody.isKinematic = false;
-         this.linkedObject.rigidBody.isKinematic = false;
-         linkedObject.rigidBody.isKinematic = false;
-
-         linkedObject.linkAttachment = linkAttachment;
-         linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
-         linkedObject.linkJoint.connectedBody = linkAttachment;
-         linkAttachment.transform.SetParent(linkedObject.transform, true);
-         this.linkedObject.linkJoint = this.linkedObject.AddComponent<FixedJoint>();
-         this.linkedObject.linkJoint.connectedBody = this.linkedObject.linkAttachment;*/
-
-        //rope.SetAttachDynamic(true);
-
-        //this.linkedObject.linkAttachment.transform.SetParent(null, true);
-        //this.linkedObject.linkAttachment.position = hitPoint;
-        //this.linkedObject.linkAttachment.transform.SetParent(linkedObject.transform, true);
-
-        //rope.InitializeRope(linkStart, linkEnd);
-        //}
-
         /*for (int i = 0; i < nbrOfMoves; i++)
         {
             if (!isLinked)
@@ -606,9 +550,13 @@ public class PlayerManager : StateManager
             }
 
             yield return new WaitForEndOfFrame();
-            rope.InitializeRope(linkStart, linkEnd);
         }*/
-    //}
+
+        Destroy(linkedObject.obiRigidBody);
+        yield return new WaitForEndOfFrame();
+        linkedObject.obiRigidBody = linkedObject.AddComponent<ObiRigidbody>();
+        linkedObject.obiRigidBody.kinematicForParticles = false;
+    }
 
     ///////////////////////////////////////////////////
     ///          FONCTIONS UTILITAIRES              ///
@@ -621,7 +569,15 @@ public class PlayerManager : StateManager
 
         if (value.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
         {
-            rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 800 * Time.fixedDeltaTime));
+            if (!isAiming)
+            {
+                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 800 * Time.fixedDeltaTime));
+            }
+            else
+            {
+                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 300 * Time.fixedDeltaTime));
+            }
+            
         }
         else
         {
