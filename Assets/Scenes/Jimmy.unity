@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 46224843}
   - component: {fileID: 46224845}
   - component: {fileID: 46224844}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bloc_07
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -379,7 +379,7 @@ GameObject:
   - component: {fileID: 73639045}
   - component: {fileID: 73639053}
   - component: {fileID: 73639052}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grab_03
   m_TagString: Mushroom
   m_Icon: {fileID: 0}
@@ -573,7 +573,7 @@ GameObject:
   - component: {fileID: 109217746}
   - component: {fileID: 109217752}
   - component: {fileID: 109217751}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grab_04
   m_TagString: Mushroom
   m_Icon: {fileID: 0}
@@ -776,7 +776,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 129925924}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07976711, y: 0.8613227, z: -0.34542572, w: -0.3639252}
+  m_LocalRotation: {x: 0.079766974, y: 0.86132294, z: -0.3454258, w: -0.3639246}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -861,7 +861,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -1025,7 +1025,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -1428,7 +1428,7 @@ GameObject:
   - component: {fileID: 318599434}
   - component: {fileID: 318599440}
   - component: {fileID: 318599439}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grab_06
   m_TagString: Mushroom
   m_Icon: {fileID: 0}
@@ -1695,8 +1695,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.030818725, y: 0.92482585, z: -0.07676515, w: -0.37128764}
-  m_LocalPosition: {x: -10.841093, y: 2, z: -11.325651}
+  m_LocalRotation: {x: -0.030818673, y: 0.9248261, z: -0.07676517, w: -0.37128708}
+  m_LocalPosition: {x: -10.841099, y: 2.6, z: -11.325646}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1969,7 +1969,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 397957541}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.077980906, y: -0, z: 0.000000009313226, w: 0.9969549}
+  m_LocalRotation: {x: 0.07798088, y: -0.000000029802322, z: 0.000000009313226, w: 0.9969549}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2039,7 +2039,7 @@ GameObject:
   - component: {fileID: 400802784}
   - component: {fileID: 400802792}
   - component: {fileID: 400802791}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grab_02
   m_TagString: Mushroom
   m_Icon: {fileID: 0}
@@ -2366,7 +2366,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -2825,7 +2825,7 @@ GameObject:
   - component: {fileID: 549887123}
   - component: {fileID: 549887129}
   - component: {fileID: 549887128}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object_03
   m_TagString: Object
   m_Icon: {fileID: 0}
@@ -3332,7 +3332,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 786537218}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.087055035, y: 0.868082, z: -0.32806933, w: -0.36225095}
+  m_LocalRotation: {x: 0.0870549, y: 0.8680821, z: -0.3280694, w: -0.3622504}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3486,7 +3486,7 @@ Transform:
   m_GameObject: {fileID: 939845293}
   serializedVersion: 2
   m_LocalRotation: {x: 0.2941713, y: -0, z: -0, w: 0.95575273}
-  m_LocalPosition: {x: -10.841093, y: 2, z: -11.325651}
+  m_LocalPosition: {x: -10.841099, y: 2.6, z: -11.325646}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3711,7 +3711,7 @@ GameObject:
   - component: {fileID: 967257989}
   - component: {fileID: 967257991}
   - component: {fileID: 967257990}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bloc_02
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -3892,7 +3892,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -4183,7 +4183,7 @@ GameObject:
   - component: {fileID: 1055874712}
   - component: {fileID: 1055874718}
   - component: {fileID: 1055874717}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object_02
   m_TagString: Object
   m_Icon: {fileID: 0}
@@ -4375,7 +4375,7 @@ GameObject:
   - component: {fileID: 1089382225}
   - component: {fileID: 1089382227}
   - component: {fileID: 1089382226}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bloc_03
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -4550,7 +4550,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1097318095}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.06634818, y: 0.84805596, z: -0.37682465, w: -0.36660907}
+  m_LocalRotation: {x: 0.066348076, y: 0.8480562, z: -0.37682477, w: -0.36660856}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5013,7 +5013,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -5157,7 +5157,7 @@ GameObject:
   - component: {fileID: 1188122570}
   - component: {fileID: 1188122576}
   - component: {fileID: 1188122575}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object_04
   m_TagString: Object
   m_Icon: {fileID: 0}
@@ -5417,7 +5417,7 @@ GameObject:
   - component: {fileID: 1208593656}
   - component: {fileID: 1208593658}
   - component: {fileID: 1208593657}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bloc_04
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -5582,7 +5582,7 @@ GameObject:
   - component: {fileID: 1326137103}
   - component: {fileID: 1326137105}
   - component: {fileID: 1326137104}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bloc_01
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -5874,7 +5874,7 @@ GameObject:
   - component: {fileID: 1420456437}
   - component: {fileID: 1420456439}
   - component: {fileID: 1420456438}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -6055,7 +6055,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -6131,6 +6131,11 @@ PrefabInstance:
         type: 3}
       propertyPath: jointBreakTreshold
       value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329433310726354432, guid: 58ae7d5fe61dfde4087deebdde445e9c,
+        type: 3}
+      propertyPath: collisionDetectionDistance
+      value: 0.196
       objectReference: {fileID: 0}
     - target: {fileID: 7564528092768683038, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -6315,7 +6320,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -6494,7 +6499,7 @@ GameObject:
   - component: {fileID: 1525971103}
   - component: {fileID: 1525971105}
   - component: {fileID: 1525971104}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bloc_06
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -6675,7 +6680,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -6834,7 +6839,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -7065,7 +7070,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -7245,7 +7250,7 @@ GameObject:
   - component: {fileID: 1713480594}
   - component: {fileID: 1713480600}
   - component: {fileID: 1713480599}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object_01
   m_TagString: Object
   m_Icon: {fileID: 0}
@@ -7727,7 +7732,7 @@ GameObject:
   - component: {fileID: 1743926549}
   - component: {fileID: 1743926551}
   - component: {fileID: 1743926550}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bloc_05
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -7987,7 +7992,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
@@ -8549,7 +8554,7 @@ GameObject:
   - component: {fileID: 1985791049}
   - component: {fileID: 1985791057}
   - component: {fileID: 1985791056}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grab_01
   m_TagString: Mushroom
   m_Icon: {fileID: 0}
@@ -8742,7 +8747,7 @@ GameObject:
   - component: {fileID: 2044383688}
   - component: {fileID: 2044383690}
   - component: {fileID: 2044383689}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bloc_08
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -8968,7 +8973,7 @@ GameObject:
   - component: {fileID: 2108705783}
   - component: {fileID: 2108705789}
   - component: {fileID: 2108705788}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grab_05
   m_TagString: Mushroom
   m_Icon: {fileID: 0}
@@ -9177,7 +9182,7 @@ PrefabInstance:
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2291112851605673507, guid: 58ae7d5fe61dfde4087deebdde445e9c,
         type: 3}
