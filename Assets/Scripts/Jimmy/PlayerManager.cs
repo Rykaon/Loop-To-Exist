@@ -158,6 +158,7 @@ public class PlayerManager : StateManager
 
 
     [SerializeField] protected float collisionDetectionDistance;
+    [SerializeField] protected LayerMask GroundLayer;
     [HideInInspector] protected Vector3 direction = Vector3.zero;
     [HideInInspector] protected Vector2 jumpFrameMovementSave;
     [HideInInspector] protected float linkMoveMultiplier;
@@ -217,7 +218,7 @@ public class PlayerManager : StateManager
         //On applique la force au GO
         rigidBody.AddForce(movement, ForceMode.Force);
 
-        
+
         //Limit la Speed du joueur � la speed Max (Pas necessaire)
         Vector3 horizontalVelocity = rigidBody.velocity;
         horizontalVelocity.y = 0f;
@@ -595,7 +596,7 @@ public class PlayerManager : StateManager
             {
                 rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 300 * Time.fixedDeltaTime));
             }
-            
+
         }
         else
         {
@@ -624,20 +625,38 @@ public class PlayerManager : StateManager
 
     private bool RaycastGrounded()
     {
-        bool isCollisionDetected = false;
+        //bool isCollisionDetected = Physics.Raycast(feet.position, Vector3.down, collisionDetectionDistance, GroundLayer);
 
-        RaycastHit hit;
-        if (Physics.Raycast(feet.position, -Vector3.up, out hit, collisionDetectionDistance))
-        {
-            float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
+        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
+        //bool isCollisionDetected = false;
 
-            if (dotProduct >= 0.95f && dotProduct <= 1.05f)
-            {
-                isCollisionDetected = true;
-            }
-        }
+        //RaycastHit hit;
+        //if (Physics.Raycast(feet.position, -Vector3.up, out hit, collisionDetectionDistance))
+        //{
+        //    float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
+
+        //    if (dotProduct >= 0.95f && dotProduct <= 1.05f)
+        //    {
+        //        isCollisionDetected = true;
+        //    }
+        //}
 
         return isCollisionDetected;
+    }
+
+    private void OnDrawGizmos()//Permet de visualiser le boxCast pour la détection du ground
+    {
+        RaycastHit hit;
+
+        bool isHit = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down,out hit, feet.transform.rotation, collisionDetectionDistance);
+
+        if (isHit)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireCube(feet.transform.position + Vector3.down * hit.distance, feet.lossyScale);
+        }
+
+
     }
 
     private void ResetInputState()
@@ -709,7 +728,7 @@ public class PlayerManager : StateManager
                     buttonSouthIsPressed = true;
                     Jump();
                 }
-                if(!playerControls.Player.A.IsPressed() && !buttonSouthIsPressed && rigidBody.velocity.y > 0)
+                if (!playerControls.Player.A.IsPressed() && !buttonSouthIsPressed && rigidBody.velocity.y > 0)
                 {
                     //Debug.Log("JumpCut!");
                     OnJumpUp();

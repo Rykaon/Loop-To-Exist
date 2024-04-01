@@ -4,12 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.VFX.Utility;
 
 public class CustomRope : MonoBehaviour
 {
     [Header("Component References")]
     public ObiSolver solver; 
     [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private GameObject linkVFX;
 
     public ObiRope rope = null;
     private ObiRopeBlueprint blueprint = null;
@@ -127,6 +129,16 @@ public class CustomRope : MonoBehaviour
                 endAttachment.particleGroup = group;
             }
         }
+
+        linkVFX.transform.SetParent(null);
+        linkVFX.transform.position = Vector3.zero;
+        //meshRenderer.enabled = false;
+        /*propertyBinder.AddPropertyBinder<Transform>()
+
+        VFXPropertyBindingAttribute propertyBinding = propertyBinder.AddPropertyBinder<VFXPropertyBindingAttribute>();
+
+        propertyBinding.source = VFXPropertyBinding.Source.Value;
+        propertyBinding.value = transform;*/
     }
 
     public void SetAttachDynamic(bool attachDynamic)
