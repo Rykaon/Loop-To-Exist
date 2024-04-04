@@ -71,8 +71,6 @@ public class PlayerManager : StateManager
         linkMoveMultiplier = 1.75f; //Le multiplieur associ� � la fonction Move() si le joueur est link. V�rifier le cas o� le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-�tre que �a m�rite une valeur dissoci�e
         linkJumpMultiplier = 5.25f; //Le multiplieur associ� � la fonction Jump() si le joueur est link
 
-        customGravity = new Vector3(0f, -9.81f, 0f);
-
         playerControls = gameManager.playerControls;
     }
 
@@ -144,7 +142,7 @@ public class PlayerManager : StateManager
     ///           FONCTIONS D'ACTIONS               ///
     ///////////////////////////////////////////////////
     [Header("Move Properties")]
-    [SerializeField] protected float moveSpeed = 20f;
+    //[SerializeField] protected float moveSpeed = 20f;
     [SerializeField] protected float maxMoveSpeed;
     [SerializeField] protected float acceleration = 7f;
     [SerializeField] protected float deceleration = 7f;
@@ -155,7 +153,6 @@ public class PlayerManager : StateManager
 
     [SerializeField] protected Vector3 customGravity;
     [SerializeField] protected float fallGravityMultiplier;
-
 
     [SerializeField] protected float collisionDetectionDistance;
     [SerializeField] protected LayerMask GroundLayer;
@@ -196,7 +193,7 @@ public class PlayerManager : StateManager
             //Debug.Log("yo");
         }
         //On calcule le vecteur de d�placement d�sir�.
-        Vector3 TargetSpeed = new Vector3(direction.x * moveSpeed, 0f, direction.z * moveSpeed);
+        Vector3 TargetSpeed = new Vector3(direction.x * maxMoveSpeed, 0f, direction.z * maxMoveSpeed);
         //On prends la diff�rence en le vecteur d�sir� et le vecteur actuel.
         Vector3 SpeedDiff = TargetSpeed - new Vector3(rigidBody.velocity.x, 0f, rigidBody.velocity.z);
 
@@ -234,39 +231,44 @@ public class PlayerManager : StateManager
 
     public void Jump()
     {
-        if (RaycastGrounded())
-        {
-            jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
-            Vector3 jumpForce = new Vector3(rigidBody.velocity.x, this.jumpForce, rigidBody.velocity.z);
 
-            jumpForce = jumpForce * moveMassMultiplier;
-            if (isLinked)
+        //Reset de la celocité en Y
+        rigidBody.velocity = new Vector3(rigidBody.velocity.x, 0f, rigidBody.velocity.z);
+
+        jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
+        Vector3 jumpForce = new Vector3(rigidBody.velocity.x, this.jumpForce, rigidBody.velocity.z);
+
+        jumpForce = jumpForce * moveMassMultiplier;
+        if (isLinked)
+        {
+            jumpForce = jumpForce * linkMoveMultiplier;
+        }
+        else if (heldObject != null)
+        {
+            if (heldObject.link != null)
             {
                 jumpForce = jumpForce * linkMoveMultiplier;
             }
-            else if (heldObject != null)
-            {
-                if (heldObject.link != null)
-                {
-                    jumpForce = jumpForce * linkMoveMultiplier;
-                }
-            }
-            else if (equippedObject != null)
-            {
-                if (equippedObject.link != null)
-                {
-                    jumpForce = jumpForce * linkMoveMultiplier;
-                }
-            }
-
-            rigidBody.AddForce(jumpForce, ForceMode.Impulse);
         }
+        else if (equippedObject != null)
+        {
+            if (equippedObject.link != null)
+            {
+                jumpForce = jumpForce * linkMoveMultiplier;
+            }
+        }
+
+        rigidBody.AddForce(jumpForce, ForceMode.Impulse);
+
     }
 
     public void OnJumpUp()
     {
         //JumpCut
-        rigidBody.AddForce(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier), ForceMode.Impulse);
+        if (rigidBody.velocity.y > 0)
+        {
+            rigidBody.AddForce(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier), ForceMode.Impulse);
+        }
     }
 
     public void Hold()
@@ -626,12 +628,20 @@ public class PlayerManager : StateManager
     private bool RaycastGrounded()
     {
         //bool isCollisionDetected = Physics.Raycast(feet.position, Vector3.down, collisionDetectionDistance, GroundLayer);
-
-        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
+        RaycastHit hit;
+        bool isCollisionDetected;
+        bool isHit = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, out hit, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
         //bool isCollisionDetected = false;
-
+        if (isHit)
+        {
+            isCollisionDetected = true;
+        }
+        else
+        {
+            isCollisionDetected = false;
+        }
         //RaycastHit hit;
-        //if (Physics.Raycast(feet.position, -Vector3.up, out hit, collisionDetectionDistance))
+        //if (Physics.Raycast(feet.position, Vector3.down, out hit, collisionDetectionDistance))
         //{
         //    float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
 
@@ -648,7 +658,7 @@ public class PlayerManager : StateManager
     {
         RaycastHit hit;
 
-        bool isHit = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down,out hit, feet.transform.rotation, collisionDetectionDistance);
+        bool isHit = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, out hit, feet.transform.rotation, collisionDetectionDistance);
 
         if (isHit)
         {
@@ -709,6 +719,35 @@ public class PlayerManager : StateManager
             rigidBody.AddForce(customGravity, ForceMode.Acceleration);
         }
     }
+
+    [SerializeField] private float jumpBufferTime; // Temps de buffer pour le saut
+    public float jumpBufferTimer;
+
+    [SerializeField] private float coyoteTime; // Temps de coyote time
+    public float coyoteTimer;
+
+    private void Update()//Gère les temps pour le coyoteTime et JumpBuffering
+    {
+        jumpBufferTimer -= Time.fixedDeltaTime;
+        if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
+        {
+            buttonSouthIsPressed = true;
+            jumpBufferTimer = jumpBufferTime;
+        }
+        //Debug.Log(jumpBufferTimer);
+
+        if (RaycastGrounded())
+        {
+            coyoteTimer = coyoteTime;
+        }
+        else
+        {
+            coyoteTimer -= Time.fixedDeltaTime;
+        }
+        Debug.Log(RaycastGrounded());
+
+    }
+
     private void FixedUpdate()
     {
         if (playerControls != null)
@@ -723,11 +762,20 @@ public class PlayerManager : StateManager
                 Move(playerControls.Player.LeftStick.ReadValue<Vector2>());
                 FallGravity();
 
-                if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
+                if ((RaycastGrounded() && jumpBufferTimer > 0))
                 {
-                    buttonSouthIsPressed = true;
+                    //buttonSouthIsPressed = true;
+                    jumpBufferTimer = 0;
+                    coyoteTimer = -5;
                     Jump();
                 }
+                else if(playerControls.Player.A.IsPressed() && coyoteTimer > 0 && !RaycastGrounded())
+                {
+                    coyoteTimer = 0;
+                    jumpBufferTimer = -5;
+                    Jump();
+                }
+
                 if (!playerControls.Player.A.IsPressed() && !buttonSouthIsPressed && rigidBody.velocity.y > 0)
                 {
                     //Debug.Log("JumpCut!");

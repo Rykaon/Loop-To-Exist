@@ -409,20 +409,21 @@ MonoBehaviour:
   ropeParticlesDistance: 0.5
   ropeParticleMoovingSpeed: 0.1
   rope: {fileID: 0}
-  moveSpeed: 12
-  maxMoveSpeed: 12
-  acceleration: 7
-  deceleration: 7
+  maxMoveSpeed: 10
+  acceleration: 15
+  deceleration: 15
   velPower: 0.9
   jumpForce: 12
   jumpCutMultiplier: 1
-  customGravity: {x: 0, y: -9.81, z: 0}
-  fallGravityMultiplier: 2
+  customGravity: {x: 0, y: -30, z: 0}
+  fallGravityMultiplier: 1.5
   collisionDetectionDistance: 0.196
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 73
   moveMassMultiplier: 1
+  jumpBufferTime: 0.1
+  coyoteTime: 0.1
 --- !u!33 &2753056825088638641
 MeshFilter:
   m_ObjectHideFlags: 0
