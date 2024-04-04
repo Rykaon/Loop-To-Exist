@@ -422,8 +422,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 73
   moveMassMultiplier: 1
-  jumpBufferTime: 0.1
-  coyoteTime: 0.1
+  maxSlopeAngle: 55
+  jumpBufferTime: 0.5
+  jumpBufferTimer: 0
+  coyoteTime: 0.5
+  coyoteTimer: 0
 --- !u!33 &2753056825088638641
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -507,7 +510,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -522,7 +525,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 2
 --- !u!114 &1288221829478390717
 MonoBehaviour:

@@ -161,6 +161,11 @@ public class PlayerManager : StateManager
     [HideInInspector] protected float linkMoveMultiplier;
     [HideInInspector] protected float linkJumpMultiplier;
     public float moveMassMultiplier;
+
+    [Header("Slope Handling")]
+    public float maxSlopeAngle;
+    private RaycastHit slopeHit;
+    private bool exitingSlope;
     public void Move(Vector2 inputValue)
     {
         //On r�cup�re la direction donn� par le joystick
@@ -625,32 +630,29 @@ public class PlayerManager : StateManager
         return isCollisionDetected;
     }
 
+    //private void CollisionManagement()
+    //{
+
+    //    RaycastHit hit = Physics.CapsuleCast(transform.position - new Vector3(0,/*Player Heigh*/0, 0), )
+    //}
+
     private bool RaycastGrounded()
     {
         //bool isCollisionDetected = Physics.Raycast(feet.position, Vector3.down, collisionDetectionDistance, GroundLayer);
-        RaycastHit hit;
-        bool isCollisionDetected;
-        bool isHit = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, out hit, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
+
+        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
         //bool isCollisionDetected = false;
-        if (isHit)
-        {
-            isCollisionDetected = true;
-        }
-        else
-        {
-            isCollisionDetected = false;
-        }
-        //RaycastHit hit;
-        //if (Physics.Raycast(feet.position, Vector3.down, out hit, collisionDetectionDistance))
-        //{
-        //    float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
 
-        //    if (dotProduct >= 0.95f && dotProduct <= 1.05f)
-        //    {
-        //        isCollisionDetected = true;
-        //    }
-        //}
+        RaycastHit hit;
+        if (Physics.Raycast(feet.position, Vector3.down, out hit, collisionDetectionDistance))
+        {
+            float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
 
+            if (dotProduct >= 0.95f && dotProduct <= 1.05f)
+            {
+                isCollisionDetected = true;
+            }
+        }
         return isCollisionDetected;
     }
 
@@ -765,13 +767,13 @@ public class PlayerManager : StateManager
                 if ((RaycastGrounded() && jumpBufferTimer > 0))
                 {
                     //buttonSouthIsPressed = true;
-                    jumpBufferTimer = 0;
+                    jumpBufferTimer = -5;
                     coyoteTimer = -5;
                     Jump();
                 }
                 else if(playerControls.Player.A.IsPressed() && coyoteTimer > 0 && !RaycastGrounded())
                 {
-                    coyoteTimer = 0;
+                    coyoteTimer = -5;
                     jumpBufferTimer = -5;
                     Jump();
                 }
