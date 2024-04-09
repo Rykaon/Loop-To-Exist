@@ -15,6 +15,15 @@ using UnityEngine.Tilemaps;
 
 public class PlayerManager : StateManager
 {
+    [SerializeField] private PlayerCameraHandler CameraHandler;
+    public PlayerCameraHandler cameraHandler { get; private set; }
+
+    [SerializeField] private PlayerMovementHandler MovementHandler;
+    public PlayerMovementHandler movementHandler { get; private set; }
+
+    [SerializeField] private PlayerObjectHandler ObjectHandler;
+    public PlayerObjectHandler objectHandler { get; private set; }
+
     [Header("Player References")]
     [SerializeField] private Transform head;
     [SerializeField] private Transform hand;
@@ -44,8 +53,6 @@ public class PlayerManager : StateManager
     [HideInInspector] public bool leftTriggerIsPressed = false;
     [HideInInspector] public bool rightTriggerIsPressed = false;
 
-
-
     [Header("Camera Properties")]
     [SerializeField] public float cameraRotationSpeed;
 
@@ -57,7 +64,7 @@ public class PlayerManager : StateManager
     [HideInInspector] public CustomRope rope = null;
 
     ///////////////////////////////////////////////////
-    ///            FONCTIONS H�RIT�ES               ///
+    ///            FONCTIONS HÉRITÉES               ///
     ///////////////////////////////////////////////////
 
     public override void Initialize(GameManager instance)
@@ -67,9 +74,14 @@ public class PlayerManager : StateManager
         trigger = Trigger;
         heldObject = null;
         equippedObject = null;
-        moveMassMultiplier = 1; //Ne pas toucher.
-        linkMoveMultiplier = 1.75f; //Le multiplieur associ� � la fonction Move() si le joueur est link. V�rifier le cas o� le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-�tre que �a m�rite une valeur dissoci�e
-        linkJumpMultiplier = 5.25f; //Le multiplieur associ� � la fonction Jump() si le joueur est link
+        
+
+        movementHandler = MovementHandler;
+        movementHandler.Initialize(this);
+        cameraHandler = CameraHandler;
+        cameraHandler.Initialize(this);
+        objectHandler = ObjectHandler;
+        objectHandler.Initialize(this);
 
         playerControls = gameManager.playerControls;
     }
@@ -140,141 +152,17 @@ public class PlayerManager : StateManager
 
     ///////////////////////////////////////////////////
     ///           FONCTIONS D'ACTIONS               ///
-    ///////////////////////////////////////////////////
-    [Header("Move Properties")]
-    //[SerializeField] protected float moveSpeed = 20f;
-    [SerializeField] protected float maxMoveSpeed;
-    [SerializeField] protected float acceleration = 7f;
-    [SerializeField] protected float deceleration = 7f;
-    [SerializeField] protected float velPower = 0.9f; //inf�rieur � 1
+    ///////////////////////////////////////////////////  
 
-    [SerializeField] protected float jumpForce;
-    [Range(0f, 1f)] [SerializeField] protected float jumpCutMultiplier;
+    
 
-    [SerializeField] protected Vector3 customGravity;
-    [SerializeField] protected float fallGravityMultiplier;
-
-    [SerializeField] protected float collisionDetectionDistance;
-    [SerializeField] protected LayerMask GroundLayer;
-    [HideInInspector] protected Vector3 direction = Vector3.zero;
-    [HideInInspector] protected Vector2 jumpFrameMovementSave;
-    [HideInInspector] protected float linkMoveMultiplier;
-    [HideInInspector] protected float linkJumpMultiplier;
-    public float moveMassMultiplier;
+    
 
     [Header("Slope Handling")]
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
-    public void Move(Vector2 inputValue)
-    {
-        //On r�cup�re la direction donn� par le joystick
-        Vector3 inputDirection = new Vector3(inputValue.x, 0f, inputValue.y);
-
-        if (!RaycastCollision() && inputValue != Vector2.zero)
-        {
-            //On y multiplie la direction du forward et du right de la cam�ra pour avoir la direction globale du joueur.
-            direction += inputDirection.x * Utilities.GetCameraRight(gameManager.transform);
-            direction += inputDirection.z * Utilities.GetCameraForward(gameManager.transform);
-
-            direction *= moveMassMultiplier;
-
-            if (link != null)
-            {
-                direction = direction * linkMoveMultiplier;
-            }
-            else if (heldObject != null)
-            {
-                if (heldObject.link != null)
-                {
-                    direction = direction * (linkMoveMultiplier / 2);
-                }
-            }
-
-            rigidBody.AddForce(direction, ForceMode.Impulse);
-        }
-        else
-        {
-            //Debug.Log("yo");
-        }
-        //On calcule le vecteur de d�placement d�sir�.
-        Vector3 TargetSpeed = new Vector3(direction.x * maxMoveSpeed, 0f, direction.z * maxMoveSpeed);
-        //On prends la diff�rence en le vecteur d�sir� et le vecteur actuel.
-        Vector3 SpeedDiff = TargetSpeed - new Vector3(rigidBody.velocity.x, 0f, rigidBody.velocity.z);
-
-        //On calcule check si il faut accelerer ou decelerer.
-        float AccelRate;
-        if (Mathf.Abs(TargetSpeed.x) > 0.01f || Mathf.Abs(TargetSpeed.z) > 0.01f)
-
-        {
-            AccelRate = acceleration;
-        }
-        else
-        {
-            AccelRate = deceleration;
-        }
-        //On applique l'acceleration � la SpeedDiff, La puissance permet d'augmenter l'acceleration si la vitesse est plus �lev�e.
-        //Enfin on multiplie par le signe de SpeedDiff pour avoir la bonne direction.
-        Vector3 movement = new Vector3(Mathf.Pow(Mathf.Abs(SpeedDiff.x) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.x), 0f, Mathf.Pow(Mathf.Abs(SpeedDiff.z) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.z));
-
-        //On applique la force au GO
-        rigidBody.AddForce(movement, ForceMode.Force);
-
-
-        //Limit la Speed du joueur � la speed Max (Pas necessaire)
-        Vector3 horizontalVelocity = rigidBody.velocity;
-        horizontalVelocity.y = 0f;
-        if (horizontalVelocity.sqrMagnitude > maxMoveSpeed * maxMoveSpeed)
-        {
-            rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
-        }
-
-        LookAt(inputValue);
-
-        direction = Vector3.zero;
-    }
-
-    public void Jump()
-    {
-
-        //Reset de la celocité en Y
-        rigidBody.velocity = new Vector3(rigidBody.velocity.x, 0f, rigidBody.velocity.z);
-
-        jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
-        Vector3 jumpForce = new Vector3(rigidBody.velocity.x, this.jumpForce, rigidBody.velocity.z);
-
-        jumpForce = jumpForce * moveMassMultiplier;
-        if (isLinked)
-        {
-            jumpForce = jumpForce * linkMoveMultiplier;
-        }
-        else if (heldObject != null)
-        {
-            if (heldObject.link != null)
-            {
-                jumpForce = jumpForce * linkMoveMultiplier;
-            }
-        }
-        else if (equippedObject != null)
-        {
-            if (equippedObject.link != null)
-            {
-                jumpForce = jumpForce * linkMoveMultiplier;
-            }
-        }
-
-        rigidBody.AddForce(jumpForce, ForceMode.Impulse);
-
-    }
-
-    public void OnJumpUp()
-    {
-        //JumpCut
-        if (rigidBody.velocity.y > 0)
-        {
-            rigidBody.AddForce(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier), ForceMode.Impulse);
-        }
-    }
+    
 
     public void Hold()
     {
@@ -588,47 +476,7 @@ public class PlayerManager : StateManager
     ///          FONCTIONS UTILITAIRES              ///
     ///////////////////////////////////////////////////
 
-    public void LookAt(Vector2 value)
-    {
-        Vector3 direction = rigidBody.velocity;
-        direction.y = 0f;
-
-        if (value.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
-        {
-            if (!isAiming)
-            {
-                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 800 * Time.fixedDeltaTime));
-            }
-            else
-            {
-                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 300 * Time.fixedDeltaTime));
-            }
-
-        }
-        else
-        {
-            if (!rigidBody.isKinematic)
-            {
-                rigidBody.angularVelocity = Vector3.zero;
-            }
-        }
-    }
-
-    private bool RaycastCollision()
-    {
-        bool isCollisionDetected = false;
-
-        RaycastHit hit;
-        if (Physics.Raycast(eye.position, eye.forward, out hit, collisionDetectionDistance))
-        {
-            if ((hit.collider.tag == "Wall" || hit.collider.tag == "Ground") && rigidBody.velocity.sqrMagnitude > maxMoveSpeed)
-            {
-                isCollisionDetected = true;
-            }
-        }
-
-        return isCollisionDetected;
-    }
+    
 
     //private void CollisionManagement()
     //{
@@ -636,40 +484,6 @@ public class PlayerManager : StateManager
     //    RaycastHit hit = Physics.CapsuleCast(transform.position - new Vector3(0,/*Player Heigh*/0, 0), )
     //}
 
-    private bool RaycastGrounded()
-    {
-        //bool isCollisionDetected = Physics.Raycast(feet.position, Vector3.down, collisionDetectionDistance, GroundLayer);
-
-        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
-        //bool isCollisionDetected = false;
-
-        RaycastHit hit;
-        if (Physics.Raycast(feet.position, Vector3.down, out hit, collisionDetectionDistance))
-        {
-            float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
-
-            if (dotProduct >= 0.95f && dotProduct <= 1.05f)
-            {
-                isCollisionDetected = true;
-            }
-        }
-        return isCollisionDetected;
-    }
-
-    private void OnDrawGizmos()//Permet de visualiser le boxCast pour la détection du ground
-    {
-        RaycastHit hit;
-
-        bool isHit = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, out hit, feet.transform.rotation, collisionDetectionDistance);
-
-        if (isHit)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireCube(feet.transform.position + Vector3.down * hit.distance, feet.lossyScale);
-        }
-
-
-    }
 
     private void ResetInputState()
     {
@@ -709,28 +523,9 @@ public class PlayerManager : StateManager
         }
     }
 
-    public void FallGravity()//Ajoute une gravit� fictive/ Lorsque le personnage retombe, donne un feeling avec plus de r�pondant.
-    {
-        //On applique la gravit� custom
-        if (rigidBody.velocity.y < 0f)
-        {
-            rigidBody.AddForce(customGravity * fallGravityMultiplier, ForceMode.Acceleration);
-        }
-        else
-        {
-            rigidBody.AddForce(customGravity, ForceMode.Acceleration);
-        }
-    }
-
-    [SerializeField] private float jumpBufferTime; // Temps de buffer pour le saut
-    public float jumpBufferTimer;
-
-    [SerializeField] private float coyoteTime; // Temps de coyote time
-    public float coyoteTimer;
-
     private void Update()//Gère les temps pour le coyoteTime et JumpBuffering
     {
-        jumpBufferTimer -= Time.fixedDeltaTime;
+        /*jumpBufferTimer -= Time.fixedDeltaTime;
         if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
         {
             buttonSouthIsPressed = true;
@@ -746,7 +541,7 @@ public class PlayerManager : StateManager
         {
             coyoteTimer -= Time.fixedDeltaTime;
         }
-        Debug.Log(RaycastGrounded());
+        Debug.Log(RaycastGrounded());*/
 
     }
 
@@ -761,35 +556,7 @@ public class PlayerManager : StateManager
         {
             if (isMainPlayer)
             {
-                Move(playerControls.Player.LeftStick.ReadValue<Vector2>());
-                FallGravity();
-
-                if ((RaycastGrounded() && jumpBufferTimer > 0))
-                {
-                    //buttonSouthIsPressed = true;
-                    jumpBufferTimer = -5;
-                    coyoteTimer = -5;
-                    Jump();
-                }
-                else if(playerControls.Player.A.IsPressed() && coyoteTimer > 0 && !RaycastGrounded())
-                {
-                    coyoteTimer = -5;
-                    jumpBufferTimer = -5;
-                    Jump();
-                }
-
-                if (!playerControls.Player.A.IsPressed() && !buttonSouthIsPressed && rigidBody.velocity.y > 0)
-                {
-                    //Debug.Log("JumpCut!");
-                    OnJumpUp();
-                }
-
-
-
-                if (playerControls.Player.RightStick.ReadValue<Vector2>() != Vector2.zero)
-                {
-                    //MoveCamera(playerControls.Player.RightStick.ReadValue<Vector2>());
-                }
+                movementHandler.UpdateComponent();
 
                 if (!isAiming)
                 {

@@ -230,7 +230,7 @@ public class StateManager : MonoBehaviour
 
         if (!wasEquipped)
         {
-            holdingPlayer.moveMassMultiplier += playerMoveMassMultiplier;
+            holdingPlayer.movementHandler.moveMassMultiplier += playerMoveMassMultiplier;
         }
 
         List<GameObject> stickedList = GetStickedObjects(GetFirstStickedObject(this.gameObject));
@@ -241,7 +241,7 @@ public class StateManager : MonoBehaviour
             {
                 if (!wasEquipped)
                 {
-                    holdingPlayer.moveMassMultiplier += playerMoveMassMultiplier;
+                    holdingPlayer.movementHandler.moveMassMultiplier += playerMoveMassMultiplier;
                 }
                 
                 stateManager.rigidBody.mass = 0.1f;
@@ -418,13 +418,13 @@ public class StateManager : MonoBehaviour
             }
 
             rigidBody.mass = 1f;
-            holdingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
+            holdingPlayer.movementHandler.moveMassMultiplier -= playerMoveMassMultiplier;
 
             foreach (GameObject stickedObject in GetStickedObjects(GetFirstStickedObject(this.gameObject)))
             {
                 if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager)){
                     stateManager.rigidBody.mass = 1f;
-                    holdingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
+                    holdingPlayer.movementHandler.moveMassMultiplier -= playerMoveMassMultiplier;
                 }
             }
 
@@ -657,13 +657,13 @@ public class StateManager : MonoBehaviour
                 joint = null;
 
                 rigidBody.mass = 1f;
-                holdingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
+                holdingPlayer.movementHandler.moveMassMultiplier -= playerMoveMassMultiplier;
 
                 foreach (GameObject stickedObject in GetStickedObjects(GetFirstStickedObject(this.gameObject)))
                 {
                     if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager))
                     {
-                        holdingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
+                        holdingPlayer.movementHandler.moveMassMultiplier -= playerMoveMassMultiplier;
                         stateManager.rigidBody.mass = 1f;
                     }
                 }
@@ -687,13 +687,13 @@ public class StateManager : MonoBehaviour
                 joint = null;
 
                 rigidBody.mass = 1f;
-                equippingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
+                equippingPlayer.movementHandler.moveMassMultiplier -= playerMoveMassMultiplier;
 
                 foreach (GameObject stickedObject in GetStickedObjects(GetFirstStickedObject(this.gameObject)))
                 {
                     if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager))
                     {
-                        equippingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
+                        equippingPlayer.movementHandler.moveMassMultiplier -= playerMoveMassMultiplier;
                         stateManager.rigidBody.mass = 1f;
                     }
                 }

@@ -323,12 +323,16 @@ GameObject:
   m_Component:
   - component: {fileID: 6661602020122977299}
   - component: {fileID: 4329433310726354432}
+  - component: {fileID: 6010532441785285549}
+  - component: {fileID: 8147201747108910359}
+  - component: {fileID: 8850233464999874927}
   - component: {fileID: 2753056825088638641}
   - component: {fileID: 8057462345250402438}
   - component: {fileID: 9068653221537410951}
   - component: {fileID: 882217338985396927}
   - component: {fileID: 1288221829478390717}
   - component: {fileID: 5156531840387393910}
+  - component: {fileID: 7807831081848844705}
   m_Layer: 0
   m_Name: Player_01
   m_TagString: Player
@@ -386,6 +390,9 @@ MonoBehaviour:
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
   linkJoint: {fileID: 0}
+  CameraHandler: {fileID: 0}
+  MovementHandler: {fileID: 0}
+  ObjectHandler: {fileID: 0}
   head: {fileID: 4194247132682260400}
   hand: {fileID: 7310698133081631505}
   feet: {fileID: 5738480824880601504}
@@ -409,24 +416,62 @@ MonoBehaviour:
   ropeParticlesDistance: 0.5
   ropeParticleMoovingSpeed: 0.1
   rope: {fileID: 0}
-  maxMoveSpeed: 10
-  acceleration: 15
-  deceleration: 15
-  velPower: 0.9
-  jumpForce: 12
-  jumpCutMultiplier: 1
-  customGravity: {x: 0, y: -30, z: 0}
-  fallGravityMultiplier: 1.5
-  collisionDetectionDistance: 0.196
-  GroundLayer:
-    serializedVersion: 2
-    m_Bits: 73
-  moveMassMultiplier: 1
   maxSlopeAngle: 55
-  jumpBufferTime: 0.5
+--- !u!114 &6010532441785285549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2292988574588036909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e0678c54be26dc4a9cf2de62742805e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  feet: {fileID: 0}
+  eye: {fileID: 0}
+  maxMoveSpeed: 0
+  acceleration: 7
+  deceleration: 7
+  velPower: 0.9
+  moveMassMultiplier: 0
+  jumpForce: 0
+  jumpCutMultiplier: 0
+  customGravity: {x: 0, y: 0, z: 0}
+  fallGravityMultiplier: 0
+  collisionDetectionDistance: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  jumpBufferTime: 0
   jumpBufferTimer: 0
-  coyoteTime: 0.5
+  coyoteTime: 0
   coyoteTimer: 0
+--- !u!114 &8147201747108910359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2292988574588036909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bbd522c86cc89c4e827c967a2b613dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8850233464999874927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2292988574588036909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a18c227b8bc3ff242addce0f5017c874, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!33 &2753056825088638641
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -557,6 +602,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kinematicForParticles: 0
+--- !u!143 &7807831081848844705
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2292988574588036909}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6095508214992525309
 GameObject:
   m_ObjectHideFlags: 0
