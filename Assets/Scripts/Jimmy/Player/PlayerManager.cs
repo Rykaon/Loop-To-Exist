@@ -75,6 +75,7 @@ public class PlayerManager : StateManager
         heldObject = null;
         equippedObject = null;
         
+        playerControls = gameManager.playerControls;
 
         movementHandler = MovementHandler;
         movementHandler.Initialize(this);
@@ -82,8 +83,6 @@ public class PlayerManager : StateManager
         cameraHandler.Initialize(this);
         objectHandler = ObjectHandler;
         objectHandler.Initialize(this);
-
-        playerControls = gameManager.playerControls;
     }
 
     public override void SetState(State state)
@@ -525,6 +524,11 @@ public class PlayerManager : StateManager
 
     private void Update()//Gère les temps pour le coyoteTime et JumpBuffering
     {
+        if (transform.name == "Player_01")
+        {
+            Debug.Log("update");
+        }
+        
         /*jumpBufferTimer -= Time.fixedDeltaTime;
         if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
         {
@@ -547,6 +551,11 @@ public class PlayerManager : StateManager
 
     private void FixedUpdate()
     {
+        if (transform.name == "Player_01")
+        {
+            Debug.Log("fixedUpdate");
+        }
+
         if (playerControls != null)
         {
             ResetInputState();

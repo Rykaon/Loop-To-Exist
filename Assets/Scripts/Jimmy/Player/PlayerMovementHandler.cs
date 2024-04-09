@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerMovementHandler : PlayerHandler
 {
-    private CharacterController characterController;
 
     [Header ("Componenents References")]
-    [SerializeField] private PlayerControls playerControls;
+    private PlayerControls playerControls;
+    [SerializeField] private CharacterController characterController;
     [SerializeField] private Transform feet;
     [SerializeField] private Transform eye;
 
@@ -55,8 +56,24 @@ public class PlayerMovementHandler : PlayerHandler
 
     public override void UpdateComponent()
     {
+        jumpBufferTimer -= Time.fixedDeltaTime;
+        if (playerControls.Player.A.IsPressed() && !playerManager.buttonSouthIsPressed)
+        {
+            playerManager.buttonSouthIsPressed = true;
+            jumpBufferTimer = jumpBufferTime;
+        }
+        //Debug.Log(jumpBufferTimer);
+
+        if (RaycastGrounded())
+        {
+            coyoteTimer = coyoteTime;
+        }
+        else
+        {
+            coyoteTimer -= Time.fixedDeltaTime;
+        }
+
         Move(playerManager.playerControls.Player.LeftStick.ReadValue<Vector2>());
-        //FallGravity();
 
         if ((RaycastGrounded() && jumpBufferTimer > 0))
         {
@@ -72,85 +89,26 @@ public class PlayerMovementHandler : PlayerHandler
             Jump();
         }
 
-        if (!playerControls.Player.A.IsPressed() && !playerManager.buttonSouthIsPressed /*&& rigidBody.velocity.y > 0*/)
+        if (!playerControls.Player.A.IsPressed() && !playerManager.buttonSouthIsPressed && playerManager.rigidBody.velocity.y > 0)
         {
             //Debug.Log("JumpCut!");
             OnJumpUp();
         }
+
+        FallGravity();
+        //characterController.Move(direction);
     }
 
     public void Move(Vector2 inputValue)
     {
+        //On récupère la direction donnée par le joystick
         Vector3 inputDirection = new Vector3(inputValue.x, 0f, inputValue.y);
+
         if (!RaycastCollision() && inputValue != Vector2.zero)
         {
             //On y multiplie la direction du forward et du right de la caméra pour avoir la direction globale du joueur.
             direction += inputDirection.x * Utilities.GetCameraRight(playerManager.gameManager.transform);
             direction += inputDirection.z * Utilities.GetCameraForward(playerManager.gameManager.transform);
-
-            direction *= moveMassMultiplier;
-
-            if (playerManager.link != null)
-            {
-                direction *= linkMoveMultiplier;
-            }
-            else if (playerManager.heldObject != null)
-            {
-                if (playerManager.heldObject.link != null)
-                {
-                    direction *= (linkMoveMultiplier / 2);
-                }
-            }
-
-            //On calcule le vecteur de déplacement désiré.
-            Vector3 TargetSpeed = new Vector3(direction.x * maxMoveSpeed, 0f, direction.z * maxMoveSpeed);
-            //On prends la différence en le vecteur désiré et le vecteur actuel.
-            Vector3 SpeedDiff = TargetSpeed - new Vector3(characterController.velocity.x, 0f, characterController.velocity.z);
-
-            //On calcule check si il faut accelerer ou decelerer.
-            float AccelRate;
-            if (Mathf.Abs(TargetSpeed.x) > 0.01f || Mathf.Abs(TargetSpeed.z) > 0.01f)
-
-            {
-                AccelRate = acceleration;
-            }
-            else
-            {
-                AccelRate = deceleration;
-            }
-
-            //On applique l'acceleration à la SpeedDiff, La puissance permet d'augmenter l'acceleration si la vitesse est plus élevée.
-            //Enfin on multiplie par le signe de SpeedDiff pour avoir la bonne direction.
-            //Vector3 movement = new Vector3(Mathf.Pow(Mathf.Abs(SpeedDiff.x) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.x), 0f, Mathf.Pow(Mathf.Abs(SpeedDiff.z) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.z));
-
-            //On applique la force au GO
-            //rigidBody.AddForce(movement, ForceMode.Force);
-
-            //characterController.Move(direction);
-        }
-        else
-        {
-            //Debug.Log("yo");
-        }
-
-
-
-
-
-
-
-
-
-
-
-        //On récupère la direction donnée par le joystick
-        /*Vector3 inputDirection = new Vector3(inputValue.x, 0f, inputValue.y);
-
-        if (!RaycastCollision() && inputValue != Vector2.zero)
-        {
-            //On y multiplie la direction du forward et du right de la caméra pour avoir la direction globale du joueur.
-            direction += inputDirection.x * Utilities.GetCameraRight(gameManager.transform);
-            direction += inputDirection.z * Utilities.GetCameraForward(gameManager.transform);
 
             direction *= moveMassMultiplier;
 
@@ -166,7 +124,7 @@ public class PlayerMovementHandler : PlayerHandler
                 }
             }
 
-            //rigidBody.AddForce(direction, ForceMode.Impulse);
+            playerManager.rigidBody.AddForce(direction, ForceMode.Impulse);
         }
         else
         {
@@ -175,7 +133,7 @@ public class PlayerMovementHandler : PlayerHandler
         //On calcule le vecteur de déplacement désiré.
         Vector3 TargetSpeed = new Vector3(direction.x * maxMoveSpeed, 0f, direction.z * maxMoveSpeed);
         //On prends la différence en le vecteur désiré et le vecteur actuel.
-        //Vector3 SpeedDiff = TargetSpeed - new Vector3(rigidBody.velocity.x, 0f, rigidBody.velocity.z);
+        Vector3 speedDiff = TargetSpeed - new Vector3(playerManager.rigidBody.velocity.x, 0f, playerManager.rigidBody.velocity.z);
 
         //On calcule check si il faut accelerer ou decelerer.
         float AccelRate;
@@ -190,104 +148,102 @@ public class PlayerMovementHandler : PlayerHandler
         }
         //On applique l'acceleration à la SpeedDiff, La puissance permet d'augmenter l'acceleration si la vitesse est plus élevée.
         //Enfin on multiplie par le signe de SpeedDiff pour avoir la bonne direction.
-        //Vector3 movement = new Vector3(Mathf.Pow(Mathf.Abs(SpeedDiff.x) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.x), 0f, Mathf.Pow(Mathf.Abs(SpeedDiff.z) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.z));
+        Vector3 movement = new Vector3(Mathf.Pow(Mathf.Abs(speedDiff.x) * AccelRate, velPower) * Mathf.Sign(speedDiff.x), 0f, Mathf.Pow(Mathf.Abs(speedDiff.z) * AccelRate, velPower) * Mathf.Sign(speedDiff.z));
 
         //On applique la force au GO
-        //rigidBody.AddForce(movement, ForceMode.Force);
+        playerManager.rigidBody.AddForce(movement, ForceMode.Force);
 
 
         //Limit la Speed du joueur à la speed Max (Pas necessaire)
-        Vector3 horizontalVelocity = rigidBody.velocity;
+        Vector3 horizontalVelocity = playerManager.rigidBody.velocity;
         horizontalVelocity.y = 0f;
         if (horizontalVelocity.sqrMagnitude > maxMoveSpeed * maxMoveSpeed)
         {
-            rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
+            playerManager.rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * playerManager.rigidBody.velocity.y;
         }
 
         LookAt(inputValue);
 
-        direction = Vector3.zero;*/
+        direction = Vector3.zero;
     }
 
     public void LookAt(Vector2 value)
     {
-        /*Vector3 direction = rigidBody.velocity;
+        Vector3 direction = playerManager.rigidBody.velocity;
         direction.y = 0f;
 
         if (value.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
         {
-            if (!isAiming)
+            if (!playerManager.isAiming)
             {
-                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 800 * Time.fixedDeltaTime));
+                playerManager.rigidBody.MoveRotation(Quaternion.RotateTowards(playerManager.rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 800 * Time.fixedDeltaTime));
             }
             else
             {
-                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 300 * Time.fixedDeltaTime));
+                playerManager.rigidBody.MoveRotation(Quaternion.RotateTowards(playerManager.rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 300 * Time.fixedDeltaTime));
             }
 
         }
         else
         {
-            if (!rigidBody.isKinematic)
+            if (!playerManager.rigidBody.isKinematic)
             {
-                rigidBody.angularVelocity = Vector3.zero;
+                playerManager.rigidBody.angularVelocity = Vector3.zero;
             }
-        }*/
+        }
     }
 
     public void Jump()
     {
-
         //Reset de la velocité en Y
-        /*rigidBody.velocity = new Vector3(rigidBody.velocity.x, 0f, rigidBody.velocity.z);
+        playerManager.rigidBody.velocity = new Vector3(playerManager.rigidBody.velocity.x, 0f, playerManager.rigidBody.velocity.z);
 
-        jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
-        Vector3 jumpForce = new Vector3(rigidBody.velocity.x, this.jumpForce, rigidBody.velocity.z);
+        jumpFrameMovementSave = new Vector2(playerManager.rigidBody.velocity.x, playerManager.rigidBody.velocity.z);
+        Vector3 jumpForce = new Vector3(playerManager.rigidBody.velocity.x, this.jumpForce, playerManager.rigidBody.velocity.z);
 
         jumpForce = jumpForce * moveMassMultiplier;
-        if (isLinked)
+        if (playerManager.isLinked)
         {
             jumpForce = jumpForce * linkMoveMultiplier;
         }
-        else if (heldObject != null)
+        else if (playerManager.heldObject != null)
         {
-            if (heldObject.link != null)
+            if (playerManager.heldObject.link != null)
             {
                 jumpForce = jumpForce * linkMoveMultiplier;
             }
         }
-        else if (equippedObject != null)
+        else if (playerManager.equippedObject != null)
         {
-            if (equippedObject.link != null)
+            if (playerManager.equippedObject.link != null)
             {
                 jumpForce = jumpForce * linkMoveMultiplier;
             }
         }
 
-        rigidBody.AddForce(jumpForce, ForceMode.Impulse);*/
-
+        playerManager.rigidBody.AddForce(jumpForce, ForceMode.Impulse);
     }
 
     public void OnJumpUp()
     {
         //JumpCut
-        /*if (rigidBody.velocity.y > 0)
+        if (playerManager.rigidBody.velocity.y > 0)
         {
-            rigidBody.AddForce(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier), ForceMode.Impulse);
-        }*/
+            playerManager.rigidBody.AddForce(Vector3.down * playerManager.rigidBody.velocity.y * (1 - jumpCutMultiplier), ForceMode.Impulse);
+        }
     }
 
     public void FallGravity()//Ajoute une gravité fictive/ Lorsque le personnage retombe, donne un feeling avec plus de répondant.
     {
         //On applique la gravité custom
-        /*if (rigidBody.velocity.y < 0f)
+        if (characterController.velocity.y < 0f)
         {
-            rigidBody.AddForce(customGravity * fallGravityMultiplier, ForceMode.Acceleration);
+            playerManager.rigidBody.AddForce(customGravity * fallGravityMultiplier, ForceMode.Acceleration);
         }
         else
         {
-            rigidBody.AddForce(customGravity, ForceMode.Acceleration);
-        }*/
+            playerManager.rigidBody.AddForce(customGravity, ForceMode.Acceleration);
+        }
     }
 
     private bool RaycastGrounded()
@@ -317,7 +273,7 @@ public class PlayerMovementHandler : PlayerHandler
         RaycastHit hit;
         if (Physics.Raycast(eye.position, eye.forward, out hit, collisionDetectionDistance))
         {
-            if ((hit.collider.tag == "Wall" || hit.collider.tag == "Ground")/* && rigidBody.velocity.sqrMagnitude > maxMoveSpeed*/)
+            if ((hit.collider.tag == "Wall" || hit.collider.tag == "Ground") && playerManager.rigidBody.velocity.sqrMagnitude > maxMoveSpeed)
             {
                 isCollisionDetected = true;
             }

@@ -390,9 +390,9 @@ MonoBehaviour:
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
   linkJoint: {fileID: 0}
-  CameraHandler: {fileID: 0}
-  MovementHandler: {fileID: 0}
-  ObjectHandler: {fileID: 0}
+  CameraHandler: {fileID: 8850233464999874927}
+  MovementHandler: {fileID: 6010532441785285549}
+  ObjectHandler: {fileID: 8147201747108910359}
   head: {fileID: 4194247132682260400}
   hand: {fileID: 7310698133081631505}
   feet: {fileID: 5738480824880601504}
@@ -429,24 +429,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e0678c54be26dc4a9cf2de62742805e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  feet: {fileID: 0}
-  eye: {fileID: 0}
-  maxMoveSpeed: 0
-  acceleration: 7
-  deceleration: 7
+  characterController: {fileID: 7807831081848844705}
+  feet: {fileID: 5738480824880601504}
+  eye: {fileID: 6802360651946524692}
+  maxMoveSpeed: 10
+  acceleration: 15
+  deceleration: 15
   velPower: 0.9
   moveMassMultiplier: 0
-  jumpForce: 0
-  jumpCutMultiplier: 0
-  customGravity: {x: 0, y: 0, z: 0}
-  fallGravityMultiplier: 0
-  collisionDetectionDistance: 0
+  jumpForce: 12
+  jumpCutMultiplier: 1
+  customGravity: {x: 0, y: -30, z: 0}
+  fallGravityMultiplier: 1.5
+  collisionDetectionDistance: 0.196
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
-  jumpBufferTime: 0
+    m_Bits: 73
+  jumpBufferTime: 0.5
   jumpBufferTimer: 0
-  coyoteTime: 0
+  coyoteTime: 0.5
   coyoteTimer: 0
 --- !u!114 &8147201747108910359
 MonoBehaviour:
