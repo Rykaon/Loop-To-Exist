@@ -44,8 +44,6 @@ public class PlayerManager : StateManager
     [HideInInspector] public bool leftTriggerIsPressed = false;
     [HideInInspector] public bool rightTriggerIsPressed = false;
 
-
-
     [Header("Camera Properties")]
     [SerializeField] public float cameraRotationSpeed;
 
@@ -56,6 +54,14 @@ public class PlayerManager : StateManager
     [SerializeField] private float ropeParticleMoovingSpeed = 0.1f;
     [HideInInspector] public CustomRope rope = null;
 
+    [Header("Throw Visualizer")]
+    private Vector2 throwDirection;
+    private bool isCalculatingThrowForce = false;
+    private bool isLineRendererActive;
+    [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField][Range(10, 100)] private int linePoints = 25;
+    [SerializeField][Range (0.01f, 0.25f)] private float timeBetweenPoints = 0.1f;
+
     ///////////////////////////////////////////////////
     ///            FONCTIONS H�RIT�ES               ///
     ///////////////////////////////////////////////////
@@ -63,6 +69,8 @@ public class PlayerManager : StateManager
     public override void Initialize(GameManager instance)
     {
         base.Initialize(instance);
+
+        throwDirection = new Vector2(startThrowForceHorizontal, startThrowForceVertical);
 
         trigger = Trigger;
         heldObject = null;
@@ -97,6 +105,11 @@ public class PlayerManager : StateManager
     public override void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
     {
         base.ThrowObject(throwForceHorizontal, throwForceVertical, hitpoint);
+    }
+
+    protected override Vector3 GetThrowForce(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
+    {
+        return base.GetThrowForce(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 
     public override void SetEquipObject(Transform endPosition, float time)
@@ -341,11 +354,13 @@ public class PlayerManager : StateManager
         float startThrowForceVertical = heldObject.startThrowForceVertical;
         float maxThrowForceHorizontal = 10;
         float maxThrowForceVertical = 7;
+        throwDirection = new Vector2(startThrowForceHorizontal, startThrowForceVertical);
+        isCalculatingThrowForce = true;
 
         while (isAiming && playerControls.Player.X.IsPressed())
         {
-            startThrowForceHorizontal += (1 + Time.fixedDeltaTime);
-            startThrowForceVertical += (1 + Time.fixedDeltaTime);
+            startThrowForceHorizontal += (0.1f + Time.fixedDeltaTime);
+            startThrowForceVertical += (0.1f + Time.fixedDeltaTime);
 
             if (startThrowForceHorizontal > maxThrowForceHorizontal)
             {
@@ -356,6 +371,8 @@ public class PlayerManager : StateManager
             {
                 startThrowForceVertical = maxThrowForceVertical;
             }
+
+            throwDirection = new Vector2(startThrowForceHorizontal, startThrowForceVertical);
 
             yield return new WaitForFixedUpdate();
         }
@@ -382,6 +399,8 @@ public class PlayerManager : StateManager
             heldObject.ThrowObject(startThrowForceHorizontal, startThrowForceVertical, hitPoint);
             heldObject = null;
         }
+        isCalculatingThrowForce = false;
+        throwDirection = new Vector2(this.startThrowForceHorizontal, this.startThrowForceVertical);
     }
 
     public void Aim(bool value)
@@ -415,8 +434,6 @@ public class PlayerManager : StateManager
                         if (playerManager.position == Position.Default)
                         {
                             Aim(false);
-                            //gameManager.cameraManager.aimCamera.m_Follow = playerManager.cameraTarget;
-                            //gameManager.cameraManager.aimCamera.m_LookAt = playerManager.cameraTarget;
                             gameManager.SetMainPlayer(playerManager, true);
                             return;
                         }
@@ -563,21 +580,6 @@ public class PlayerManager : StateManager
             }
         }
 
-
-        /*for (int i = 0; i < nbrOfMoves; i++)
-        {
-            if (!isLinked)
-            {
-                linkEnd.position = Vector3.Lerp(hand.position, hitPoint, i / nbrOfMoves);
-            }
-            else
-            {
-                linkStart.position = Vector3.Lerp(hand.position, hitPoint, i / nbrOfMoves);
-            }
-
-            yield return new WaitForEndOfFrame();
-        }*/
-
         Destroy(linkedObject.obiRigidBody);
         yield return new WaitForEndOfFrame();
         linkedObject.obiRigidBody = linkedObject.AddComponent<ObiRigidbody>();
@@ -667,8 +669,52 @@ public class PlayerManager : StateManager
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireCube(feet.transform.position + Vector3.down * hit.distance, feet.lossyScale);
         }
+    }
 
+    private void DrawThrowTrajectory()
+    {
+        if (!lineRenderer.enabled)
+        {
+            lineRenderer.enabled = true;
+        }
 
+        lineRenderer.positionCount = Mathf.CeilToInt(linePoints / timeBetweenPoints) + 1;
+        Vector3 startPosition = hand.position;
+        Vector3 startVelocity;
+        float mass = 1;
+
+        List<GameObject> stickedList = GetStickedObjects(GetFirstStickedObject(heldObject.gameObject));
+
+        foreach (GameObject stickedObject in stickedList)
+        {
+            if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager))
+            {
+                mass += 0.1f;
+            }
+        }
+
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        Vector3 hitPoint = Vector3.zero;
+        Ray ray = Camera.main.ScreenPointToRay(screenCenter);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            hitPoint = hit.point;
+        }
+
+        startVelocity = GetThrowForce(throwDirection.x, throwDirection.y, hitPoint) / mass;
+
+        int i = 0;
+        lineRenderer.SetPosition(i, startPosition);
+
+        for (float time = 0; time < linePoints; time += timeBetweenPoints)
+        {
+            i++;
+            Vector3 pos = startPosition + time * startVelocity;
+            pos.y = startPosition.y + startVelocity.y * time + (Physics.gravity.y / 2f * time * time);
+            lineRenderer.SetPosition(i, pos);
+        }
     }
 
     private void ResetInputState()
@@ -793,6 +839,11 @@ public class PlayerManager : StateManager
 
                 if (!isAiming)
                 {
+                    if (lineRenderer.enabled)
+                    {
+                        lineRenderer.enabled = false;
+                    }
+
                     if (playerControls.Player.Y.IsPressed() && !buttonNorthIsPressed)
                     {
                         buttonNorthIsPressed = true;
@@ -804,8 +855,6 @@ public class PlayerManager : StateManager
                         buttonWestIsPressed = true;
                         Hold();
                     }
-
-
 
                     if (playerControls.Player.LT.IsPressed() && !leftTriggerIsPressed)
                     {
@@ -834,6 +883,15 @@ public class PlayerManager : StateManager
                         leftTriggerIsPressed = false;
                         Aim(false);
                     }*/
+
+                    if (heldObject != null)
+                    {
+                        DrawThrowTrajectory();
+                    }
+                    else if (heldObject == null && lineRenderer.enabled)
+                    {
+                        lineRenderer.enabled = false;
+                    }
 
                     if (playerControls.Player.X.IsPressed() && !buttonWestIsPressed)
                     {

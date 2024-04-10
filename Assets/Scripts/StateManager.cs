@@ -59,6 +59,9 @@ public class StateManager : MonoBehaviour
     public bool isEquippedObject { get; private set; }
     public bool isEquipped { get; private set; }
 
+    public Vector3 lastGroundedPosition;
+    public Quaternion lastGroundedRotation;
+
     ///////////////////////////////////////////////////
     ///               INITIALIZATION                ///
     ///////////////////////////////////////////////////
@@ -73,6 +76,9 @@ public class StateManager : MonoBehaviour
         obiCollider = ObiCollider;
         isHeldObject = false;
         isHeld = false;
+
+        lastGroundedPosition = rigidBody.position;
+        lastGroundedRotation = rigidBody.rotation;
 
         linkThrowMultiplier = 2.5f; // On multiplie la force de lancer par cette valeur si l'objet lancé est linké. 
         playerMoveMassMultiplier = 0.075f; // Le joueur qui porte l'objet a un multiplier de base de 1. Pour chaque objet porté, on lui ajoute cette valeur. On lui retire lorsqu'il drop l'item. Sert pour les fonctions Move() et Jump().
@@ -477,6 +483,26 @@ public class StateManager : MonoBehaviour
         holdingPlayer = null;
     }
 
+    protected virtual Vector3 GetThrowForce(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
+    {
+        Vector3 throwDirection = Vector3.zero;
+
+        if (hitpoint != Vector3.zero)
+        {
+            // Utiliser le hitpoint pour ajuster la direction du lancer
+            Vector3 playerToHitPoint = hitpoint - transform.position;
+            throwDirection = Vector3.ProjectOnPlane(playerToHitPoint, Vector3.up).normalized * throwForceHorizontal;
+        }
+        else
+        {
+            throwDirection = Camera.main.transform.forward.normalized * throwForceHorizontal;
+        }
+
+        // Ajuster la force verticale (hauteur de l'arc)
+        throwDirection += Vector3.up * throwForceVertical;
+        return throwDirection;
+    }
+
     ///////////////////////////////////////////////////
     ///                EQUIP METHODS                ///
     ///////////////////////////////////////////////////
@@ -546,7 +572,7 @@ public class StateManager : MonoBehaviour
         }
     }
 
-    private GameObject GetFirstStickedObject(GameObject currentObject)
+    protected GameObject GetFirstStickedObject(GameObject currentObject)
     {
         if (currentObject.TryGetComponent<StateManager>(out StateManager stateManager))
         {
@@ -570,7 +596,7 @@ public class StateManager : MonoBehaviour
         }
     }
 
-    private List<GameObject> GetStickedObjects(GameObject firstStickedObject)
+    protected List<GameObject> GetStickedObjects(GameObject firstStickedObject)
     {
         List<GameObject> stickedObjects = new List<GameObject>();
         if (firstStickedObject.TryGetComponent<StateManager>(out StateManager stateManager))
