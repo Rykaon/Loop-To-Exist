@@ -1356,16 +1356,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 126525622}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 126525623}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
 --- !u!1 &134976457
 GameObject:
   m_ObjectHideFlags: 3
@@ -1640,16 +1644,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 141799418}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 141799419}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
 --- !u!1 &169152108
 GameObject:
   m_ObjectHideFlags: 0
@@ -3528,16 +3536,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 510748033}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 510748034}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
   stateToApply: 2
 --- !u!1 &527598650
 GameObject:
@@ -4914,16 +4926,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 696493832}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 696493833}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
   stateToApply: 1
 --- !u!1 &700221181
 GameObject:
@@ -5205,16 +5221,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 751538624}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 751538625}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
 --- !u!1001 &757587904
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6065,16 +6085,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 848908825}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 848908824}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
 --- !u!65 &848908824
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6568,6 +6592,74 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72226babe26ac8e4789da6bc30e0721e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &904621042
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2709633788947748403, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_Name
+      value: ShroomCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.080332
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13.008602
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ba1dde5c07dc4fd489dae2bfd738b55d, type: 3}
 --- !u!1 &917761823
 GameObject:
   m_ObjectHideFlags: 0
@@ -7091,16 +7183,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 1016779524}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 1016779525}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
   stateToApply: 2
 --- !u!1 &1017574776
 GameObject:
@@ -7352,16 +7448,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 1020032470}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 1020032471}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
   stateToApply: 1
 --- !u!1 &1048334646
 GameObject:
@@ -8682,7 +8782,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1557129472}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.087055035, y: 0.868082, z: -0.32806936, w: -0.36225095}
+  m_LocalRotation: {x: 0.087055035, y: 0.868082, z: -0.32806933, w: -0.36225095}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9737,16 +9837,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 1758727940}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 1758727941}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
   stateToApply: 1
 --- !u!1 &1762549448
 GameObject:
@@ -10372,16 +10476,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  state: 0
+  states: 
   position: 0
   RigidBody: {fileID: 1858556272}
+  ObiRigidBody: {fileID: 0}
   ObjectCollider: {fileID: 1858556273}
+  ObiCollider: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
   linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
   stateToApply: 2
 --- !u!1 &1886185783
 GameObject:
@@ -11391,6 +11499,7 @@ MonoBehaviour:
   - {fileID: 126525626}
   - {fileID: 751538628}
   - {fileID: 848908823}
+  ObiSolver: {fileID: 0}
   buttonNorthIsPressed: 0
   leftShoulderisPressed: 0
 --- !u!4 &2062986535
@@ -12075,3 +12184,4 @@ SceneRoots:
   - {fileID: 405613172}
   - {fileID: 1017574780}
   - {fileID: 78755024}
+  - {fileID: 904621042}
