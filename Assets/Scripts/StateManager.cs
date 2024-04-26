@@ -20,6 +20,7 @@ public class StateManager : MonoBehaviour
     [SerializeField] private ObiRigidbody ObiRigidBody;
     [SerializeField] private Collider ObjectCollider;
     [SerializeField] private ObiCollider ObiCollider;
+    [SerializeField] private MeshRenderer Renderer;
 
     [Header("Throw Properties")]
     [SerializeField] public float startThrowForceHorizontal = 5;
@@ -32,6 +33,7 @@ public class StateManager : MonoBehaviour
     public ObiRigidbody obiRigidBody { get; set; }
     public Collider objectCollider { get; private set; }
     public ObiCollider obiCollider { get; private set; }
+    public MeshRenderer renderer { get; set; }
 
     protected Transform parent;
 
@@ -74,6 +76,7 @@ public class StateManager : MonoBehaviour
         objectCollider = ObjectCollider;
         obiRigidBody = ObiRigidBody;
         obiCollider = ObiCollider;
+        renderer = Renderer;
         isHeldObject = false;
         isHeld = false;
 

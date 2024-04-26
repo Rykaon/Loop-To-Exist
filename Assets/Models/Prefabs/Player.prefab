@@ -379,6 +379,7 @@ MonoBehaviour:
   ObiRigidBody: {fileID: 5156531840387393910}
   ObjectCollider: {fileID: 9068653221537410951}
   ObiCollider: {fileID: 1288221829478390717}
+  Renderer: {fileID: 8057462345250402438}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
@@ -461,7 +462,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 240808080b55e4248a65afe069b678d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
