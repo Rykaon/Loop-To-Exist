@@ -53,7 +53,6 @@ public class VoidTrigger : MonoBehaviour
 
                 for (int i = 0; i < managers.Count; i++)
                 {
-                    Debug.Log(managers[i].name);
                     if (i == 0)
                     {
                         if (managers[i].GetType() == typeof(PlayerManager))
@@ -85,14 +84,9 @@ public class VoidTrigger : MonoBehaviour
     private IEnumerator Teleport(StateManager manager, bool isParent, bool isMainPlayer)
     {
         Material initMat = manager.renderer.material;
-        Debug.Log(initMat.name);
         Material dissolveMat = Instantiate(dissolveMaterial);
         dissolveMat.SetTexture("_Albedo", initMat.mainTexture);
         dissolveMat.SetFloat("_AlphaTreshold", 0f);
-        List<Material> initList = new List<Material>();
-        List<Material> dissolveList = new List<Material>();
-        initList.Add(initMat);
-        dissolveList.Add(dissolveMat);
         manager.renderer.material = null;
         manager.renderer.material = dissolveMat;
 
@@ -125,7 +119,6 @@ public class VoidTrigger : MonoBehaviour
         treshold = 1f;
         while (elapsedTime < dissolveTime)
         {
-            Debug.Log(treshold);
             float time = elapsedTime / dissolveTime;
             treshold = Mathf.Lerp(treshold, 0f, time);
             dissolveMat.SetFloat("_AlphaTreshold", treshold);

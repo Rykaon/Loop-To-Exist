@@ -17,10 +17,9 @@ public class StateManager : MonoBehaviour
     public List<State> states;
     public Position position;
     [SerializeField] protected Rigidbody RigidBody;
-    [SerializeField] private ObiRigidbody ObiRigidBody;
     [SerializeField] private Collider ObjectCollider;
-    [SerializeField] private ObiCollider ObiCollider;
     [SerializeField] private MeshRenderer Renderer;
+    [SerializeField] private Outline Outline;
 
     [Header("Throw Properties")]
     [SerializeField] public float startThrowForceHorizontal = 5;
@@ -30,10 +29,9 @@ public class StateManager : MonoBehaviour
 
     public GameManager gameManager { get; private set; }
     public Rigidbody rigidBody { get; private set; }
-    public ObiRigidbody obiRigidBody { get; set; }
     public Collider objectCollider { get; private set; }
-    public ObiCollider obiCollider { get; private set; }
     public MeshRenderer renderer { get; set; }
+    public Outline outline { get; set; }
 
     protected Transform parent;
 
@@ -74,9 +72,8 @@ public class StateManager : MonoBehaviour
         rigidBody = RigidBody;
         parent = transform.parent;
         objectCollider = ObjectCollider;
-        obiRigidBody = ObiRigidBody;
-        obiCollider = ObiCollider;
         renderer = Renderer;
+        outline = Outline;
         isHeldObject = false;
         isHeld = false;
 

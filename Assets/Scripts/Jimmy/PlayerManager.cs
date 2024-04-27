@@ -23,8 +23,6 @@ public class PlayerManager : StateManager
     [SerializeField] private Transform linkTarget;
     [SerializeField] public Transform cameraTarget;
 
-    public Transform playerCamera { get; private set; }
-
     [SerializeField] private PlayerInteractionTrigger Trigger;
     public PlayerInteractionTrigger trigger { get; private set; }
 
@@ -36,6 +34,8 @@ public class PlayerManager : StateManager
     public bool isMainPlayer;
     public bool isActive;
     public bool isAiming = false;
+    public bool isLadder = false;
+    public bool isLadderTrigger = false;
 
     [HideInInspector] public bool buttonSouthIsPressed = false;
     [HideInInspector] public bool buttonWestIsPressed = false;
@@ -44,23 +44,14 @@ public class PlayerManager : StateManager
     [HideInInspector] public bool leftTriggerIsPressed = false;
     [HideInInspector] public bool rightTriggerIsPressed = false;
 
-    [Header("Camera Properties")]
-    [SerializeField] public float cameraRotationSpeed;
-
-    [Header("Link Properties")]
-    [SerializeField] private GameObject ropePrefab;
-    [SerializeField] private GameObject sphere;
-    [SerializeField] private float ropeParticlesDistance = 0.5f;
-    [SerializeField] private float ropeParticleMoovingSpeed = 0.1f;
-    [HideInInspector] public CustomRope rope = null;
-
     [Header("Throw Visualizer")]
     private Vector2 throwDirection;
     private bool isCalculatingThrowForce = false;
-    private bool isLineRendererActive;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField][Range(10, 100)] private int linePoints = 25;
     [SerializeField][Range (0.01f, 0.25f)] private float timeBetweenPoints = 0.1f;
+
+    private StateManager target = null;
 
     ///////////////////////////////////////////////////
     ///            FONCTIONS H�RIT�ES               ///
@@ -140,14 +131,12 @@ public class PlayerManager : StateManager
     {
         if (value)
         {
-            playerCamera = gameManager.cameraManager.worldCamera.transform;
-            playerControls = gameManager.playerControls;
             isMainPlayer = true;
         }
         else
         {
-            playerControls = null;
             isMainPlayer = false;
+            isActive = false;
         }
     }
 
@@ -163,6 +152,10 @@ public class PlayerManager : StateManager
 
     [SerializeField] protected float jumpForce;
     [Range(0f, 1f)] [SerializeField] protected float jumpCutMultiplier;
+    [SerializeField] private float jumpBufferTime; // Temps de buffer pour le saut
+    public float jumpBufferTimer;
+    [SerializeField] private float coyoteTime; // Temps de coyote time
+    public float coyoteTimer;
 
     [SerializeField] protected Vector3 customGravity;
     [SerializeField] protected float fallGravityMultiplier;
@@ -179,6 +172,7 @@ public class PlayerManager : StateManager
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
+
     public void Move(Vector2 inputValue)
     {
         //On r�cup�re la direction donn� par le joystick
@@ -293,25 +287,10 @@ public class PlayerManager : StateManager
     {
         if (heldObject == null)
         {
-            if (trigger.triggeredObjectsList.Count > 0 && heldObject == null)
+            if (trigger.triggeredObjectsList.Count > 0 && trigger.current != null)
             {
-                float startDistance = float.MaxValue;
-                int index = -1;
-                for (int i = 0; i < trigger.triggeredObjectsList.Count; i++)
-                {
-                    float distance = Vector3.Distance(trigger.transform.position, trigger.triggeredObjectsList[i].transform.position);
-                    if (distance < startDistance)
-                    {
-                        index = i;
-                        startDistance = distance;
-                    }
-                }
-
-                if (index >= 0)
-                {
-                    heldObject = trigger.triggeredObjectsList[index];
-                    heldObject.SetHoldObject(hand, 0.25f);
-                }
+                heldObject = trigger.current;
+                heldObject.SetHoldObject(hand, 0.25f);
             }
         }
         else if (heldObject != null)
@@ -434,6 +413,18 @@ public class PlayerManager : StateManager
                         if (playerManager.position == Position.Default)
                         {
                             Aim(false);
+
+                            if (lineRenderer.enabled)
+                            {
+                                lineRenderer.enabled = false;
+                            }
+
+                            if (target != null)
+                            {
+                                target.outline.enabled = false;
+                                target = null;
+                            }
+
                             gameManager.SetMainPlayer(playerManager, true);
                             return;
                         }
@@ -475,115 +466,9 @@ public class PlayerManager : StateManager
                             }
                         }
                     }
-                    else if (equippedMushroom.stateToApply == State.Link)
-                    {
-                        if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object"))
-                        {
-                            if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
-                            {
-                                stateManager.SetState(equippedMushroom.stateToApply);
-
-                                if (stateManager.states.Contains(State.Link))
-                                {
-                                    StartCoroutine(Link(stateManager, hitPoint));
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
-    }
-
-    private IEnumerator Link(StateManager linkedObject, Vector3 hitPoint)
-    {
-        Vector3 direction = hitPoint - hand.position;
-
-        if (!isLinked)
-        {
-            if (this.linkedObject != null)
-            {
-                this.linkedObject.isLinked = false;
-                this.linkedObject.linkedObject = null;
-                this.linkedObject.link = null;
-            }
-
-            if (link != null)
-            {
-                Destroy(link.GetComponent<CustomRope>().end.gameObject);
-                Destroy(link.GetComponent<CustomRope>().start.gameObject);
-                Destroy(link.gameObject);
-            }
-
-            if (states.Contains(State.Link))
-            {
-                states.Remove(State.Link);
-            }
-
-            this.linkedObject = null;
-            link = null;
-
-            linkAttachment = Instantiate(sphere, linkTarget.position + (Vector3.up * 0.1f), Quaternion.identity).GetComponent<Rigidbody>();
-            ObiCollider startCollider = linkAttachment.GetComponent<ObiCollider>();
-            linkJoint = transform.AddComponent<FixedJoint>();
-            linkJoint.connectedBody = linkAttachment;
-
-            linkedObject.linkAttachment = Instantiate(sphere, hitPoint - (direction.normalized * 0.1f), Quaternion.identity).GetComponent<Rigidbody>();
-            ObiCollider endCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
-            linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
-            linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
-
-            link = Instantiate(ropePrefab, hand.position, Quaternion.identity, gameManager.obiSolver.transform);
-            rope = link.GetComponent<CustomRope>();
-            rope.solver = gameManager.obiSolver;
-
-            rope.Initialize(startCollider, null, endCollider);
-
-            isLinked = true;
-
-            this.linkedObject = linkedObject;
-            this.linkedObject.link = link;
-            this.linkedObject.linkedObject = this;
-
-            SetState(State.Link);
-
-        }
-        else
-        {
-            Destroy(linkAttachment.gameObject);
-            linkAttachment = null;
-
-            ObiCollider endCollider = this.linkedObject.linkAttachment.GetComponent<ObiCollider>();
-
-            linkedObject.linkAttachment = Instantiate(sphere, hitPoint - (direction.normalized * 0.1f), Quaternion.identity).GetComponent<Rigidbody>();
-            ObiCollider startCollider = linkedObject.linkAttachment.GetComponent<ObiCollider>();
-            linkedObject.linkJoint = linkedObject.AddComponent<FixedJoint>();
-            linkedObject.linkJoint.connectedBody = linkedObject.linkAttachment;
-
-            Destroy(rope.gameObject);
-            link = Instantiate(ropePrefab, hand.position, Quaternion.identity, gameManager.obiSolver.transform);
-            rope = link.GetComponent<CustomRope>();
-            rope.solver = gameManager.obiSolver;
-            rope.Initialize(startCollider, hand, endCollider);
-
-            isLinked = false;
-            this.linkedObject.link = link;
-            this.linkedObject.linkedObject = linkedObject;
-            this.linkedObject.linkedObject.linkedObject = this.linkedObject;
-            this.linkedObject.linkedObject.link = link;
-            this.linkedObject = null;
-            link = null;
-
-            if (states.Contains(State.Link))
-            {
-                states.Remove(State.Link);
-            }
-        }
-
-        Destroy(linkedObject.obiRigidBody);
-        yield return new WaitForEndOfFrame();
-        linkedObject.obiRigidBody = linkedObject.AddComponent<ObiRigidbody>();
-        linkedObject.obiRigidBody.kinematicForParticles = false;
     }
 
     ///////////////////////////////////////////////////
@@ -613,6 +498,86 @@ public class PlayerManager : StateManager
             {
                 rigidBody.angularVelocity = Vector3.zero;
             }
+        }
+    }
+
+    private void OutlineRaycast()
+    {
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        Vector3 hitPoint = Vector3.zero;
+        Ray ray = Camera.main.ScreenPointToRay(screenCenter);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.tag == "Player" && hit.collider.transform != transform)
+            {
+                if (hit.collider.TryGetComponent<PlayerManager>(out PlayerManager playerManager))
+                {
+                    if (target != null)
+                    {
+                        if (playerManager != target)
+                        {
+                            target.outline.enabled = false;
+                        }
+                    }
+                    target = playerManager;
+                    target.outline.enabled = true;
+                    return;
+                }
+            }
+
+            hitPoint = hit.point;
+        }
+
+        Vector3 rayDirection;
+
+        if (hitPoint == Vector3.zero)
+        {
+            rayDirection = eye.forward;
+        }
+        else
+        {
+            rayDirection = hitPoint - eye.position;
+        }
+
+        ray.origin = eye.position;
+        ray.direction = rayDirection;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (equippedObject != null)
+            {
+                if (equippedObject.type == Type.Mushroom)
+                {
+                    MushroomManager equippedMushroom = (MushroomManager)equippedObject;
+                    if (equippedMushroom.stateToApply == State.Sticky)
+                    {
+                        if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object") && hit.collider.transform != transform)
+                        {
+                            if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                            {
+                                if (target != null)
+                                {
+                                    if (target != stateManager)
+                                    {
+                                        target.outline.enabled = false;
+                                    }
+                                }
+                                target = stateManager;
+                                target.outline.enabled = true;
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (target != null)
+        {
+            target.outline.enabled = false;
+            target = null;
         }
     }
 
@@ -768,15 +733,13 @@ public class PlayerManager : StateManager
         }
     }
 
-    [SerializeField] private float jumpBufferTime; // Temps de buffer pour le saut
-    public float jumpBufferTimer;
-
-    [SerializeField] private float coyoteTime; // Temps de coyote time
-    public float coyoteTimer;
-
     private void Update()//Gère les temps pour le coyoteTime et JumpBuffering
     {
         jumpBufferTimer -= Time.fixedDeltaTime;
+        if (playerControls == null)
+        {
+            Debug.Log(transform.name);
+        }
         if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
         {
             buttonSouthIsPressed = true;
@@ -792,7 +755,7 @@ public class PlayerManager : StateManager
         {
             coyoteTimer -= Time.fixedDeltaTime;
         }
-        Debug.Log(RaycastGrounded());
+        //Debug.Log(RaycastGrounded());
 
     }
 
@@ -807,38 +770,40 @@ public class PlayerManager : StateManager
         {
             if (isMainPlayer)
             {
+                gameManager.UIManager.SetUIInput(this);
                 Move(playerControls.Player.LeftStick.ReadValue<Vector2>());
                 FallGravity();
 
                 if ((RaycastGrounded() && jumpBufferTimer > 0))
                 {
-                    //buttonSouthIsPressed = true;
                     jumpBufferTimer = -5;
                     coyoteTimer = -5;
                     Jump();
                 }
                 else if(playerControls.Player.A.IsPressed() && coyoteTimer > 0 && !RaycastGrounded())
                 {
+                    buttonSouthIsPressed = true;
                     coyoteTimer = -5;
                     jumpBufferTimer = -5;
                     Jump();
                 }
 
-                if (!playerControls.Player.A.IsPressed() && !buttonSouthIsPressed && rigidBody.velocity.y > 0)
+                if (!playerControls.Player.A.IsPressed() && rigidBody.velocity.y > 0)
                 {
                     //Debug.Log("JumpCut!");
                     OnJumpUp();
                 }
 
-
-
-                if (playerControls.Player.RightStick.ReadValue<Vector2>() != Vector2.zero)
-                {
-                    //MoveCamera(playerControls.Player.RightStick.ReadValue<Vector2>());
-                }
+                trigger.UpdateOutline();
 
                 if (!isAiming)
                 {
+                    if (target != null)
+                    {
+                        target.outline.enabled = false;
+                        target = null;
+                    }
+
                     if (lineRenderer.enabled)
                     {
                         lineRenderer.enabled = false;
@@ -878,11 +843,7 @@ public class PlayerManager : StateManager
                 }
                 else
                 {
-                    /*if (!playerControls.Player.LT.IsPressed() && leftTriggerIsPressed)
-                    {
-                        leftTriggerIsPressed = false;
-                        Aim(false);
-                    }*/
+                    OutlineRaycast();
 
                     if (heldObject != null)
                     {
@@ -919,12 +880,7 @@ public class PlayerManager : StateManager
         }
         else
         {
-            /*if (transform.name == "Player_08")
-            {
-                Debug.Log(obiRigidBody.linearVelocity);
-                Debug.Log(obiRigidBody.angularVelocity);
-            }
-            obiRigidBody.UpdateVelocities(-obiRigidBody.linearVelocity, -obiRigidBody.angularVelocity);*/
+            
         }
     }
 }

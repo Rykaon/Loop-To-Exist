@@ -132,6 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 4329433310726354432}
+  current: {fileID: 0}
 --- !u!33 &8168192816413617238
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -327,9 +328,8 @@ GameObject:
   - component: {fileID: 8057462345250402438}
   - component: {fileID: 9068653221537410951}
   - component: {fileID: 882217338985396927}
-  - component: {fileID: 1288221829478390717}
-  - component: {fileID: 5156531840387393910}
   - component: {fileID: 7955133660322006053}
+  - component: {fileID: 6847316940414708314}
   m_Layer: 0
   m_Name: Player_01
   m_TagString: Player
@@ -376,10 +376,9 @@ MonoBehaviour:
   states: 
   position: 0
   RigidBody: {fileID: 882217338985396927}
-  ObiRigidBody: {fileID: 5156531840387393910}
   ObjectCollider: {fileID: 9068653221537410951}
-  ObiCollider: {fileID: 1288221829478390717}
   Renderer: {fileID: 8057462345250402438}
+  Outline: {fileID: 6847316940414708314}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
@@ -400,19 +399,14 @@ MonoBehaviour:
   isMainPlayer: 0
   isActive: 0
   isAiming: 0
+  isLadder: 0
+  isLadderTrigger: 0
   buttonSouthIsPressed: 0
   buttonWestIsPressed: 0
   buttonEastIsPressed: 0
   buttonNorthIsPressed: 0
   leftTriggerIsPressed: 0
   rightTriggerIsPressed: 0
-  cameraRotationSpeed: 3
-  ropePrefab: {fileID: 8780796632633694259, guid: 225b69a2b27545340b3f30bb90ef7a0d,
-    type: 3}
-  sphere: {fileID: 79148536965143018, guid: 6132ff0eac769f544a8a240b2202b0af, type: 3}
-  ropeParticlesDistance: 0.5
-  ropeParticleMoovingSpeed: 0.1
-  rope: {fileID: 0}
   lineRenderer: {fileID: 7955133660322006053}
   linePoints: 25
   timeBetweenPoints: 0.1
@@ -534,36 +528,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 2
---- !u!114 &1288221829478390717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2292988574588036909}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6757b231cedd544c583ef8aeaf773b2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thickness: 0
-  material: {fileID: 11400000, guid: 974aa4bcefdd9f248800c5c200ff2f73, type: 2}
-  filter: -65535
-  m_SourceCollider: {fileID: 9068653221537410951}
-  m_DistanceField: {fileID: 0}
---- !u!114 &5156531840387393910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2292988574588036909}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62359d80fdc0e4315ab6331b78ec5b90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kinematicForParticles: 0
 --- !u!120 &7955133660322006053
 LineRenderer:
   serializedVersion: 2
@@ -668,6 +632,24 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &6847316940414708314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2292988574588036909}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &6095508214992525309
 GameObject:
   m_ObjectHideFlags: 0

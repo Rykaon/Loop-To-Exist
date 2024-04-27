@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="SvgjsSvg1001" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:svgjs="http://svgjs.com/svgjs" viewBox="0 0 256 256">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #565656;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #474747;
+      }
+
+      .cls-5 {
+        fill: none;
+        stroke: #2b2b2b;
+        stroke-miterlimit: 5;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3 {
+        fill: #a9a9a9;
+      }
+
+      .cls-4 {
+        fill: #585858;
+      }
+    </style>
+  </defs>
+  <path id="classic_inner_bg" data-name="classic inner bg" class="cls-1" d="M240,256H16c-8.8,0-16-7.2-16-16V16C0,7.2,7.2,0,16,0h224c8.8,0,16,7.2,16,16v224c0,8.8-7.2,16-16,16Z"/>
+  <path id="classic_bottom_right" data-name="classic bottom right" class="cls-2" d="M250.8,4.2l-24.2,19.4c1.2,1.1,1.9,2.7,1.9,4.5v188c0,3.3-2.7,6-6,6H34.5c-1.8,0-3.3-.8-4.4-1.9l-25.8,30.8c2.9,3.1,7.1,5.1,11.7,5.1h224c8.8,0,16-7.2,16-16V16c0-4.6-2-8.9-5.2-11.8Z"/>
+  <path id="classic_top_left" data-name="classic top left" class="cls-4" d="M28.5,216V28c0-3.3,2.7-6,6-6h188c1.6,0,2.9.6,4.1,1.5l24.2-19.4c-2.9-2.5-6.7-4.1-10.8-4.1H16C7.2,0,0,7.2,0,16v224c0,4.2,1.6,8,4.3,10.9l25.8-30.8c-1-1.1-1.6-2.5-1.6-4.1Z"/>
+  <path id="classic_line" data-name="classic line" class="cls-5" d="M222.5,222H34.5c-3.3,0-6-2.7-6-6V28c0-3.3,2.7-6,6-6h188c3.3,0,6,2.7,6,6v188c0,3.3-2.7,6-6,6Z"/>
+  <g>
+    <rect class="cls-3" x="87.5" y="140.9" width="81" height="8.9"/>
+    <rect class="cls-3" x="80.4" y="132.6" width="23.1" height="8.9" transform="translate(-45.1 229) rotate(-90)"/>
+    <rect class="cls-3" x="152.5" y="132.6" width="23.1" height="8.9" transform="translate(27 301.1) rotate(-90)"/>
+  </g>
+</svg>

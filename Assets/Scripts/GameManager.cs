@@ -7,6 +7,8 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem.Users;
 using static Cinemachine.CinemachineFreeLook;
 using static UnityEngine.Rendering.VolumeComponent;
 using System.Linq;
@@ -27,24 +29,28 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public Camera _camera;
 
     public PlayerControls playerControls { get; private set; }
-
     public PlayerManager mainPlayer { get; set; }
 
-    [Header("Menu References")]
+    [Header ("Input References")]
+    [SerializeField] private PlayerInput playerInput;
+    public string previousControlScheme = "";
+    private const string gamepadScheme = "Gamepad";
+    private const string mouseScheme = "Keyboard&Mouse";
+    public string gamepad { get { return gamepadScheme; } private set { } }
+    public string mouse { get { return mouseScheme; } private set { } }
+
+    [Header("UI References")]
+    [SerializeField] private UIManager uiManager;
     [SerializeField] private RadialMenu PlayerMenu;
 
     [Header("Entities References")]
     [SerializeField] private List<StateManager> entities;
 
-    [Header("Obi's Réferences")]
-    [SerializeField] private ObiSolver ObiSolver;
-
+    public UIManager UIManager { get; private set; }
     public RadialMenu playerMenu { get; private set; }
     public List<PlayerManager> playerList { get; private set; }
     public List<MushroomManager> mushroomList { get; private set; }
     public List<ObjectManager> objectList { get; private set; }
-
-    public ObiSolver obiSolver { get; private set; }
 
     private int playerIndex = 0;
     private int playerMaxIndex;
@@ -59,12 +65,13 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        UIManager = uiManager;
+        UIManager.gameManager = this;
         controlState = ControlState.Menu;
         playerControls = new PlayerControls();
         playerControls.Player.Disable();
         playerControls.UI.Enable();
 
-        obiSolver = ObiSolver;
         playerList = entities.OfType<PlayerManager>().ToList();
         mushroomList = entities.OfType<MushroomManager>().ToList();
         objectList = entities.OfType<ObjectManager>().ToList();
@@ -90,6 +97,32 @@ public class GameManager : MonoBehaviour
 
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
+    }
+
+    private void OnEnable()
+    {
+        InputSystem.onActionChange += OnControlsChanged;
+    }
+
+    private void OnDisable()
+    {
+        InputSystem.onActionChange -= OnControlsChanged;
+    }
+
+    private void OnControlsChanged(object input, InputActionChange inputActionChange)
+    {
+        if (inputActionChange == InputActionChange.BoundControlsChanged)
+        {
+            if (playerInput.currentControlScheme == mouseScheme && previousControlScheme != mouseScheme)
+            {
+                previousControlScheme = mouseScheme;
+            }
+            else if (playerInput.currentControlScheme == gamepadScheme && previousControlScheme != gamepadScheme)
+            {
+                previousControlScheme = gamepadScheme;
+            }
+        }
+
     }
 
     public void ChangeState(ControlState state)

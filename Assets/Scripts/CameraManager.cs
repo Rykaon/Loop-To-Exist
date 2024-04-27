@@ -1,29 +1,50 @@
 using Cinemachine;
+using DG.Tweening;
 using DG.Tweening.Core.Easing;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraManager : MonoBehaviour
 {
     [Header("Component References")]
-    [SerializeField] protected GameManager gameManager;
+    [SerializeField] private GameManager gameManager;
     [SerializeField] public CinemachineFreeLook worldCamera;
     [SerializeField] public CinemachineFreeLook aimCamera;
-    [HideInInspector] protected Cinemachine3rdPersonFollow thirdPersonFollow;
+    [HideInInspector] private Cinemachine3rdPersonFollow thirdPersonFollow;
     
-    [SerializeField] protected RectTransform aimCursor;
-    [SerializeField] protected Transform followTransitionTarget;
-    [SerializeField] protected Transform lookTransitionTarget;
+    [SerializeField] private RectTransform aimCursor;
+    [SerializeField] private Transform followTransitionTarget;
+    [SerializeField] private Transform lookTransitionTarget;
 
     [Header("General References")]
-    [SerializeField] protected float cameraTransitionDuration;
-    [SerializeField] protected float aimTransitionDuration;
+    [SerializeField] private float cameraTransitionDuration;
+    [SerializeField] private float aimTransitionDuration;
     [HideInInspector] public bool isCameraSet = true;
     [HideInInspector] public Transform previousTarget;
     [HideInInspector] public Transform currentTarget;
     [HideInInspector] public Coroutine cameraTransition = null;
+
+    [Header("UI References")]
+    [SerializeField] private Image blackScreen;
+
+    public void BlackScreen(float fadeTime, float blackTime)
+    {
+        StartCoroutine(BlackScreenRoutine(fadeTime, blackTime));
+    }
+
+    private IEnumerator BlackScreenRoutine(float fadeTime, float blackTime)
+    {
+        blackScreen.DOFade(1f, fadeTime);
+        gameManager.mainPlayer.isActive = false;
+        yield return new WaitForSecondsRealtime(fadeTime);
+        yield return new WaitForSecondsRealtime(blackTime);
+        blackScreen.DOFade(0f, fadeTime);
+        yield return new WaitForSecondsRealtime(fadeTime);
+        gameManager.mainPlayer.isActive = true;
+    }
 
     public IEnumerator SetCameraTarget(Transform follow, Transform look)
     {
