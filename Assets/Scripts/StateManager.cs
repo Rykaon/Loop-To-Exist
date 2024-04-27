@@ -20,6 +20,7 @@ public class StateManager : MonoBehaviour
     [SerializeField] private Collider ObjectCollider;
     [SerializeField] private MeshRenderer Renderer;
     [SerializeField] private Outline Outline;
+    public StickedWallElements stickedWall;
 
     [Header("Throw Properties")]
     [SerializeField] public float startThrowForceHorizontal = 5;
@@ -35,22 +36,18 @@ public class StateManager : MonoBehaviour
 
     protected Transform parent;
 
-    [HideInInspector] public GameObject objectToStick = null;
-    [HideInInspector] public List<GameObject> stickedObjects = new List<GameObject>();
-    //[HideInInspector] public SnapRigidbodyPosition stickSnap = null;
+    public GameObject objectToStick = null;
+    public List<GameObject> stickedObjects = new List<GameObject>();
 
     [HideInInspector] public GameObject link = null;
     [HideInInspector] public StateManager linkedObject = null;
     [HideInInspector] public Rigidbody linkAttachment = null;
-    //[HideInInspector] public SnapRigidbodyPosition linkSnap = null;
     [HideInInspector] public FixedJoint linkJoint = null;
-    public bool isSticked { get; set; }
-    public bool isLinked { get; set; }
+    public bool isSticked;
+    public bool isLinked;
 
     protected PlayerManager holdingPlayer = null;
-    //[HideInInspector] public SnapRigidbodyPosition holdingSnap = null;
     protected PlayerManager equippingPlayer = null;
-    //[HideInInspector] public SnapRigidbodyPosition equippingSnap = null;
     protected Joint joint = null;
     private float jointBreakTreshold = 150f;
 
@@ -230,7 +227,8 @@ public class StateManager : MonoBehaviour
         isHeldObject = true;
         objectCollider.isTrigger = true;
         rigidBody.useGravity = false;
-        
+
+        rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rigidBody.mass = 0.1f;
         holdingPlayer = endPosition.parent.GetComponent<PlayerManager>();
 
@@ -254,100 +252,7 @@ public class StateManager : MonoBehaviour
             }
         }
 
-        /*List<GameObject> cloneList = new List<GameObject>();
-        List<HoldCheckCollision> collisionList = new List<HoldCheckCollision>(); 
-        GameObject clone = new GameObject();
-
-        clone.transform.position = transform.position;
-
-        foreach (GameObject stickedObject in stickedList)
-        {
-            if (stickedObject.TryGetComponent<StateManager>(out StateManager stateManager)){
-                GameObject newStickedObject = new GameObject();
-                newStickedObject.transform.position = stickedObject.transform.position;
-                newStickedObject.transform.SetParent(clone.transform, true);
-                cloneList.Add(newStickedObject);
-                collisionList.Add(SetCollider(stickedObject.GetComponent<Collider>(), newStickedObject));
-                stateManager.rigidBody.mass = 0f;
-            }
-        }
-
-        foreach (HoldCheckCollision hold in collisionList)
-        {
-            hold.canCheck = true;
-        }
-
-        clone.transform.position = endPosition.position;
-        clone.transform.rotation = endPosition.rotation;
-
-        for (int i = 0; i < cloneList.Count; ++i)
-        {
-            if (collisionList[i].hasCollide)
-            {
-                if (stickedList[i].TryGetComponent<StateManager>(out StateManager stateManager))
-                {
-                    if (stateManager.joint != null)
-                    {
-                        Destroy(stateManager.joint);
-                        stateManager.joint = null;
-                        stateManager.isSticked = false;
-
-                        if (objectToStick.TryGetComponent<StateManager>(out StateManager stickedToStateManager))
-                        {
-                            if (stickedToStateManager.stickedObjects.Contains(this.gameObject))
-                            {
-                                stickedToStateManager.stickedObjects.Remove(this.gameObject);
-                            }
-                        }
-
-                        stateManager.objectToStick = null;
-                    }
-                }
-            }
-            Destroy(cloneList[i]);
-        }
-        Destroy(clone);*/
-
         StartCoroutine(HoldObject(endPosition, time));
-    }
-
-    private HoldCheckCollision SetCollider(Collider original, GameObject clone)
-    {
-        System.Type originalColliderType = original.GetType();
-
-        Collider cloneCollider = null;
-
-        if (originalColliderType == typeof(BoxCollider))
-        {
-            BoxCollider originalBoxCollider = original as BoxCollider;
-            BoxCollider cloneBoxCollider = clone.AddComponent<BoxCollider>();
-            cloneBoxCollider.size = originalBoxCollider.size;
-            cloneBoxCollider.center = originalBoxCollider.center;
-            cloneCollider = cloneBoxCollider;
-        }
-        else if (originalColliderType == typeof(CapsuleCollider))
-        {
-            CapsuleCollider originalCapsuleCollider = original as CapsuleCollider;
-            CapsuleCollider cloneCapsuleCollider = clone.AddComponent<CapsuleCollider>();
-            cloneCapsuleCollider.height = originalCapsuleCollider.height;
-            cloneCapsuleCollider.radius = originalCapsuleCollider.radius;
-            cloneCapsuleCollider.center = originalCapsuleCollider.center;
-            cloneCollider = cloneCapsuleCollider;
-        }
-        else if (originalColliderType == typeof(MeshCollider))
-        {
-            MeshCollider originalMeshCollider = original as MeshCollider;
-            MeshCollider cloneMeshCollider = clone.AddComponent<MeshCollider>();
-            // Copie des propriétés spécifiques du mesh collider
-            cloneMeshCollider.sharedMesh = originalMeshCollider.sharedMesh;
-            cloneMeshCollider.convex = originalMeshCollider.convex;
-            // Ajouter d'autres propriétés spécifiques du MeshCollider si nécessaire
-            cloneCollider = cloneMeshCollider;
-        }
-
-        HoldCheckCollision holdCheckCollision = clone.AddComponent<HoldCheckCollision>();
-
-        return holdCheckCollision;
     }
 
     private IEnumerator HoldObject(Transform endPosition, float transitionDuration)
@@ -367,26 +272,7 @@ public class StateManager : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        isHeld = true;
-
-        objectCollider.isTrigger = false;
-        if (joint == null)
-        {
-            joint = transform.AddComponent<FixedJoint>();
-        }
-        joint.connectedBody = holdingPlayer.transform.GetComponent<Rigidbody>();
-        joint.enableCollision = true;
-
-        if (states.Contains(State.Link))
-        {
-            joint.breakForce = float.PositiveInfinity;//jointBreakTreshold * 100;
-            joint.breakTorque = float.PositiveInfinity;//jointBreakTreshold * 100;
-        }
-        else
-        {
-            joint.breakForce = jointBreakTreshold;
-            joint.breakTorque = jointBreakTreshold;
-        }
+        InitializeHoldObject(parent);
     }
 
     public virtual void InitializeHoldObject(Transform parent)
@@ -423,6 +309,7 @@ public class StateManager : MonoBehaviour
                 joint = null;
             }
 
+            rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
             rigidBody.mass = 1f;
             holdingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
 
@@ -478,6 +365,7 @@ public class StateManager : MonoBehaviour
         throwDirection += Vector3.up * throwForceVertical;
 
         // Appliquer la force au rigidbody
+        rigidBody.velocity = Vector3.zero;
         rigidBody.AddForce(throwDirection, ForceMode.Impulse);
         objectCollider.isTrigger = false;
         holdingPlayer = null;
@@ -658,23 +546,10 @@ public class StateManager : MonoBehaviour
 
     protected virtual void OnJointBreak(float breakForce)
     {
-        /*if (joint != null)
-        {
-            if (transform.name == "Grab_04")
-            {
-                Debug.Log(joint.currentForce.magnitude + " // " + jointBreakTreshold);
-            }
-            if (joint.currentForce.magnitude >= jointBreakTreshold || joint.currentTorque.magnitude >= jointBreakTreshold)
-            {
-                Debug.Log("yeaaaaaaah");
-            }
-        }*/
-
         if (isHeld)
         {
             if (joint.connectedBody == holdingPlayer.rigidBody)
             {
-                Debug.Log("yo");
                 position = Position.Default;
                 isHeld = false;
                 isHeldObject = false;
@@ -682,6 +557,7 @@ public class StateManager : MonoBehaviour
                 Destroy(joint);
                 joint = null;
 
+                rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
                 rigidBody.mass = 1f;
                 holdingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
 
@@ -712,6 +588,7 @@ public class StateManager : MonoBehaviour
                 Destroy(joint);
                 joint = null;
 
+                rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
                 rigidBody.mass = 1f;
                 equippingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
 

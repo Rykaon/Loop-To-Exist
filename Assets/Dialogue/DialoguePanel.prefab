@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1616861715932925005}
   - component: {fileID: 9217097754481008745}
   - component: {fileID: 6663884134343220918}
-  - component: {fileID: 690450961979242318}
   m_Layer: 5
   m_Name: DialoguePanel
   m_TagString: Untagged
@@ -81,27 +80,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!95 &690450961979242318
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 269976330091629349}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f068da06a3b659f469fedbe24578e969, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1176942698687009857
 GameObject:
   m_ObjectHideFlags: 0

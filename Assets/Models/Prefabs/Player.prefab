@@ -416,18 +416,18 @@ MonoBehaviour:
   velPower: 0.9
   jumpForce: 12
   jumpCutMultiplier: 1
+  jumpBufferTime: 0.5
+  jumpBufferTimer: 0
+  coyoteTime: 0.5
+  coyoteTimer: 0
   customGravity: {x: 0, y: -30, z: 0}
   fallGravityMultiplier: 1.5
-  collisionDetectionDistance: 0.196
+  collisionDetectionDistance: 0.25
   GroundLayer:
     serializedVersion: 2
     m_Bits: 73
   moveMassMultiplier: 1
   maxSlopeAngle: 55
-  jumpBufferTime: 0.5
-  jumpBufferTimer: 0
-  coyoteTime: 0.5
-  coyoteTimer: 0
 --- !u!33 &2753056825088638641
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -989,9 +989,9 @@ Transform:
   m_GameObject: {fileID: 8873039584834303674}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.73, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 0, y: -0.9, z: 0}
+  m_LocalScale: {x: 0.75, y: 0.02, z: 0.75}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6661602020122977299}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

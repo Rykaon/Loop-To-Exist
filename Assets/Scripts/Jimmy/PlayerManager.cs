@@ -331,7 +331,7 @@ public class PlayerManager : StateManager
     {
         float startThrowForceHorizontal = heldObject.startThrowForceHorizontal;
         float startThrowForceVertical = heldObject.startThrowForceVertical;
-        float maxThrowForceHorizontal = 10;
+        float maxThrowForceHorizontal = 15;
         float maxThrowForceVertical = 7;
         throwDirection = new Vector2(startThrowForceHorizontal, startThrowForceVertical);
         isCalculatingThrowForce = true;
@@ -462,7 +462,21 @@ public class PlayerManager : StateManager
                         {
                             if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
                             {
-                                stateManager.SetState(equippedMushroom.stateToApply);
+                                if (stateManager.stickedWall != null)
+                                {
+                                    if (!stateManager.stickedWall.isWallDestroyed)
+                                    {
+                                        stateManager.stickedWall.manager.DestroyWall();
+                                    }
+                                    else
+                                    {
+                                        stateManager.SetState(equippedMushroom.stateToApply);
+                                    }
+                                }
+                                else
+                                {
+                                    stateManager.SetState(equippedMushroom.stateToApply);
+                                }
                             }
                         }
                     }
@@ -610,17 +624,31 @@ public class PlayerManager : StateManager
         bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
         //bool isCollisionDetected = false;
 
-        RaycastHit hit;
-        if (Physics.Raycast(feet.position, Vector3.down, out hit, collisionDetectionDistance))
+        if (isCollisionDetected)
         {
-            float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
-
-            if (dotProduct >= 0.95f && dotProduct <= 1.05f)
+            RaycastHit hit;
+            if (Physics.Raycast(feet.position, Vector3.down, out hit, collisionDetectionDistance, GroundLayer))
             {
-                isCollisionDetected = true;
+                float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
+                if (dotProduct >= 0.75 && dotProduct <= 1.25f)
+                {
+                    isCollisionDetected = true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
-        return isCollisionDetected;
+        else
+        {
+            return isCollisionDetected;
+        }
     }
 
     private void OnDrawGizmos()//Permet de visualiser le boxCast pour la détection du ground
