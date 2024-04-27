@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,11 +13,18 @@ public class DoorController : MonoBehaviour
 
     public State state;
     [SerializeField] private List<DoorSwitch> switchs;
-    [SerializeField] private Animator animator;
+    [SerializeField] private Transform gate;
+    [SerializeField] private Rigidbody gateBody;
+    [SerializeField] private AnimationCurve openCurve;
+    private Vector3 openPosition;
+    private Coroutine coroutine;
+    private Tween open;
 
     private void Awake()
     {
         state = State.Close;
+        openPosition = gate.position;
+        coroutine = StartCoroutine(OpenClose());
     }
 
     public void CheckSwitches()
@@ -35,24 +43,45 @@ public class DoorController : MonoBehaviour
         if (state == State.Open && !allSwitchesActive)
         {
             state = State.Close;
-            OpenClose();
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                if (open != null)
+                {
+                    open.Kill();
+                }
+            }
+            coroutine = StartCoroutine(OpenClose());
         }
         else if (state == State.Close && allSwitchesActive)
         {
             state = State.Open;
-            OpenClose();
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                if (open != null)
+                {
+                    open.Kill();
+                }
+            }
+            coroutine = StartCoroutine(OpenClose());
         }
     }
 
-    private void OpenClose()
+    private IEnumerator OpenClose()
     {
         if (state == State.Open)
         {
-            animator.Play("Open");
+            gateBody.useGravity = false;
+            open = gate.DOMove(openPosition, 1.5f).SetEase(openCurve);
+            yield return new WaitForSecondsRealtime(1.5f);
+            gateBody.isKinematic = true;
         }
         else
         {
-            animator.Play("Close");
+            gateBody.isKinematic = false;
+            gateBody.useGravity = true;
+            gateBody.AddForce(Vector3.down * 10, ForceMode.Impulse);
         }
     }
 }
