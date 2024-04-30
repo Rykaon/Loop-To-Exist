@@ -379,6 +379,7 @@ MonoBehaviour:
   ObjectCollider: {fileID: 9068653221537410951}
   Renderer: {fileID: 8057462345250402438}
   Outline: {fileID: 6847316940414708314}
+  stickedWall: {fileID: 0}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
@@ -387,6 +388,8 @@ MonoBehaviour:
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
   linkJoint: {fileID: 0}
+  isSticked: 0
+  isLinked: 0
   lastGroundedPosition: {x: 0, y: 0, z: 0}
   lastGroundedRotation: {x: 0, y: 0, z: 0, w: 0}
   head: {fileID: 4194247132682260400}
@@ -414,8 +417,8 @@ MonoBehaviour:
   acceleration: 15
   deceleration: 15
   velPower: 0.9
-  jumpForce: 12
-  jumpCutMultiplier: 1
+  jumpForce: 17
+  jumpCutMultiplier: 0.9
   jumpBufferTime: 0.5
   jumpBufferTimer: 0
   coyoteTime: 0.5
@@ -485,7 +488,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2292988574588036909}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7f731aa4dff23bd479456c3253ed51c7, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -527,7 +530,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 2
+  m_CollisionDetection: 1
 --- !u!120 &7955133660322006053
 LineRenderer:
   serializedVersion: 2

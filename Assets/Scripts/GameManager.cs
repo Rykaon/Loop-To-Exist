@@ -97,6 +97,7 @@ public class GameManager : MonoBehaviour
 
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
+        SetMainPlayer(mainPlayer, true);
     }
 
     private void OnEnable()
@@ -166,6 +167,7 @@ public class GameManager : MonoBehaviour
 
         if (startRun)
         {
+            ChangeState(ControlState.World);
             StartRun();
         }
         else

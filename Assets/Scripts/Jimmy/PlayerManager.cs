@@ -151,7 +151,7 @@ public class PlayerManager : StateManager
     [SerializeField] protected float velPower = 0.9f; //inf�rieur � 1
 
     [SerializeField] protected float jumpForce;
-    [Range(0f, 1f)] [SerializeField] protected float jumpCutMultiplier;
+    [Range(0f, 5f)] [SerializeField] protected float jumpCutMultiplier;
     [SerializeField] private float jumpBufferTime; // Temps de buffer pour le saut
     public float jumpBufferTimer;
     [SerializeField] private float coyoteTime; // Temps de coyote time
@@ -279,6 +279,7 @@ public class PlayerManager : StateManager
         //JumpCut
         if (rigidBody.velocity.y > 0)
         {
+            Debug.Log(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier));
             rigidBody.AddForce(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier), ForceMode.Impulse);
         }
     }
@@ -493,6 +494,9 @@ public class PlayerManager : StateManager
     {
         Vector3 direction = rigidBody.velocity;
         direction.y = 0f;
+        Vector3 dirToLook = Vector3.zero;
+        dirToLook = value.x * Utilities.GetCameraRight(gameManager.transform);
+        dirToLook = value.y * Utilities.GetCameraForward(gameManager.transform);
 
         if (value.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
         {
@@ -818,7 +822,6 @@ public class PlayerManager : StateManager
 
                 if (!playerControls.Player.A.IsPressed() && rigidBody.velocity.y > 0)
                 {
-                    //Debug.Log("JumpCut!");
                     OnJumpUp();
                 }
 
