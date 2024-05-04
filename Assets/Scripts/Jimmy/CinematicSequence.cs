@@ -178,7 +178,7 @@ namespace Cinematic
             }
 
             gameManager.playerControls.Disable();
-            gameManager.mainPlayer.isActive = false;
+            gameManager.mainPlayer.isActive = true;
         }
 
         private IEnumerator ExecutePlan(CinematicPlan plan)
