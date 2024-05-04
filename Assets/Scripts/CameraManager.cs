@@ -6,29 +6,61 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinematic;
 
 public class CameraManager : MonoBehaviour
 {
     [Header("Component References")]
     [SerializeField] private GameManager gameManager;
-    [SerializeField] public CinemachineFreeLook worldCamera;
-    [SerializeField] public CinemachineFreeLook aimCamera;
+    public CinemachineFreeLook worldCamera;
+    public CinemachineFreeLook aimCamera;
+    public CinemachineVirtualCamera cinematicCamera;
     [HideInInspector] private Cinemachine3rdPersonFollow thirdPersonFollow;
     
     [SerializeField] private RectTransform aimCursor;
     [SerializeField] private Transform followTransitionTarget;
     [SerializeField] private Transform lookTransitionTarget;
+    [SerializeField] private Transform cinematicTarget;
 
     [Header("General References")]
+    [HideInInspector] public CinemachineVirtualCameraBase currentCam;
+    [HideInInspector] public CinemachineVirtualCameraBase previousCam;
     [SerializeField] private float cameraTransitionDuration;
     [SerializeField] private float aimTransitionDuration;
     [HideInInspector] public bool isCameraSet = true;
     [HideInInspector] public Transform previousTarget;
     [HideInInspector] public Transform currentTarget;
     [HideInInspector] public Coroutine cameraTransition = null;
-
+    private Coroutine aimRoutine;
+    private Coroutine cursorRoutine;
+    
     [Header("UI References")]
     [SerializeField] private Image blackScreen;
+
+    [Header("Cinematics")]
+    public CinematicSequence intro;
+
+    private void Awake()
+    {
+        currentCam = worldCamera;
+    }
+
+    public void ChangeCamera(CinemachineVirtualCameraBase newCam)
+    {
+        if (currentCam !=  null)
+        {
+            previousCam = currentCam;
+            currentCam.Priority = 0;
+        }
+
+        currentCam = newCam;
+        currentCam.Priority = 100;
+    }
+
+    public void ExecuteCinematic(CinematicSequence sequence)
+    {
+        sequence.Execute(this, gameManager, cinematicCamera, cinematicTarget);
+    }
 
     public void BlackScreen(float fadeTime, float blackTime)
     {
@@ -88,18 +120,31 @@ public class CameraManager : MonoBehaviour
     {
         if (value)
         {
-            worldCamera.Priority = 0;
-            aimCamera.Priority = 100;
-            StartCoroutine(ShowHideCursor(aimTransitionDuration, true));
+            ChangeCamera(aimCamera);
+            if (cursorRoutine != null)
+            {
+                StopCoroutine(cursorRoutine);
+            }
+
+            cursorRoutine = StartCoroutine(ShowHideCursor(aimTransitionDuration, true));
         }
         else if (!value)
         {
-            worldCamera.Priority = 100;
-            aimCamera.Priority = 0;
-            StartCoroutine(ShowHideCursor(0f, false));
+            ChangeCamera(worldCamera);
+            if (cursorRoutine != null)
+            {
+                StopCoroutine(cursorRoutine);
+            }
+
+            cursorRoutine = StartCoroutine(ShowHideCursor(0f, false));
         }
 
-        StartCoroutine(SetAimTarget(targetPos));
+        if (aimRoutine != null)
+        {
+            StopCoroutine(aimRoutine);
+        }
+
+        aimRoutine = StartCoroutine(SetAimTarget(targetPos));
     }
 
     private IEnumerator ShowHideCursor(float time, bool value)

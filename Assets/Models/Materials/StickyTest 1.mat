@@ -107,14 +107,14 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _Emission: 0.05
+    - _Emission: 0.5
     - _EnvironmentReflections: 1
-    - _FresnelPower: 1
+    - _FresnelPower: 19.8
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0.1
-    - _NoisePower: 0.5
+    - _NoisePower: 5.3
     - _NoiseScale: 5
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -133,9 +133,9 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelColor: {r: 1.404722, g: 0.5159481, b: 0.07156119, a: 1}
+    - _FresnelColor: {r: 1.4047219, g: 0.07354563, b: 1.0929769, a: 1}
     - _MainColor: {r: 1, g: 1, b: 1, a: 1}
-    - _NoiseColor: {r: 4.477433, g: 12.28288, b: 1.4147819, a: 1}
+    - _NoiseColor: {r: 11.767578, g: 12.28288, b: 1.4147819, a: 1}
     - _NoiseSpeed: {r: 0.25, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

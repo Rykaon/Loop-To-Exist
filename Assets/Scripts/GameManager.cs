@@ -210,6 +210,11 @@ public class GameManager : MonoBehaviour
 
         if (controlState == ControlState.World)
         {
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                cameraManager.ExecuteCinematic(cameraManager.intro);
+            }
+
             if (playerControls.Player.LB.IsPressed() && !leftShoulderisPressed)
             {
                 leftShoulderisPressed = true;

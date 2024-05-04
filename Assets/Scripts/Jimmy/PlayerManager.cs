@@ -279,7 +279,6 @@ public class PlayerManager : StateManager
         //JumpCut
         if (rigidBody.velocity.y > 0)
         {
-            Debug.Log(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier));
             rigidBody.AddForce(Vector3.down * rigidBody.velocity.y * (1 - jumpCutMultiplier), ForceMode.Impulse);
         }
     }
@@ -506,7 +505,7 @@ public class PlayerManager : StateManager
             }
             else
             {
-                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 300 * Time.fixedDeltaTime));
+                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction , Vector3.up), 100 * Time.fixedDeltaTime));
             }
 
         }
