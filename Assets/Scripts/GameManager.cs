@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 
     public enum ControlState
     {
-        Menu,
+        UI,
         World
     }
 
@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
 
         UIManager = uiManager;
         UIManager.gameManager = this;
-        controlState = ControlState.Menu;
+        controlState = ControlState.UI;
         playerControls = new PlayerControls();
         playerControls.Player.Disable();
         playerControls.UI.Enable();
@@ -139,7 +139,7 @@ public class GameManager : MonoBehaviour
 
     public void ChangeState(ControlState state)
     {
-        if (state == ControlState.Menu)
+        if (state == ControlState.UI)
         {
             playerControls.Player.Disable();
             playerControls.UI.Enable();
@@ -153,6 +153,7 @@ public class GameManager : MonoBehaviour
         }
 
         controlState = state;
+        Debug.Log("State == " + state);
     }
 
     public void SetCameraTarget(Transform follow, Transform look)
@@ -234,7 +235,7 @@ public class GameManager : MonoBehaviour
                 return;
             }
         }
-        else if (controlState == ControlState.Menu)
+        else if (controlState == ControlState.UI)
         {
             bool joystickMoved = playerControls.UI.LeftStick.ReadValue<Vector2>() != Vector2.zero;
 
