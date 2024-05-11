@@ -53,40 +53,26 @@ namespace Cinematic
 
         private void InitializePlans()
         {
-            bool isCurve = false;
             int index = -1;
             for (int i = 0; i < plans.Count - 1; i++)
             {
                 int next = i + 1;
                 plans[i].index = i;
-                if (i == plans.Count - 2)
-                {
-                    plans[next].index = next;
-                }
 
                 if (plans[i].transition == Transition.InterpolateCurve)
                 {
-                    if (!isCurve)
+                    if (plans[i].isFirstDialogue)
                     {
-                        isCurve = true;
                         index = i;
                         plans[index].curvedPlans = new List<CinematicPlan>();
                         plans[index].pathPosition = new List<Vector3>();
                         plans[index].pathRotation = new List<Vector3>();
-
-                        plans[index].curvedPlans.Add(plans[index]);
-                        plans[index].pathPosition.Add(plans[index].position);
-                        plans[index].pathRotation.Add(plans[index].rotation);
                     }
 
-                    plans[index].curvedPlans.Add(plans[next]);
-                    plans[index].pathPosition.Add(plans[next].position);
-                    plans[index].pathRotation.Add(plans[next].rotation);
-                    plans[index].lastPlan = plans[next];
-                }
-                else
-                {
-                    isCurve = false;
+                    plans[index].curvedPlans.Add(plans[i]);
+                    plans[index].pathPosition.Add(plans[i].position);
+                    plans[index].pathRotation.Add(plans[i].rotation);
+                    plans[index].lastPlan = plans[i];
                 }
             }
         }
@@ -226,6 +212,7 @@ namespace Cinematic
         public CinematicSequence.Transition transition;
         public float duration;
         public float transitionDuration;
+        public bool isFirstDialogue;
 
         [Header("Play properties")]
         public Vector3 position;
@@ -234,7 +221,6 @@ namespace Cinematic
         [HideInInspector] public Vector3 sceneLook = Vector3.zero;
 
         [HideInInspector] public int index = -1;
-        [HideInInspector] public bool isFirstCurvePlan = false;
         [HideInInspector] public CinematicPlan lastPlan = null;
         [HideInInspector] public List<CinematicPlan> curvedPlans = null;
         [HideInInspector] public List<Vector3> pathPosition = null;

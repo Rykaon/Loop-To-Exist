@@ -107,9 +107,9 @@ public class RadialMenu : MonoBehaviour
     {
         if (enabled && gameManager.controlState == GameManager.ControlState.World)
         {
-            gameManager.ChangeState(GameManager.ControlState.Menu);
+            gameManager.ChangeState(GameManager.ControlState.UI);
         }
-        else if (!enabled && gameManager.controlState == GameManager.ControlState.Menu)
+        else if (!enabled && gameManager.controlState == GameManager.ControlState.UI)
         {
             gameManager.ChangeState(GameManager.ControlState.World);
         }

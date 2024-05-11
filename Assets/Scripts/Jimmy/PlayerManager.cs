@@ -36,6 +36,8 @@ public class PlayerManager : StateManager
     public bool isAiming = false;
     public bool isLadder = false;
     public bool isLadderTrigger = false;
+    public bool isJumping = false;
+    public bool isJumpingDown = false;
 
     [HideInInspector] public bool buttonSouthIsPressed = false;
     [HideInInspector] public bool buttonWestIsPressed = false;
@@ -271,7 +273,8 @@ public class PlayerManager : StateManager
         }
 
         rigidBody.AddForce(jumpForce, ForceMode.Impulse);
-
+        isJumping = true;
+        isJumpingDown = false;
     }
 
     public void OnJumpUp()
@@ -801,7 +804,15 @@ public class PlayerManager : StateManager
         {
             if (isMainPlayer)
             {
-                gameManager.UIManager.SetUIInput(this);
+                if (playerControls.Player.enabled && !playerControls.UI.enabled)
+                {
+                    gameManager.UIManager.SetUIInput(this);
+                }
+                else if (!playerControls.Player.enabled && playerControls.UI.enabled)
+                {
+                    gameManager.UIManager.SetUIInput(null);
+                }
+                
                 Move(playerControls.Player.LeftStick.ReadValue<Vector2>());
                 FallGravity();
 
@@ -819,9 +830,24 @@ public class PlayerManager : StateManager
                     Jump();
                 }
 
-                if (!playerControls.Player.A.IsPressed() && rigidBody.velocity.y > 0)
+                if (!playerControls.Player.A.IsPressed() && rigidBody.velocity.y >= 0)
                 {
                     OnJumpUp();
+                }
+
+                if (isJumping)
+                {
+                    if (!RaycastGrounded() && rigidBody.velocity.y < 0 && !isJumpingDown)
+                    {
+                        isJumpingDown = true;
+                        Debug.Log("MonGrosBool");
+                    }
+                    else if (RaycastGrounded() && isJumpingDown)
+                    {
+                        isJumping = false;
+                        isJumpingDown = false;
+                        Debug.Log("OuaisOuaisOuais");
+                    }
                 }
 
                 trigger.UpdateOutline();
