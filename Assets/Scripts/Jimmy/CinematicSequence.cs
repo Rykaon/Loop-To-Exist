@@ -28,16 +28,18 @@ namespace Cinematic
 
         private GameManager gameManager;
         private CameraManager cameraManager;
+        private DialogueManager dialogueManager;
         private CinemachineVirtualCamera cinematicCamera;
         private Transform cameraTarget;
 
         private Vector3 camPos;
         private Vector3 camRot;
 
-        public void Execute(CameraManager cameraManager, GameManager gameManager, CinemachineVirtualCamera cinematicCamera, Transform cameraTarget)
+        public void Execute(CameraManager cameraManager, GameManager gameManager, DialogueManager dialogueManager, CinemachineVirtualCamera cinematicCamera, Transform cameraTarget)
         {
             this.cameraManager = cameraManager;
             this.gameManager = gameManager;
+            this.dialogueManager = dialogueManager;
             this.cinematicCamera = cinematicCamera;
             this.cameraTarget = cameraTarget;
             gameManager.mainPlayer.isActive = false;
@@ -79,8 +81,7 @@ namespace Cinematic
 
         private IEnumerator ExecuteSequence()
         {
-            gameManager.mainPlayer.isActive = false;
-            gameManager.playerControls.Disable();
+            gameManager.ChangeState(GameManager.ControlState.UI);
 
             if (startTransition == Transition.Fade)
             {
@@ -163,8 +164,7 @@ namespace Cinematic
                 cameraManager.ChangeCamera(cameraManager.worldCamera);
             }
 
-            gameManager.playerControls.Disable();
-            gameManager.mainPlayer.isActive = true;
+            gameManager.ChangeState(GameManager.ControlState.World);
         }
 
         private IEnumerator ExecutePlan(CinematicPlan plan)
@@ -213,6 +213,7 @@ namespace Cinematic
         public float duration;
         public float transitionDuration;
         public bool isFirstDialogue;
+        public List<float> dialogueDurations;
 
         [Header("Play properties")]
         public Vector3 position;

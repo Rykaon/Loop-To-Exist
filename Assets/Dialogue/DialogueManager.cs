@@ -353,7 +353,7 @@ public class DialogueManager : MonoBehaviour
         if (enabled)
         {
             isActive = true;
-            GameManager.instance.ChangeState(GameManager.ControlState.Menu);
+            GameManager.instance.ChangeState(GameManager.ControlState.UI);
         }
         else
         {

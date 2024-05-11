@@ -59,7 +59,7 @@ public class CameraManager : MonoBehaviour
 
     public void ExecuteCinematic(CinematicSequence sequence)
     {
-        sequence.Execute(this, gameManager, cinematicCamera, cinematicTarget);
+        sequence.Execute(this, gameManager, DialogueManager.instance, cinematicCamera, cinematicTarget);
     }
 
     public void BlackScreen(float fadeTime, float blackTime)
