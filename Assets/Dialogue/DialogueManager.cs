@@ -22,9 +22,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private TextMeshProUGUI displayNameText;
-    [SerializeField] private Animator portraitAnimator;
     [SerializeField] private GameObject continueIcon;
-    private Animator layoutAnimator;
 
     [Header("Choices UI")]
     [SerializeField] private GameObject[] choices;
@@ -49,7 +47,7 @@ public class DialogueManager : MonoBehaviour
 
     private DialogueVariables dialogueVariables;
 
-    private PlayerControls playerControls;
+    private bool saveLockStateDialogue;
 
     private void Awake()
     {
@@ -73,8 +71,6 @@ public class DialogueManager : MonoBehaviour
         isActive = false;
         dialoguePanel.SetActive(false);
 
-        layoutAnimator = dialoguePanel.GetComponent<Animator>();
-
         //playerControls = PC_Manager.playerControls;
 
         choicesText = new TextMeshProUGUI[choices.Length];
@@ -91,12 +87,12 @@ public class DialogueManager : MonoBehaviour
         if (isActive)
         {
 
-            if (canContinueToNextLine && playerControls.UI.A.WasPressedThisFrame() && currentStory.currentChoices.Count == 0)
+            if (canContinueToNextLine && (GameManager.instance.playerControls.UI.A.WasPressedThisFrame()) && currentStory.currentChoices.Count == 0)
             {
                 ContinueStory();
             }
 
-            if (playerControls.UI.B.WasPressedThisFrame())
+            if (GameManager.instance.playerControls.Player.B.WasPressedThisFrame())
             {
                 StartCoroutine(ExitDialogueMode());
             }
@@ -105,9 +101,13 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void EnterDialogueMode(TextAsset inkJSON)
+    public void EnterDialogueMode(TextAsset inkJSON, bool chracterLockState)
     {
-        EnableDisable(true);
+        saveLockStateDialogue = chracterLockState;
+        if (chracterLockState)
+        {
+            EnableDisable(true);
+        }
 
         currentStory = new Story(inkJSON.text);
         isActive = true;
@@ -144,9 +144,7 @@ public class DialogueManager : MonoBehaviour
         }*/
 
         // Reset portrait, layout and speaker
-        displayNameText.text = "???";
-        portraitAnimator.Play("default");
-        layoutAnimator.Play("right");
+        displayNameText.text = "Entité";
 
         ContinueStory();
     }
@@ -215,7 +213,10 @@ public class DialogueManager : MonoBehaviour
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
 
-        EnableDisable(false);
+        if (saveLockStateDialogue)
+        {
+            EnableDisable(false);
+        }
     }
 
     private void ContinueStory()
@@ -249,7 +250,7 @@ public class DialogueManager : MonoBehaviour
 
         foreach(char letter in line.ToCharArray())
         {
-            if (playerControls.UI.A.IsPressed() && indexLetter>5)
+            if (GameManager.instance.playerControls.UI.A.IsPressed() && indexLetter>5)
             {
                 dialogueText.text = line;
                 break;
@@ -295,12 +296,6 @@ public class DialogueManager : MonoBehaviour
             {
                 case SPEAKER_TAG:
                     displayNameText.text = tagValue;
-                    break;
-                case PORTRAIT_TAG:
-                    portraitAnimator.Play(tagValue);
-                    break;
-                case LAYOUT_TAG:
-                    layoutAnimator.Play(tagValue);
                     break;
                 default:
                     Debug.LogWarning("Tag came but is not valid :" + tag);
@@ -358,12 +353,14 @@ public class DialogueManager : MonoBehaviour
         if (enabled)
         {
             isActive = true;
-            //PC_Manager.ChangeState(PlayerManager.ControlState.WorldUI);
+            GameManager.instance.playerControls.Player.Disable();
+            GameManager.instance.playerControls.UI.Enable();
         }
         else
         {
             isActive = false;
-            //PC_Manager.ChangeState(PlayerManager.ControlState.World);
+            GameManager.instance.playerControls.Player.Enable();
+            GameManager.instance.playerControls.UI.Disable();
         }
     }
 }

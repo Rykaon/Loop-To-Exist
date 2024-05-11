@@ -16,6 +16,8 @@ using Obi;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+
     public enum ControlState
     {
         Menu,
@@ -65,6 +67,15 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
         UIManager = uiManager;
         UIManager.gameManager = this;
         controlState = ControlState.Menu;
