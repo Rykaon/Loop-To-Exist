@@ -11,8 +11,8 @@ public class DialogueTrigger : MonoBehaviour
     [SerializeField] private TextAsset inkJSON;
 
     private bool playerInRange;
-
-    private PlayerControls playerControls;
+    public bool lockPlayerForDialogue;
+    
 
     private void Awake()
     {
@@ -30,10 +30,11 @@ public class DialogueTrigger : MonoBehaviour
         if (playerInRange && !DialogueManager.instance.isActive)
         {
             visualCue.SetActive(true);
-            /*if (playerControls.Gamepad.A.WasPressedThisFrame())
+            if (GameManager.instance.playerControls.Player.A.WasPressedThisFrame())
             {
-                DialogueManager.instance.EnterDialogueMode(inkJSON);
-            }*/
+                Debug.Log("ENTER DIALOGUE");
+                DialogueManager.instance.EnterDialogueMode(inkJSON, lockPlayerForDialogue);
+            }
         }
         else
         {

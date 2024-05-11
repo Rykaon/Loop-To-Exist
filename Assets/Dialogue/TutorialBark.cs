@@ -38,8 +38,8 @@ public class TutorialBark : MonoBehaviour
             {
                 isActivate = true;
 
-                textMeshTransform.DOScale(new Vector3(-0.6f, 0.6f, 0.6f), 0.5f).SetEase(Ease.InOutSine, 0.9f);
-                textMeshTransform.DOLocalMoveY(6.48f, 0.5f).SetEase(Ease.InOutSine, 0.3f);
+                textMeshTransform.DOScale(new Vector3(-0.2f, 0.2f, 0.2f), 0.5f).SetEase(Ease.InOutSine, 0.9f);
+                textMeshTransform.DOLocalMoveY(4.5f, 0.5f).SetEase(Ease.InOutSine, 0.3f);
             }
         }
     }
@@ -53,7 +53,7 @@ public class TutorialBark : MonoBehaviour
                 isActivate = false;
 
                 textMeshTransform.DOScale(new Vector3(-0.1f, 0f, 1f), 0.5f).SetEase(Ease.InOutSine, 0.9f);
-                textMeshTransform.DOLocalMoveY(4.27f, 0.5f).SetEase(Ease.InOutSine, 0.3f);
+                textMeshTransform.DOLocalMoveY(4f, 0.5f).SetEase(Ease.InOutSine, 0.3f);
             }
         }
     }
