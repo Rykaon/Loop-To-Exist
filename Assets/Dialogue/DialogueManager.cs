@@ -353,14 +353,12 @@ public class DialogueManager : MonoBehaviour
         if (enabled)
         {
             isActive = true;
-            GameManager.instance.playerControls.Player.Disable();
-            GameManager.instance.playerControls.UI.Enable();
+            GameManager.instance.ChangeState(GameManager.ControlState.Menu);
         }
         else
         {
             isActive = false;
-            GameManager.instance.playerControls.Player.Enable();
-            GameManager.instance.playerControls.UI.Disable();
+            GameManager.instance.ChangeState(GameManager.ControlState.World);
         }
     }
 }
