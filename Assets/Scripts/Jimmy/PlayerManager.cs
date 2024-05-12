@@ -41,6 +41,7 @@ public class PlayerManager : StateManager
     public bool isJumping = false;
     public bool isJumpingDown = false;
     private float idleTime = 0f;
+    private Coroutine mainPlayerRoutine = null;
 
     [HideInInspector] public bool buttonSouthIsPressed = false;
     [HideInInspector] public bool buttonWestIsPressed = false;
@@ -57,6 +58,36 @@ public class PlayerManager : StateManager
     [SerializeField][Range (0.01f, 0.25f)] private float timeBetweenPoints = 0.1f;
 
     private StateManager target = null;
+
+    [Header("Move Properties")]
+    //[SerializeField] protected float moveSpeed = 20f;
+    [SerializeField] protected float maxMoveSpeed;
+    [SerializeField] protected float acceleration = 7f;
+    [SerializeField] protected float deceleration = 7f;
+    [SerializeField] protected float velPower = 0.9f; //inf�rieur � 1
+
+    [SerializeField] protected float jumpForce;
+    [Range(0f, 5f)][SerializeField] protected float jumpCutMultiplier;
+    [SerializeField] private float jumpBufferTime; // Temps de buffer pour le saut
+    public float jumpBufferTimer;
+    [SerializeField] private float coyoteTime; // Temps de coyote time
+    public float coyoteTimer;
+
+    [SerializeField] protected Vector3 customGravity;
+    [SerializeField] protected float fallGravityMultiplier;
+
+    [SerializeField] protected float collisionDetectionDistance;
+    [SerializeField] protected LayerMask GroundLayer;
+    [HideInInspector] protected Vector3 direction = Vector3.zero;
+    [HideInInspector] protected Vector2 jumpFrameMovementSave;
+    [HideInInspector] protected float linkMoveMultiplier;
+    [HideInInspector] protected float linkJumpMultiplier;
+    public float moveMassMultiplier;
+
+    [Header("Slope Handling")]
+    public float maxSlopeAngle;
+    private RaycastHit slopeHit;
+    private bool exitingSlope;
 
     ///////////////////////////////////////////////////
     ///            FONCTIONS H�RIT�ES               ///
@@ -138,50 +169,37 @@ public class PlayerManager : StateManager
     {
         if (value)
         {
-            isMainPlayer = true;
+            if (mainPlayerRoutine != null)
+            {
+                StopCoroutine(mainPlayerRoutine);
+            }
+
+            mainPlayerRoutine = StartCoroutine(IsMainPlayer());
             idleTime = 0;
             animator.SetBool("isActive", true);
         }
         else
         {
+            if (mainPlayerRoutine != null)
+            {
+                StopCoroutine(mainPlayerRoutine);
+            }
+
             isMainPlayer = false;
             isActive = false;
             animator.SetBool("isActive", false);
         }
     }
 
+    private IEnumerator IsMainPlayer()
+    {
+        yield return new WaitForSecondsRealtime(2f);
+        isMainPlayer = true;
+    }
+
     ///////////////////////////////////////////////////
     ///           FONCTIONS D'ACTIONS               ///
     ///////////////////////////////////////////////////
-    [Header("Move Properties")]
-    //[SerializeField] protected float moveSpeed = 20f;
-    [SerializeField] protected float maxMoveSpeed;
-    [SerializeField] protected float acceleration = 7f;
-    [SerializeField] protected float deceleration = 7f;
-    [SerializeField] protected float velPower = 0.9f; //inf�rieur � 1
-
-    [SerializeField] protected float jumpForce;
-    [Range(0f, 5f)] [SerializeField] protected float jumpCutMultiplier;
-    [SerializeField] private float jumpBufferTime; // Temps de buffer pour le saut
-    public float jumpBufferTimer;
-    [SerializeField] private float coyoteTime; // Temps de coyote time
-    public float coyoteTimer;
-
-    [SerializeField] protected Vector3 customGravity;
-    [SerializeField] protected float fallGravityMultiplier;
-
-    [SerializeField] protected float collisionDetectionDistance;
-    [SerializeField] protected LayerMask GroundLayer;
-    [HideInInspector] protected Vector3 direction = Vector3.zero;
-    [HideInInspector] protected Vector2 jumpFrameMovementSave;
-    [HideInInspector] protected float linkMoveMultiplier;
-    [HideInInspector] protected float linkJumpMultiplier;
-    public float moveMassMultiplier;
-
-    [Header("Slope Handling")]
-    public float maxSlopeAngle;
-    private RaycastHit slopeHit;
-    private bool exitingSlope;
 
     public void Move(Vector2 inputValue)
     {
@@ -211,10 +229,7 @@ public class PlayerManager : StateManager
             rigidBody.AddForce(direction, ForceMode.Impulse);
             idleTime = 0;
         }
-        else
-        {
-            //Debug.Log("yo");
-        }
+
         //On calcule le vecteur de d�placement d�sir�.
         Vector3 TargetSpeed = new Vector3(direction.x * maxMoveSpeed, 0f, direction.z * maxMoveSpeed);
         //On prends la diff�rence en le vecteur d�sir� et le vecteur actuel.

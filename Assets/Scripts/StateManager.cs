@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 public class StateManager : MonoBehaviour
 {
-    public enum Type { Player, Mushroom, Object }
+    public enum Type { Player, Mushroom, Object, Creature }
     public enum State { Default, Sticky, Link }
     public enum Position { Default, Held, Equipped }
 
