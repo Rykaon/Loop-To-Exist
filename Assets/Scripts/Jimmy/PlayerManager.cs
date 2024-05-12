@@ -896,13 +896,25 @@ public class PlayerManager : StateManager
 
                 if (isJumping)
                 {
-                    if (!RaycastGrounded() && rigidBody.velocity.y < 0 && !isJumpingDown)
+                    if (!RaycastGrounded() && rigidBody.velocity.y < 0f && !isJumpingDown)
                     {
                         isJumpingDown = true;
                     }
                     else if (RaycastGrounded() && isJumpingDown)
                     {
                         isJumping = false;
+                        isJumpingDown = false;
+                        animator.SetBool("isJumping", false);
+                    }
+                }
+                else
+                {
+                    if (!RaycastGrounded() && rigidBody.velocity.y < 0f && !isJumpingDown)
+                    {
+                        isJumpingDown = true;
+                    }
+                    else if (RaycastGrounded() && isJumpingDown)
+                    {
                         isJumpingDown = false;
                         animator.SetBool("isJumping", false);
                     }

@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
     public List<PlayerManager> playerList { get; private set; }
     public List<MushroomManager> mushroomList { get; private set; }
     public List<ObjectManager> objectList { get; private set; }
+    public List<CreatureManager> creatureList { get; private set; }
 
     private int playerIndex = 0;
     private int playerMaxIndex;
@@ -86,6 +87,7 @@ public class GameManager : MonoBehaviour
         playerList = entities.OfType<PlayerManager>().ToList();
         mushroomList = entities.OfType<MushroomManager>().ToList();
         objectList = entities.OfType<ObjectManager>().ToList();
+        creatureList = entities.OfType<CreatureManager>().ToList();
 
         for (int i = 0; i < playerList.Count; i++)
         {
@@ -100,6 +102,11 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < objectList.Count; i++)
         {
             objectList[i].Initialize(this);
+        }
+
+        for (int i = 0; i < creatureList.Count; i++)
+        {
+            creatureList[i].Initialize(this);
         }
 
         playerList[0].SetIsMainPlayer(true);

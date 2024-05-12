@@ -9,15 +9,20 @@ public class PlayerInteractionTrigger : MonoBehaviour
     [SerializeField] private PlayerManager player;
     public List<StateManager> triggeredObjectsList { get; private set; }
     public StateManager current = null;
+    private List<string> tagsToCheck = new List<string>();
 
     private void Awake()
     {
         triggeredObjectsList = new List<StateManager>();
+        tagsToCheck.Add("Player");
+        tagsToCheck.Add("Mushroom");
+        tagsToCheck.Add("Object");
+        tagsToCheck.Add("Creature");
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-        if ((collision.transform.tag == "Player" || collision.transform.tag == "Mushroom" || collision.transform.tag == "Object") && collision.transform != player.transform)
+        if (tagsToCheck.Contains(collision.transform.tag) && collision.transform != player.transform)
         {
             if (collision.transform.TryGetComponent<StateManager>(out StateManager holdObject))
             {
@@ -31,7 +36,7 @@ public class PlayerInteractionTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider collision)
     {
-        if ((collision.transform.tag == "Player" || collision.transform.tag == "Mushroom" || collision.transform.tag == "Object") && collision.transform != player.transform)
+        if (tagsToCheck.Contains(collision.transform.tag) && collision.transform != player.transform)
         {
             if (collision.transform.TryGetComponent<StateManager>(out StateManager holdObject))
             {
