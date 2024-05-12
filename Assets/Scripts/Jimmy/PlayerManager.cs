@@ -758,6 +758,7 @@ public class PlayerManager : StateManager
 
         if (Physics.Raycast(ray, out hit))
         {
+            Debug.Log(hit.collider.gameObject.name);
             hitPoint = hit.point;
         }
 
