@@ -23,7 +23,9 @@ public class PlayerManager : StateManager
     [SerializeField] private Transform linkTarget;
     [SerializeField] public Transform cameraTarget;
 
+    [SerializeField] private Animator Animator;
     [SerializeField] private PlayerInteractionTrigger Trigger;
+    public Animator animator { get; private set; }
     public PlayerInteractionTrigger trigger { get; private set; }
 
     public PlayerControls playerControls { get; private set; }
@@ -38,6 +40,7 @@ public class PlayerManager : StateManager
     public bool isLadderTrigger = false;
     public bool isJumping = false;
     public bool isJumpingDown = false;
+    private float idleTime = 0f;
 
     [HideInInspector] public bool buttonSouthIsPressed = false;
     [HideInInspector] public bool buttonWestIsPressed = false;
@@ -65,6 +68,7 @@ public class PlayerManager : StateManager
 
         throwDirection = new Vector2(startThrowForceHorizontal, startThrowForceVertical);
 
+        animator = Animator;
         trigger = Trigger;
         heldObject = null;
         equippedObject = null;
@@ -73,6 +77,7 @@ public class PlayerManager : StateManager
         linkJumpMultiplier = 5.25f; //Le multiplieur associ� � la fonction Jump() si le joueur est link
 
         playerControls = gameManager.playerControls;
+        animator.SetBool("isActive", false);
     }
 
     public override void SetState(State state)
@@ -134,11 +139,14 @@ public class PlayerManager : StateManager
         if (value)
         {
             isMainPlayer = true;
+            idleTime = 0;
+            animator.SetBool("isActive", true);
         }
         else
         {
             isMainPlayer = false;
             isActive = false;
+            animator.SetBool("isActive", false);
         }
     }
 
@@ -201,6 +209,7 @@ public class PlayerManager : StateManager
             }
 
             rigidBody.AddForce(direction, ForceMode.Impulse);
+            idleTime = 0;
         }
         else
         {
@@ -240,6 +249,25 @@ public class PlayerManager : StateManager
 
         LookAt(inputValue);
 
+        Vector3 dir = rigidBody.velocity;
+        dir.y = 0f;
+
+        if (dir.magnitude > 0.25f && dir.magnitude < 4f)
+        {
+            animator.SetBool("isWalking", true);
+            animator.SetBool("isRunning", false);
+        }
+        else if (dir.magnitude >= 4f)
+        {
+            animator.SetBool("isRunning", true);
+            animator.SetBool("isWalking", false);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isRunning", false);
+        }
+
         direction = Vector3.zero;
     }
 
@@ -275,6 +303,8 @@ public class PlayerManager : StateManager
         rigidBody.AddForce(jumpForce, ForceMode.Impulse);
         isJumping = true;
         isJumpingDown = false;
+        animator.SetBool("isJumping", true);
+        idleTime = 0;
     }
 
     public void OnJumpUp()
@@ -294,12 +324,16 @@ public class PlayerManager : StateManager
             {
                 heldObject = trigger.current;
                 heldObject.SetHoldObject(hand, 0.25f);
+                animator.SetTrigger("Grab");
+                idleTime = 0;
             }
         }
         else if (heldObject != null)
         {
             heldObject.DropObject();
+            animator.SetTrigger("Drop");
             heldObject = null;
+            idleTime = 0;
         }
     }
 
@@ -309,13 +343,17 @@ public class PlayerManager : StateManager
         {
             equippedObject = heldObject;
             equippedObject.SetEquipObject(head, 0.25f);
+            animator.SetTrigger("PutChapeau");
             heldObject = null;
+            idleTime = 0;
         }
         else if (equippedObject != null && heldObject == null)
         {
             heldObject = equippedObject;
             equippedObject.SetHoldObject(hand, 0.25f);
+            animator.SetTrigger("RemoveChapeau");
             equippedObject = null;
+            idleTime = 0;
         }
     }
 
@@ -326,6 +364,8 @@ public class PlayerManager : StateManager
             if (heldObject.isHeld)
             {
                 StartCoroutine(CalculateThrowForce());
+                animator.SetTrigger("Throw");
+                idleTime = 0;
             }
         }
     }
@@ -389,10 +429,10 @@ public class PlayerManager : StateManager
     {
         isAiming = value;
 
-        Vector3 cameraTargetPos = Vector3.zero;
+        Vector3 cameraTargetPos = new Vector3(0, 3.5f, 0);
         if (isAiming)
         {
-            cameraTargetPos = new Vector3(0, 2, 0);
+            cameraTargetPos = new Vector3(0, 6.25f, 0);
         }
 
         gameManager.cameraManager.SetCameraAim(value, cameraTargetPos);
@@ -428,6 +468,7 @@ public class PlayerManager : StateManager
                                 target = null;
                             }
 
+                            idleTime = 0;
                             gameManager.SetMainPlayer(playerManager, true);
                             return;
                         }
@@ -475,10 +516,13 @@ public class PlayerManager : StateManager
                                     {
                                         stateManager.SetState(equippedMushroom.stateToApply);
                                     }
+
+                                    idleTime = 0;
                                 }
                                 else
                                 {
                                     stateManager.SetState(equippedMushroom.stateToApply);
+                                    idleTime = 0;
                                 }
                             }
                         }
@@ -840,13 +884,12 @@ public class PlayerManager : StateManager
                     if (!RaycastGrounded() && rigidBody.velocity.y < 0 && !isJumpingDown)
                     {
                         isJumpingDown = true;
-                        Debug.Log("MonGrosBool");
                     }
                     else if (RaycastGrounded() && isJumpingDown)
                     {
                         isJumping = false;
                         isJumpingDown = false;
-                        Debug.Log("OuaisOuaisOuais");
+                        animator.SetBool("isJumping", false);
                     }
                 }
 
@@ -931,6 +974,17 @@ public class PlayerManager : StateManager
                         buttonEastIsPressed = true;
                         Shot(playerControls.Player.B);
                     }
+                }
+
+                idleTime += Time.fixedDeltaTime;
+                if (idleTime > 10f)
+                {
+                    animator.SetBool("isShaking", true);
+                    idleTime = -3f;
+                }
+                else if (idleTime < 10f)
+                {
+                    animator.SetBool("isShaking", false);
                 }
             }
         }

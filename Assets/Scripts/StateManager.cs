@@ -18,7 +18,7 @@ public class StateManager : MonoBehaviour
     public Position position;
     [SerializeField] protected Rigidbody RigidBody;
     [SerializeField] private Collider ObjectCollider;
-    [SerializeField] private MeshRenderer Renderer;
+    [SerializeField] private Renderer Renderer;
     [SerializeField] private Outline Outline;
     public StickedWallElements stickedWall;
 
@@ -31,7 +31,7 @@ public class StateManager : MonoBehaviour
     public GameManager gameManager { get; private set; }
     public Rigidbody rigidBody { get; private set; }
     public Collider objectCollider { get; private set; }
-    public MeshRenderer renderer { get; set; }
+    public Renderer renderer { get; set; }
     public Outline outline { get; set; }
 
     protected Transform parent;
@@ -572,6 +572,7 @@ public class StateManager : MonoBehaviour
 
                 rigidBody.useGravity = true;
 
+                holdingPlayer.animator.SetTrigger("Drop");
                 holdingPlayer.heldObject = null;
                 holdingPlayer = null;
                 transform.parent = parent;

@@ -153,7 +153,6 @@ public class GameManager : MonoBehaviour
         }
 
         controlState = state;
-        Debug.Log("State == " + state);
     }
 
     public void SetCameraTarget(Transform follow, Transform look)
