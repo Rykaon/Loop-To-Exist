@@ -9,6 +9,7 @@ using Story = Ink.Runtime.Story;
 using Choice = Ink.Runtime.Choice;
 //using Ink.UnityIntegration;
 using System.Linq.Expressions;
+using Unity.VisualScripting;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -42,12 +43,14 @@ public class DialogueManager : MonoBehaviour
     public static DialogueManager instance;
 
     private const string SPEAKER_TAG = "speaker";
-    private const string PORTRAIT_TAG = "portrait";
-    private const string LAYOUT_TAG = "layout";
+    private const string TIME_BEFORE_SKIP = "time";
 
     private DialogueVariables dialogueVariables;
 
     private bool saveLockStateDialogue;
+
+    private float elapsedTime;
+    private float timeToWaitToSkip;
 
     private void Awake()
     {
@@ -87,22 +90,26 @@ public class DialogueManager : MonoBehaviour
         if (isActive)
         {
 
-            if (canContinueToNextLine && (GameManager.instance.playerControls.UI.A.WasPressedThisFrame()) && currentStory.currentChoices.Count == 0)
+            if (elapsedTime > timeToWaitToSkip && currentStory.currentChoices.Count == 0) //&& (GameManager.instance.playerControls.UI.A.WasPressedThisFrame()) 
             {
                 ContinueStory();
             }
 
+            /*
             if (GameManager.instance.playerControls.Player.B.WasPressedThisFrame())
             {
                 StartCoroutine(ExitDialogueMode());
-            }
+            } */
 
+            elapsedTime += Time.deltaTime;
             
         }
     }
 
     public void EnterDialogueMode(TextAsset inkJSON, bool chracterLockState)
     {
+        elapsedTime = 0f;
+
         saveLockStateDialogue = chracterLockState;
         if (chracterLockState)
         {
@@ -117,32 +124,6 @@ public class DialogueManager : MonoBehaviour
 
         UpdateVariables();
 
-        /*if (PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.Random)
-        {
-            currentStory.BindExternalFunction("StealGive", (string RewardType, int NbrReward, bool IsBonus) =>
-            {
-                PC_Manager.mapGenerator.TakeReward();
-                UpdateVariables();
-            });
-        }
-        else if (PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.End || PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.Start || PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.Shop)
-        {
-            if (PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.End || PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.Start)
-            {
-                currentStory.BindExternalFunction("CheckRun", () =>
-                {
-                    PC_Manager.mapGenerator.TakeReward();
-                    UpdateVariables();
-                });
-            }
-
-            currentStory.BindExternalFunction("PlantSellBuy", (string PlantToBuy, int PlantPrice, bool SellOrBuy) =>
-            {
-                inventory.SellBuyItem(PlantToBuy, PlantPrice, SellOrBuy);
-                UpdateVariables();
-            });
-        }*/
-
         // Reset portrait, layout and speaker
         displayNameText.text = "Entité";
 
@@ -151,40 +132,6 @@ public class DialogueManager : MonoBehaviour
 
     public void UpdateVariables()
     {
-        //currentStory.variablesState["PlayerArgent"] = inventory.nbArgent;
-
-        /*for (int i = 0; i < PC_Manager.inventory.plantsList.Count; i++)
-        {
-            currentStory.variablesState["NbPlant" + (i + 1).ToString()] = Utilities.GetNumberOfItemByPrefab(PC_Manager.inventory.inventory, PC_Manager.inventory.plantsList[i].prefab);
-
-            if (!isInitialized)
-            {
-                currentStory.variablesState["NamePlant" + (i + 1).ToString()] = PC_Manager.inventory.plantsList[i].itemName;
-                currentStory.variablesState["PricePlant" + (i + 1).ToString()] = PC_Manager.inventory.plantsList[i].sellPrice;
-            }
-        }
-
-        if (PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.Random)
-        {
-            currentStory.variablesState["RewardType"] = PC_Manager.mapGenerator.currentNode.mapEvent.rewardType.ToString();
-            currentStory.variablesState["NbrReward"] = PC_Manager.mapGenerator.currentNode.mapEvent.nbrReward;
-            currentStory.variablesState["IsBonus"] = PC_Manager.mapGenerator.currentNode.mapEvent.isBonus;
-        }
-        else if (PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.End)
-        {
-            currentStory.variablesState["RewardType"] = "Gold";
-            currentStory.variablesState["NbrReward"] = PC_Manager.mapGenerator.currentNode.mapEvent.nbrReward;
-            currentStory.variablesState["IsBonus"] = true;
-            //isBonus == true => Fin de run
-        }
-        else if (PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.Start)
-        {
-            currentStory.variablesState["RewardType"] = "Gold";
-            currentStory.variablesState["NbrReward"] = PC_Manager.mapGenerator.currentNode.mapEvent.nbrReward;
-            currentStory.variablesState["IsBonus"] = false;
-            //isBonus == false => Début de run
-        }*/
-
         isInitialized = true;
     }
 
@@ -192,23 +139,6 @@ public class DialogueManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
         dialogueVariables.StopListening(currentStory);
-
-        /*if (PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.Random)
-        {
-            currentStory.UnbindExternalFunction("StealGive");
-        }
-        else if (PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.End || PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.Shop)
-        {
-            if (PC_Manager.mapGenerator.currentNode.mapEvent.eventType == Map.MapEvent.EventType.End)
-            {
-                currentStory.UnbindExternalFunction("CheckRun");
-            }
-
-            currentStory.BindExternalFunction("PlantSellBuy", (string PlantToBuy, int PlantPrice, bool SellOrBuy) =>
-            {
-                currentStory.UnbindExternalFunction("PlantSellBuy");
-            });
-        }*/
 
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
@@ -221,6 +151,8 @@ public class DialogueManager : MonoBehaviour
 
     private void ContinueStory()
     {
+        elapsedTime = 0f;
+
         if (currentStory.canContinue)
         {
             if(displayLineCoroutine != null)
@@ -256,7 +188,7 @@ public class DialogueManager : MonoBehaviour
                 break;
             }
 
-            //AudioManager.instance.PlayVariation("DialogueBoop", 0.1f, 0.5f);
+            AudioManager.instance.PlayVariation("Sfx_Dialogue_Speech", 0.1f, 0.5f); //CA MARCHE PAS, POURQUOI ?
 
             indexLetter++;
 
@@ -266,7 +198,7 @@ public class DialogueManager : MonoBehaviour
 
 
         DisplayChoices();
-        continueIcon.SetActive(true);
+        //continueIcon.SetActive(true);
         canContinueToNextLine = true;
         StartCoroutine(SelectFirstChoice());
     }
@@ -296,6 +228,9 @@ public class DialogueManager : MonoBehaviour
             {
                 case SPEAKER_TAG:
                     displayNameText.text = tagValue;
+                    break;
+                case TIME_BEFORE_SKIP:
+                    timeToWaitToSkip = float.Parse(tagValue);
                     break;
                 default:
                     Debug.LogWarning("Tag came but is not valid :" + tag);
