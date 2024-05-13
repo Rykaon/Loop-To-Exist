@@ -578,7 +578,7 @@ public class PlayerManager : StateManager
             }
             else
             {
-                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction , Vector3.up), 150 * Time.fixedDeltaTime));
+                //rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction , Vector3.up), 150 * Time.fixedDeltaTime));
             }
 
         }
