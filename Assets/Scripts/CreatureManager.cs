@@ -18,6 +18,7 @@ public class CreatureManager : StateManager
     [SerializeField] private LayerMask GroundLayer;
     private float angularSpeed = 200f;
     private float speed = 0.75f;
+    private float radius = 50f;
 
     [Header("Status")]
     public bool isActive = false;
@@ -82,7 +83,7 @@ public class CreatureManager : StateManager
 
         animator.SetBool("isWalking", false);
         animator.SetBool("isGrab", true);
-        audioManager.Play("Sfx_Creature_OnGrab", 10f);
+        audioManager.Play("Sfx_Creature_OnGrab", radius);
         base.SetHoldObject(endPosition, time);
     }
 
@@ -90,7 +91,7 @@ public class CreatureManager : StateManager
     {
         base.InitializeHoldObject(parent);
         isHeldAnim = true;
-        audioManager.Play("Sfx_Creature_WhileGrab", 10f);
+        audioManager.Play("Sfx_Creature_WhileGrab", radius);
     }
 
     public override void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
@@ -101,7 +102,7 @@ public class CreatureManager : StateManager
     protected override Vector3 GetThrowForce(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
     {
         audioManager.Stop("Sfx_Creature_WhileGrab");
-        audioManager.Play("Sfx_Creature_OnThrow", 10f);
+        audioManager.Play("Sfx_Creature_OnThrow", radius);
         return base.GetThrowForce(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 
@@ -190,6 +191,11 @@ public class CreatureManager : StateManager
 
         animator.SetBool("isWalking", true);
         roamRoutine = null;
+
+        if (walkRoutine == null)
+        {
+            walkRoutine = StartCoroutine(Walk());
+        }
     }
 
     private IEnumerator WaitAndRoam()
@@ -214,12 +220,16 @@ public class CreatureManager : StateManager
 
         animator.SetBool("isWalking", true);
         roamRoutine = null;
-        walkRoutine = StartCoroutine(Walk());
+
+        if (walkRoutine == null)
+        {
+            walkRoutine = StartCoroutine(Walk());
+        }
     }
 
     private IEnumerator Walk()
     {
-        audioManager.PlayVariation("Sfx_Creature_Walk", 0.15f, 0.1f, 10f);
+        audioManager.PlayVariation("Sfx_Creature_Walk", 0.15f, 0.1f, radius);
 
         yield return new WaitForSecondsRealtime(0.35f);
 
@@ -252,25 +262,13 @@ public class CreatureManager : StateManager
 
                     animator.SetBool("isGrab", false);
                     roamRoutine = StartCoroutine(WaitAndRoam());
-                    audioManager.PlayFixedVariation("Sfx_Creature_Fall", 1.25f, 0f, 10f);
-
-                    if (walkRoutine != null)
-                    {
-                        StopCoroutine(walkRoutine);
-                    }
-
-                    walkRoutine = StartCoroutine(Walk());
+                    audioManager.PlayFixedVariation("Sfx_Creature_Fall", 1.25f, 0f, radius);
                 }
             }
 
             if (isRoaming)
             {
                 rigidBody.velocity = Vector3.zero;
-
-                if (walkRoutine == null)
-                {
-                    walkRoutine = StartCoroutine(Walk());
-                }
 
                 if (agent.remainingDistance <= agent.stoppingDistance)
                 {

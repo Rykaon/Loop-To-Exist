@@ -516,31 +516,31 @@ MonoBehaviour:
   sounds:
   - name: Sfx_Creature_OnGrab
     clip: {fileID: 8300000, guid: dfd7b81b4d59a4944a514fdf28c78a3a, type: 3}
-    volume: 0.641
+    volume: 0.841
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Sfx_Creature_OnThrow
     clip: {fileID: 8300000, guid: 31620cd58a5de134382afd08bf394766, type: 3}
-    volume: 0.641
+    volume: 0.841
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Sfx_Creature_WhileGrab
     clip: {fileID: 8300000, guid: 4e7d06aab864bb94b86515a3c4e953b1, type: 3}
-    volume: 0.641
+    volume: 0.841
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Sfx_Creature_Fall
     clip: {fileID: 8300000, guid: 1ed55f6d14e173942a386c4ba8a76d40, type: 3}
-    volume: 0.641
+    volume: 0.841
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Sfx_Creature_Walk
     clip: {fileID: 8300000, guid: ed63b4dc2e1c1fb42aab118af2d2d260, type: 3}
-    volume: 0.641
+    volume: 0.841
     pitch: 1
     loop: 0
     source: {fileID: 0}

@@ -320,7 +320,7 @@ public class PlayerManager : StateManager
         isJumpingDown = false;
         animator.SetBool("isJumpingUp", true);
         idleTime = 0;
-        AudioManager.instance.Play("Sfx_Player_Jump");
+        AudioManager.instance.PlayVariation("Sfx_Player_Jump", 0.15f, 0.1f);
     }
 
     public void OnJumpUp()
