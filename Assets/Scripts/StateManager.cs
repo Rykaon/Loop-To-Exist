@@ -49,7 +49,7 @@ public class StateManager : MonoBehaviour
     protected PlayerManager holdingPlayer = null;
     protected PlayerManager equippingPlayer = null;
     protected Joint joint = null;
-    private float jointBreakTreshold = 150f;
+    private float jointBreakTreshold = 250f;
 
     public bool isHeldObject { get; private set; }
     public bool isHeld { get; private set; }
@@ -352,7 +352,6 @@ public class StateManager : MonoBehaviour
 
         if (hitpoint != Vector3.zero)
         {
-            // Utiliser le hitpoint pour ajuster la direction du lancer
             Vector3 playerToHitPoint = hitpoint - transform.position;
             throwDirection = Vector3.ProjectOnPlane(playerToHitPoint, Vector3.up).normalized * throwForceHorizontal;
         }
@@ -361,10 +360,8 @@ public class StateManager : MonoBehaviour
             throwDirection = Camera.main.transform.forward.normalized * throwForceHorizontal;
         }
 
-        // Ajuster la force verticale (hauteur de l'arc)
-        throwDirection += Vector3.up * throwForceVertical;
+       throwDirection += Vector3.up * throwForceVertical;
 
-        // Appliquer la force au rigidbody
         rigidBody.velocity = Vector3.zero;
         rigidBody.AddForce(throwDirection, ForceMode.Impulse);
         objectCollider.isTrigger = false;
@@ -377,7 +374,6 @@ public class StateManager : MonoBehaviour
 
         if (hitpoint != Vector3.zero)
         {
-            // Utiliser le hitpoint pour ajuster la direction du lancer
             Vector3 playerToHitPoint = hitpoint - transform.position;
             throwDirection = Vector3.ProjectOnPlane(playerToHitPoint, Vector3.up).normalized * throwForceHorizontal;
         }
@@ -386,7 +382,6 @@ public class StateManager : MonoBehaviour
             throwDirection = Camera.main.transform.forward.normalized * throwForceHorizontal;
         }
 
-        // Ajuster la force verticale (hauteur de l'arc)
         throwDirection += Vector3.up * throwForceVertical;
         return throwDirection;
     }

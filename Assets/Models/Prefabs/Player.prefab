@@ -339,7 +339,7 @@ Transform:
   m_GameObject: {fileID: 8873039584834303674}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0}
   m_LocalScale: {x: 1.5, y: 0.04, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -523,7 +523,7 @@ MonoBehaviour:
   position: 0
   RigidBody: {fileID: 5760256672101400769}
   ObjectCollider: {fileID: 10598365294871310}
-  Renderer: {fileID: 3582842961803081787}
+  Renderer: {fileID: 5663957509840846782}
   Outline: {fileID: 4604702339239741688}
   stickedWall: {fileID: 0}
   startThrowForceHorizontal: 8
@@ -755,6 +755,12 @@ MonoBehaviour:
 --- !u!4 &5646786114928468919 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6956996212435939134}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &5663957509840846782 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3320943388471283840, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
     type: 3}
   m_PrefabInstance: {fileID: 6956996212435939134}
   m_PrefabAsset: {fileID: 0}

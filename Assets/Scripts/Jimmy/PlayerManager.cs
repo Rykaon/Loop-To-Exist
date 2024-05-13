@@ -318,7 +318,7 @@ public class PlayerManager : StateManager
         rigidBody.AddForce(jumpForce, ForceMode.Impulse);
         isJumping = true;
         isJumpingDown = false;
-        animator.SetBool("isJumping", true);
+        animator.SetBool("isJumpingUp", true);
         idleTime = 0;
     }
 
@@ -716,6 +716,13 @@ public class PlayerManager : StateManager
         }
     }
 
+    private bool RaycastFalling()
+    {
+        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance * 2, GroundLayer);
+
+        return isCollisionDetected;
+    }
+
     private void OnDrawGizmos()//Permet de visualiser le boxCast pour la détection du ground
     {
         RaycastHit hit;
@@ -896,27 +903,33 @@ public class PlayerManager : StateManager
 
                 if (isJumping)
                 {
-                    if (!RaycastGrounded() && rigidBody.velocity.y < 0f && !isJumpingDown)
+                    if (!RaycastFalling() && rigidBody.velocity.y < 0f && !isJumpingDown)
                     {
                         isJumpingDown = true;
+                        animator.SetBool("isJumpingUp", false);
+                        animator.SetBool("isJumpingDown", true);
                     }
-                    else if (RaycastGrounded() && isJumpingDown)
+                    else if (RaycastFalling() && isJumpingDown)
                     {
                         isJumping = false;
                         isJumpingDown = false;
-                        animator.SetBool("isJumping", false);
+                        animator.SetBool("isJumpingUp", false);
+                        animator.SetBool("isJumpingDown", false);
                     }
                 }
                 else
                 {
-                    if (!RaycastGrounded() && rigidBody.velocity.y < 0f && !isJumpingDown)
+                    if (!RaycastFalling() && rigidBody.velocity.y < 0f && !isJumpingDown)
                     {
                         isJumpingDown = true;
+                        animator.SetBool("isJumpingUp", false);
+                        animator.SetBool("isJumpingDown", true);
                     }
-                    else if (RaycastGrounded() && isJumpingDown)
+                    else if (RaycastFalling() && isJumpingDown)
                     {
                         isJumpingDown = false;
-                        animator.SetBool("isJumping", false);
+                        animator.SetBool("isJumpingUp", false);
+                        animator.SetBool("isJumpingDown", false);
                     }
                 }
 

@@ -539,7 +539,7 @@ MonoBehaviour:
   collisionDetectionDistance: 0.25
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 73
+    m_Bits: 65
   isActive: 0
   isRoaming: 1
 --- !u!95 &6088857713958615012

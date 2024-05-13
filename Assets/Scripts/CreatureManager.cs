@@ -104,6 +104,24 @@ public class CreatureManager : StateManager
     protected override void OnJointBreak(float breakForce)
     {
         base.OnJointBreak(breakForce);
+
+        isHeldAnim = true;
+        isRoaming = false;
+
+        if (roamRoutine != null)
+        {
+            StopCoroutine(roamRoutine);
+        }
+
+        if (agent.enabled)
+        {
+            agent.ResetPath();
+        }
+
+        agent.enabled = false;
+
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isGrab", true);
     }
 
     ///////////////////////////////////////////////////
