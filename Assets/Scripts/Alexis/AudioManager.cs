@@ -2,6 +2,7 @@ using UnityEngine.Audio;
 using System;
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class AudioManager : MonoBehaviour
 {
@@ -40,6 +41,18 @@ public class AudioManager : MonoBehaviour
             return;
         }
         s.source.Play();
+    }
+
+    public void Play(string name, GameObject target, float radius)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound : " + name + " not found !");
+            return;
+        }
+
+        AudioSource.PlayClipAtPoint(s.clip, target.transform.position, radius);
     }
 
     public void PlayVariation(string name, float diffPitch, float diffVolume)

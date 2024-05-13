@@ -320,6 +320,7 @@ public class PlayerManager : StateManager
         isJumpingDown = false;
         animator.SetBool("isJumpingUp", true);
         idleTime = 0;
+        AudioManager.instance.Play("Sfx_Player_Jump");
     }
 
     public void OnJumpUp()
@@ -341,6 +342,7 @@ public class PlayerManager : StateManager
                 heldObject.SetHoldObject(hand, 0.25f);
                 animator.SetTrigger("Grab");
                 idleTime = 0;
+                AudioManager.instance.Play("Sfx_Player_Carry");
             }
         }
         else if (heldObject != null)
@@ -349,6 +351,7 @@ public class PlayerManager : StateManager
             animator.SetTrigger("Drop");
             heldObject = null;
             idleTime = 0;
+            AudioManager.instance.Play("Sfx_Player_Drop");
         }
     }
 
@@ -361,6 +364,15 @@ public class PlayerManager : StateManager
             animator.SetTrigger("PutChapeau");
             heldObject = null;
             idleTime = 0;
+
+            if (equippedObject.TryGetComponent<MushroomManager>(out MushroomManager mushroomManager))
+            {
+                AudioManager.instance.Play("Sfx_Player_GetPower");
+            }
+            else
+            {
+                AudioManager.instance.Play("Sfx_Player_OnHead");
+            }
         }
         else if (equippedObject != null && heldObject == null)
         {
@@ -369,6 +381,7 @@ public class PlayerManager : StateManager
             animator.SetTrigger("RemoveChapeau");
             equippedObject = null;
             idleTime = 0;
+            AudioManager.instance.Play("Sfx_Player_OffHead");
         }
     }
 
@@ -381,6 +394,7 @@ public class PlayerManager : StateManager
                 StartCoroutine(CalculateThrowForce());
                 animator.SetTrigger("Throw");
                 idleTime = 0;
+                AudioManager.instance.Play("Sfx_Player_Throw");
             }
         }
     }
@@ -495,6 +509,7 @@ public class PlayerManager : StateManager
 
                             trigger.Clear();
                             idleTime = 0;
+                            AudioManager.instance.Play("Sfx_Player_Swap");
                             gameManager.SetMainPlayer(playerManager, true, true);
                             return;
                         }
@@ -550,6 +565,8 @@ public class PlayerManager : StateManager
                                     stateManager.SetState(equippedMushroom.stateToApply);
                                     idleTime = 0;
                                 }
+
+                                AudioManager.instance.Play("Sfx_Player_Sticky");
                             }
                         }
                     }
@@ -912,6 +929,7 @@ public class PlayerManager : StateManager
                         isJumpingDown = false;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", false);
+                        AudioManager.instance.Play("Sfx_Player_Fall");
                     }
                 }
                 else
@@ -927,6 +945,7 @@ public class PlayerManager : StateManager
                         isJumpingDown = false;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", false);
+                        AudioManager.instance.Play("Sfx_Player_Fall");
                     }
                 }
 
@@ -973,6 +992,7 @@ public class PlayerManager : StateManager
                             if (!heldObject.states.Contains(equippedMushroom.stateToApply))
                             {
                                 heldObject.SetState(equippedMushroom.stateToApply);
+                                AudioManager.instance.Play("Sfx_Player_Sticky");
                             }
                         }
                     }
@@ -1018,6 +1038,17 @@ public class PlayerManager : StateManager
                 {
                     animator.SetBool("isShaking", true);
                     idleTime = -3f;
+
+                    float random = UnityEngine.Random.Range(0f, 100f);
+
+                    if (random < 50)
+                    {
+                        AudioManager.instance.Play("Sfx_Player_Idle");
+                    }
+                    else
+                    {
+                        AudioManager.instance.Play("Sfx_Player_IdleAlt");
+                    }
                 }
                 else if (idleTime < 10f)
                 {

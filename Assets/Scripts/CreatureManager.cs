@@ -7,6 +7,7 @@ using UnityEngine.AI;
 public class CreatureManager : StateManager
 {
     [Header("Creature Reference")]
+    [SerializeField] private LocalAudioManager AudioManager;
     [SerializeField] private Transform feet;
     [SerializeField] private Animator Animator;
     [SerializeField] private NavMeshAgent Agent;
@@ -24,7 +25,9 @@ public class CreatureManager : StateManager
     private bool isHeldAnim = false;
 
     private Coroutine roamRoutine = null;
+    private Coroutine walkRoutine = null;
 
+    public LocalAudioManager audioManager { get; private set; }
     public Animator animator { get; private set; }
     public NavMeshAgent agent { get; private set; }
 
@@ -36,6 +39,7 @@ public class CreatureManager : StateManager
     {
         base.Initialize(instance);
 
+        audioManager = AudioManager;
         animator = Animator;
         agent = Agent;
         isActive = true;
@@ -61,6 +65,11 @@ public class CreatureManager : StateManager
             StopCoroutine(roamRoutine);
         }
 
+        if (walkRoutine != null)
+        {
+            StopCoroutine(walkRoutine);
+        }
+
         if (agent != null)
         {
             if (agent.enabled)
@@ -73,6 +82,7 @@ public class CreatureManager : StateManager
 
         animator.SetBool("isWalking", false);
         animator.SetBool("isGrab", true);
+        audioManager.Play("Sfx_Creature_OnGrab", 10f);
         base.SetHoldObject(endPosition, time);
     }
 
@@ -80,6 +90,7 @@ public class CreatureManager : StateManager
     {
         base.InitializeHoldObject(parent);
         isHeldAnim = true;
+        audioManager.Play("Sfx_Creature_WhileGrab", 10f);
     }
 
     public override void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
@@ -89,6 +100,8 @@ public class CreatureManager : StateManager
 
     protected override Vector3 GetThrowForce(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
     {
+        audioManager.Stop("Sfx_Creature_WhileGrab");
+        audioManager.Play("Sfx_Creature_OnThrow", 10f);
         return base.GetThrowForce(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 
@@ -184,6 +197,11 @@ public class CreatureManager : StateManager
         float rand = Random.Range(2f, 5f);
         agent.ResetPath();
         animator.SetBool("isWalking", false);
+        
+        if (walkRoutine != null)
+        {
+            StopCoroutine(walkRoutine);
+        }
 
         yield return new WaitForSecondsRealtime(rand);
 
@@ -196,6 +214,16 @@ public class CreatureManager : StateManager
 
         animator.SetBool("isWalking", true);
         roamRoutine = null;
+        walkRoutine = StartCoroutine(Walk());
+    }
+
+    private IEnumerator Walk()
+    {
+        audioManager.PlayVariation("Sfx_Creature_Walk", 0.15f, 0.1f, 10f);
+
+        yield return new WaitForSecondsRealtime(0.35f);
+
+        walkRoutine = StartCoroutine(Walk());
     }
 
     private void FixedUpdate()
@@ -224,12 +252,25 @@ public class CreatureManager : StateManager
 
                     animator.SetBool("isGrab", false);
                     roamRoutine = StartCoroutine(WaitAndRoam());
+                    audioManager.PlayFixedVariation("Sfx_Creature_Fall", 1.25f, 0f, 10f);
+
+                    if (walkRoutine != null)
+                    {
+                        StopCoroutine(walkRoutine);
+                    }
+
+                    walkRoutine = StartCoroutine(Walk());
                 }
             }
 
             if (isRoaming)
             {
                 rigidBody.velocity = Vector3.zero;
+
+                if (walkRoutine == null)
+                {
+                    walkRoutine = StartCoroutine(Walk());
+                }
 
                 if (agent.remainingDistance <= agent.stoppingDistance)
                 {
