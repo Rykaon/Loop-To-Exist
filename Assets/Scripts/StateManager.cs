@@ -21,6 +21,9 @@ public class StateManager : MonoBehaviour
     [SerializeField] private Renderer Renderer;
     [SerializeField] private Outline Outline;
     public StickedWallElements stickedWall;
+    [SerializeField] private Material dissolveMaterial;
+    [SerializeField] private Material stickyMaterial;
+    private Material[] initMats = null;
 
     [Header("Throw Properties")]
     [SerializeField] public float startThrowForceHorizontal = 5;
@@ -108,6 +111,8 @@ public class StateManager : MonoBehaviour
                 objectToStick = null;
                 isSticked = false;
                 rigidBody.useGravity = true;
+
+                StartCoroutine(RemoveSticky());
             }
             else if (state == State.Link)
             {
@@ -135,7 +140,60 @@ public class StateManager : MonoBehaviour
         else
         {
             states.Add(state);
+
+            if (state == State.Sticky)
+            {
+                StartCoroutine(SetSticky());
+            }
         }
+    }
+
+    private IEnumerator SetSticky()
+    {
+        float dissolveTime = 0.75f;
+        Material initMat = renderer.material;
+        Material dissolveMat = Instantiate(dissolveMaterial);
+        dissolveMat.SetTexture("_Albedo", initMat.mainTexture);
+        dissolveMat.SetFloat("_AlphaTreshold", 0f);
+        Material stickyMat = Instantiate(stickyMaterial);
+        dissolveMat.SetTexture("MainTexture", initMat.mainTexture);
+
+        initMats = renderer.materials;
+        Material[] stickyMats = new Material[2];
+        stickyMats[0] = stickyMat;
+        stickyMats[1] = dissolveMat;
+
+        renderer.materials = stickyMats;
+
+        float elapsedTime = 0f;
+        float treshold = 0f;
+        while (elapsedTime < dissolveTime)
+        {
+            float time = elapsedTime / dissolveTime;
+            treshold = Mathf.Lerp(treshold, 1f, time);
+            dissolveMat.SetFloat("_AlphaTreshold", treshold);
+            elapsedTime += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    private IEnumerator RemoveSticky()
+    {
+        Debug.Log("gfcxhgxc");
+        float dissolveTime = 0.75f;
+
+        float elapsedTime = 0f;
+        float treshold = 1f;
+        while (elapsedTime < dissolveTime)
+        {
+            float time = elapsedTime / dissolveTime;
+            treshold = Mathf.Lerp(treshold, 0f, time);
+            renderer.materials[1].SetFloat("_AlphaTreshold", treshold);
+            elapsedTime += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        renderer.materials = initMats;
     }
 
     public virtual void ResetState()
