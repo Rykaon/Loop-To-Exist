@@ -576,11 +576,6 @@ public class PlayerManager : StateManager
             {
                 rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 800 * Time.fixedDeltaTime));
             }
-            else
-            {
-                //rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction , Vector3.up), 150 * Time.fixedDeltaTime));
-            }
-
         }
         else
         {
@@ -687,18 +682,9 @@ public class PlayerManager : StateManager
         return isCollisionDetected;
     }
 
-    //private void CollisionManagement()
-    //{
-
-    //    RaycastHit hit = Physics.CapsuleCast(transform.position - new Vector3(0,/*Player Heigh*/0, 0), )
-    //}
-
     private bool RaycastGrounded()
     {
-        //bool isCollisionDetected = Physics.Raycast(feet.position, Vector3.down, collisionDetectionDistance, GroundLayer);
-
         bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
-        //bool isCollisionDetected = false;
 
         if (isCollisionDetected)
         {
@@ -914,13 +900,13 @@ public class PlayerManager : StateManager
 
                 if (isJumping)
                 {
-                    if (!RaycastFalling() && rigidBody.velocity.y < 0f && !isJumpingDown)
+                    if ((!RaycastFalling() || !RaycastGrounded()) && rigidBody.velocity.y < 0f && !isJumpingDown)
                     {
                         isJumpingDown = true;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", true);
                     }
-                    else if (RaycastFalling() && isJumpingDown)
+                    else if ((RaycastFalling() || RaycastGrounded()) && isJumpingDown)
                     {
                         isJumping = false;
                         isJumpingDown = false;
@@ -930,13 +916,13 @@ public class PlayerManager : StateManager
                 }
                 else
                 {
-                    if (!RaycastFalling() && rigidBody.velocity.y < 0f && !isJumpingDown)
+                    if ((!RaycastFalling() || !RaycastGrounded()) && rigidBody.velocity.y < 0f && !isJumpingDown)
                     {
                         isJumpingDown = true;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", true);
                     }
-                    else if (RaycastFalling() && isJumpingDown)
+                    else if ((RaycastFalling() || RaycastGrounded()) && isJumpingDown)
                     {
                         isJumpingDown = false;
                         animator.SetBool("isJumpingUp", false);
