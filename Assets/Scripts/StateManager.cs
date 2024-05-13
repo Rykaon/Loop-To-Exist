@@ -103,9 +103,12 @@ public class StateManager : MonoBehaviour
                     }
                 }
 
-                if (objectToStick.TryGetComponent<StateManager>(out StateManager stateManager))
+                if (objectToStick != null)
                 {
-                    stateManager.stickedObjects.Remove(gameObject);
+                    if (objectToStick.TryGetComponent<StateManager>(out StateManager stateManager))
+                    {
+                        stateManager.stickedObjects.Remove(gameObject);
+                    }
                 }
 
                 objectToStick = null;

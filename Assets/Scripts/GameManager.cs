@@ -109,13 +109,11 @@ public class GameManager : MonoBehaviour
             creatureList[i].Initialize(this);
         }
 
-        playerList[0].SetIsMainPlayer(true);
         mainPlayer = playerList[0];
-        SetCameraTarget(mainPlayer.transform, mainPlayer.transform);
 
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
-        SetMainPlayer(mainPlayer, true);
+        SetMainPlayer(mainPlayer, true, false);
     }
 
     private void OnEnable()
@@ -162,17 +160,17 @@ public class GameManager : MonoBehaviour
         controlState = state;
     }
 
-    public void SetCameraTarget(Transform follow, Transform look)
+    public void SetCameraTarget(Transform follow, Transform look, bool isWarp)
     {
         if (cameraManager.cameraTransition != null)
         {
             StopCoroutine(cameraManager.cameraTransition);
         }
 
-        cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look));
+        cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look, isWarp));
     }
 
-    public void SetMainPlayer(PlayerManager player, bool startRun)
+    public void SetMainPlayer(PlayerManager player, bool startRun, bool isWarp)
     {
         int previous = Utilities.FindIndexInList(mainPlayer, playerList);
         int next = Utilities.FindIndexInList(player, playerList);
@@ -186,17 +184,17 @@ public class GameManager : MonoBehaviour
         if (startRun)
         {
             ChangeState(ControlState.World);
-            StartRun();
+            StartRun(isWarp);
         }
         else
         {
-            SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
+            SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget, isWarp);
         }
     }
 
-    public void StartRun()
+    public void StartRun(bool isWarp)
     {
-        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
+        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget, isWarp);
         
         for (int i = 0; i < playerList.Count; i++)
         {
@@ -268,24 +266,24 @@ public class GameManager : MonoBehaviour
 
                         if (cameraManager.currentTarget != playerMenu.elements[playerMenu.index].player.transform)
                         {
-                            SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget);
+                            SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget, false);
                         }
 
                         if (playerControls.UI.X.IsPressed())
                         {
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, false);
+                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, false, false);
                         }
 
                         if (playerControls.UI.Y.IsPressed())
                         {
                             playerMenu.gameObject.SetActive(false);
-                            StartRun();
+                            StartRun(false);
                         }
 
                         if (playerControls.UI.A.IsPressed())
                         {
                             playerMenu.gameObject.SetActive(false);
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, true);
+                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, true, false);
                         }
                     }
                     else

@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Cinematic;
+using UnityEngine.VFX;
 
 public class CameraManager : MonoBehaviour
 {
@@ -31,6 +32,9 @@ public class CameraManager : MonoBehaviour
     [HideInInspector] public Transform previousTarget;
     [HideInInspector] public Transform currentTarget;
     [HideInInspector] public Coroutine cameraTransition = null;
+    [SerializeField] private GameObject warpPrefab;
+    [SerializeField] private AnimationCurve warpCurve;
+    [SerializeField] private AnimationCurve fovCurve;
     private Coroutine aimRoutine;
     private Coroutine cursorRoutine;
     
@@ -78,8 +82,13 @@ public class CameraManager : MonoBehaviour
         gameManager.mainPlayer.isActive = true;
     }
 
-    public IEnumerator SetCameraTarget(Transform follow, Transform look)
+    public IEnumerator SetCameraTarget(Transform follow, Transform look, bool isWarp)
     {
+        if (isWarp)
+        {
+            StartCoroutine(SetWarp(follow));
+        }
+        
         isCameraSet = false;
         previousTarget = worldCamera.m_Follow;
         currentTarget = follow;
@@ -98,10 +107,13 @@ public class CameraManager : MonoBehaviour
         {
             float time = elapsedTime / cameraTransitionDuration;
 
-            worldCamera.m_Follow.position = Vector3.Lerp(startFollow.position, follow.position, time);
+            Vector3 newFollowPos = Vector3.Lerp(startFollow.position, follow.position, warpCurve.Evaluate(time));
+            Vector3 newLookPos = Vector3.Lerp(startLook.position, look.position, warpCurve.Evaluate(time));
+
+            worldCamera.m_Follow.position = newFollowPos;
             worldCamera.m_Follow.rotation = Quaternion.Slerp(startFollow.rotation, follow.rotation, time);
 
-            worldCamera.m_LookAt.position = Vector3.Lerp(startLook.position, look.position, time);
+            worldCamera.m_LookAt.position = newLookPos;
             worldCamera.m_LookAt.rotation = Quaternion.Slerp(startLook.rotation, look.rotation, time);
 
             elapsedTime += Time.deltaTime;
@@ -114,6 +126,83 @@ public class CameraManager : MonoBehaviour
         aimCamera.m_LookAt = look;
         isCameraSet = true;
         cameraTransition = null;
+    }
+
+    private IEnumerator SetWarp(Transform target)
+    {
+        float elapsedTime = 0f;
+        float segmentTime = cameraTransitionDuration / 3;
+        GameObject warp = Instantiate(warpPrefab, target.parent.position + (Vector3.up * 1.5f), Quaternion.identity, target.parent);
+        warp.transform.localScale = Vector3.one;
+        VisualEffect warpEffect = warp.GetComponent<VisualEffect>();
+        float amountToSet = 1f;
+        float fovToSet = 80f;
+
+        while (elapsedTime < segmentTime)
+        {
+            float time = elapsedTime / segmentTime;
+            warp.transform.LookAt(Camera.main.transform);
+            float distance = Mathf.Abs((warp.transform.position - target.position).magnitude);
+            warpEffect.SetFloat("Distance", (distance * 100) + 1);
+
+            float amount = Mathf.Lerp(warpEffect.GetFloat("WarpAmount"), amountToSet, warpCurve.Evaluate(time));
+            warpEffect.SetFloat("WarpAmount", amount);
+            float fov = Mathf.Lerp(worldCamera.m_Lens.FieldOfView, fovToSet, fovCurve.Evaluate(time));
+            worldCamera.m_Lens.FieldOfView = fov;
+
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        elapsedTime = 0f;
+        amountToSet = 0f;
+        
+        while (elapsedTime < segmentTime)
+        {
+            float time = elapsedTime / segmentTime;
+            warp.transform.LookAt(Camera.main.transform);
+            float distance = Mathf.Abs((warp.transform.position - target.position).magnitude);
+            warpEffect.SetFloat("Distance", (distance * 100) + 1);
+
+            float amount = Mathf.Lerp(warpEffect.GetFloat("WarpAmount"), amountToSet, warpCurve.Evaluate(time));
+            warpEffect.SetFloat("WarpAmount", amount);
+            float fov = Mathf.Lerp(worldCamera.m_Lens.FieldOfView, fovToSet, warpCurve.Evaluate(time));
+            worldCamera.m_Lens.FieldOfView = fov;
+
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        elapsedTime = 0f;
+        fovToSet = 45f;
+        
+        while (elapsedTime < segmentTime)
+        {
+            float time = elapsedTime / segmentTime;
+            warp.transform.LookAt(Camera.main.transform);
+            float distance = Mathf.Abs((warp.transform.position - target.position).magnitude);
+            warpEffect.SetFloat("Distance", (distance * 150) + 1);
+
+            float amount = Mathf.Lerp(warpEffect.GetFloat("WarpAmount"), amountToSet, warpCurve.Evaluate(time));
+            warpEffect.SetFloat("WarpAmount", amount);
+            float fov = Mathf.Lerp(worldCamera.m_Lens.FieldOfView, fovToSet, warpCurve.Evaluate(time));
+            worldCamera.m_Lens.FieldOfView = fov;
+
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        elapsedTime = 0f;
+        while (elapsedTime < cameraTransitionDuration)
+        {
+            warp.transform.LookAt(Camera.main.transform);
+            float distance = Mathf.Abs((warp.transform.position - target.position).magnitude);
+            warpEffect.SetFloat("Distance", (distance * 150) + 1);
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        Destroy(warp);
     }
 
     public void SetCameraAim(bool value, Vector3 targetPos)
@@ -161,7 +250,7 @@ public class CameraManager : MonoBehaviour
 
         while (elapsedTime < aimTransitionDuration)
         {
-            float time = elapsedTime / cameraTransitionDuration;
+            float time = elapsedTime / aimTransitionDuration;
 
             gameManager.mainPlayer.cameraTarget.localPosition = Vector3.Slerp(gameManager.mainPlayer.cameraTarget.localPosition, targetPos, time);
 
