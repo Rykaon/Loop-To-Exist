@@ -135,7 +135,7 @@ public class CameraManager : MonoBehaviour
         GameObject warp = Instantiate(warpPrefab, target.parent.position + (Vector3.up * 1.5f), Quaternion.identity, target.parent);
         warp.transform.localScale = Vector3.one;
         VisualEffect warpEffect = warp.GetComponent<VisualEffect>();
-        float amountToSet = 1f;
+        float amountToSet = 0f;
         float fovToSet = 80f;
 
         while (elapsedTime < segmentTime)
@@ -155,8 +155,8 @@ public class CameraManager : MonoBehaviour
         }
 
         elapsedTime = 0f;
-        amountToSet = 0f;
-        
+        amountToSet = 1f;
+
         while (elapsedTime < segmentTime)
         {
             float time = elapsedTime / segmentTime;
@@ -174,6 +174,7 @@ public class CameraManager : MonoBehaviour
         }
 
         elapsedTime = 0f;
+        amountToSet = 0f;
         fovToSet = 45f;
         
         while (elapsedTime < segmentTime)

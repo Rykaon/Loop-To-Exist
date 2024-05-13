@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,6 +15,8 @@ public class CreatureManager : StateManager
     [SerializeField] private float roamingRadius;
     [SerializeField] private float collisionDetectionDistance;
     [SerializeField] private LayerMask GroundLayer;
+    private float angularSpeed = 200f;
+    private float speed = 0.75f;
 
     [Header("Status")]
     public bool isActive = false;
@@ -51,8 +54,6 @@ public class CreatureManager : StateManager
     public override void SetHoldObject(Transform endPosition, float time)
     {
         rigidBody.velocity = Vector3.zero;
-        base.SetHoldObject(endPosition, time);
-        isHeldAnim = true;
         isRoaming = false;
 
         if (roamRoutine != null)
@@ -60,20 +61,25 @@ public class CreatureManager : StateManager
             StopCoroutine(roamRoutine);
         }
 
-        if (agent.enabled)
+        if (agent != null)
         {
-            agent.ResetPath();
-        }
+            if (agent.enabled)
+            {
+                agent.ResetPath();
+            }
 
-        agent.enabled = false;
+            Destroy(agent);
+        }
 
         animator.SetBool("isWalking", false);
         animator.SetBool("isGrab", true);
+        base.SetHoldObject(endPosition, time);
     }
 
     public override void InitializeHoldObject(Transform parent)
     {
         base.InitializeHoldObject(parent);
+        isHeldAnim = true;
     }
 
     public override void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
@@ -103,9 +109,6 @@ public class CreatureManager : StateManager
 
     protected override void OnJointBreak(float breakForce)
     {
-        base.OnJointBreak(breakForce);
-
-        isHeldAnim = true;
         isRoaming = false;
 
         if (roamRoutine != null)
@@ -113,15 +116,21 @@ public class CreatureManager : StateManager
             StopCoroutine(roamRoutine);
         }
 
-        if (agent.enabled)
+        if (agent != null)
         {
-            agent.ResetPath();
-        }
+            if (agent.enabled)
+            {
+                agent.ResetPath();
+            }
 
-        agent.enabled = false;
+            Destroy(agent);
+        }
 
         animator.SetBool("isWalking", false);
         animator.SetBool("isGrab", true);
+        
+        base.OnJointBreak(breakForce);
+        isHeldAnim = true;
     }
 
     ///////////////////////////////////////////////////
@@ -200,7 +209,18 @@ public class CreatureManager : StateManager
                     rigidBody.velocity = Vector3.zero;
                     isHeldAnim = false;
                     isRoaming = true;
-                    agent.enabled = true;
+
+                    if (agent == null)
+                    {
+                        Agent = this.AddComponent<NavMeshAgent>();
+                        agent = Agent;
+                        agent.speed = speed;
+                        agent.angularSpeed = angularSpeed;
+                    }
+                    else
+                    {
+                        agent.enabled = true;
+                    }
 
                     animator.SetBool("isGrab", false);
                     roamRoutine = StartCoroutine(WaitAndRoam());
@@ -209,6 +229,8 @@ public class CreatureManager : StateManager
 
             if (isRoaming)
             {
+                rigidBody.velocity = Vector3.zero;
+
                 if (agent.remainingDistance <= agent.stoppingDistance)
                 {
                     if (roamRoutine == null)

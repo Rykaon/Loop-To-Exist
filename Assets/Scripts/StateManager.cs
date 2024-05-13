@@ -251,6 +251,7 @@ public class StateManager : MonoBehaviour
 
     public virtual void SetHoldObject(Transform endPosition, float time)
     {
+        Debug.Log("dfsqfsfqfef");
         bool wasEquipped = false;
         position = Position.Held;
         if (states.Contains(State.Sticky))

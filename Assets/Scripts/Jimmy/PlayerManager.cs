@@ -451,11 +451,13 @@ public class PlayerManager : StateManager
             dir.y = 0f;
             rigidBody.rotation = Quaternion.LookRotation(dir, Vector3.up);
             gameManager.cameraManager.aimCamera.m_XAxis.Value = 0f;
+            gameManager.cameraManager.aimCamera.m_YAxis.Value = 0.70f;
             cameraTargetPos = new Vector3(0, 6.25f, 0);
         }
         else
         {
             gameManager.cameraManager.worldCamera.m_XAxis.Value = 0f;
+            gameManager.cameraManager.worldCamera.m_YAxis.Value = 0.70f;
         }
 
         gameManager.cameraManager.SetCameraAim(value, cameraTargetPos);
@@ -491,6 +493,7 @@ public class PlayerManager : StateManager
                                 target = null;
                             }
 
+                            trigger.Clear();
                             idleTime = 0;
                             gameManager.SetMainPlayer(playerManager, true, true);
                             return;
@@ -575,7 +578,7 @@ public class PlayerManager : StateManager
             }
             else
             {
-                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction , Vector3.up), 300 * Time.fixedDeltaTime));
+                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction , Vector3.up), 150 * Time.fixedDeltaTime));
             }
 
         }

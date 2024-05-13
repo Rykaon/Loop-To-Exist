@@ -22,13 +22,16 @@ public class PlayerInteractionTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (tagsToCheck.Contains(collision.transform.tag) && collision.transform != player.transform)
+        if (player.isActive && player.isMainPlayer)
         {
-            if (collision.transform.TryGetComponent<StateManager>(out StateManager holdObject))
+            if (tagsToCheck.Contains(collision.transform.tag) && collision.transform != player.transform)
             {
-                if (holdObject.position == StateManager.Position.Default || holdObject.position == StateManager.Position.Held)
+                if (collision.transform.TryGetComponent<StateManager>(out StateManager holdObject))
                 {
-                    triggeredObjectsList.Add(holdObject);
+                    if (holdObject.position == StateManager.Position.Default || holdObject.position == StateManager.Position.Held)
+                    {
+                        triggeredObjectsList.Add(holdObject);
+                    }
                 }
             }
         }
@@ -36,16 +39,29 @@ public class PlayerInteractionTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider collision)
     {
-        if (tagsToCheck.Contains(collision.transform.tag) && collision.transform != player.transform)
+        if (player.isActive && player.isMainPlayer)
         {
-            if (collision.transform.TryGetComponent<StateManager>(out StateManager holdObject))
+            if (tagsToCheck.Contains(collision.transform.tag) && collision.transform != player.transform)
             {
-                if (triggeredObjectsList.Contains(holdObject))
+                if (collision.transform.TryGetComponent<StateManager>(out StateManager holdObject))
                 {
-                    triggeredObjectsList.Remove(holdObject);
+                    if (triggeredObjectsList.Contains(holdObject))
+                    {
+                        triggeredObjectsList.Remove(holdObject);
+                    }
                 }
             }
         }
+    }
+
+    public void Clear()
+    {
+        for (int i = 0; i < triggeredObjectsList.Count; ++i)
+        {
+            triggeredObjectsList[i].outline.enabled = false;
+        }
+
+        triggeredObjectsList.Clear();
     }
 
     public void UpdateOutline()
