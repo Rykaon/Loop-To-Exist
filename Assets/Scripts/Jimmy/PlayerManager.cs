@@ -107,7 +107,11 @@ public class PlayerManager : StateManager
         linkMoveMultiplier = 1.75f; //Le multiplieur associ� � la fonction Move() si le joueur est link. V�rifier le cas o� le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-�tre que �a m�rite une valeur dissoci�e
         linkJumpMultiplier = 5.25f; //Le multiplieur associ� � la fonction Jump() si le joueur est link
 
-        playerControls = gameManager.playerControls;
+        if (gameManager != null)
+        {
+            playerControls = gameManager.playerControls;
+        }
+        
         animator.SetBool("isActive", false);
     }
 
@@ -901,7 +905,7 @@ public class PlayerManager : StateManager
             rot.z = 0f;
 
             equippedObject.transform.position = pos;
-            equippedObject.transform.rotation = head.rotation;
+            equippedObject.transform.rotation = Quaternion.Euler(rot);
             equippedObject.rigidBody.velocity = Vector3.zero;
             equippedObject.rigidBody.angularVelocity = Vector3.zero;
             equippedObject.rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
@@ -911,23 +915,22 @@ public class PlayerManager : StateManager
     private void Update()
     {
         jumpBufferTimer -= Time.fixedDeltaTime;
-        if (playerControls == null)
+        if (playerControls != null)
         {
-            Debug.Log(transform.name);
-        }
-        if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
-        {
-            buttonSouthIsPressed = true;
-            jumpBufferTimer = jumpBufferTime;
-        }
+            if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
+            {
+                buttonSouthIsPressed = true;
+                jumpBufferTimer = jumpBufferTime;
+            }
 
-        if (RaycastGrounded())
-        {
-            coyoteTimer = coyoteTime;
-        }
-        else
-        {
-            coyoteTimer -= Time.fixedDeltaTime;
+            if (RaycastGrounded())
+            {
+                coyoteTimer = coyoteTime;
+            }
+            else
+            {
+                coyoteTimer -= Time.fixedDeltaTime;
+            }
         }
     }
 

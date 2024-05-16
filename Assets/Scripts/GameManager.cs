@@ -12,7 +12,6 @@ using UnityEngine.InputSystem.Users;
 using static Cinemachine.CinemachineFreeLook;
 using static UnityEngine.Rendering.VolumeComponent;
 using System.Linq;
-using Obi;
 using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
@@ -230,6 +229,12 @@ public class GameManager : MonoBehaviour
 
         if (controlState == ControlState.World)
         {
+            if (playerControls.Player.Select.WasPressedThisFrame())
+            {
+                ChangeState(ControlState.UI);
+                UIManager.SetMenuActive(true);
+            }
+
             if (Input.GetKeyDown(KeyCode.G))
             {
                 cameraManager.ExecuteCinematic(cameraManager.intro);
@@ -245,6 +250,12 @@ public class GameManager : MonoBehaviour
         }
         else if (controlState == ControlState.UI)
         {
+            if (playerControls.UI.Select.WasPressedThisFrame())
+            {
+                ChangeState(ControlState.World);
+                UIManager.SetMenuActive(false);
+            }
+
             bool joystickMoved = playerControls.UI.LeftStick.ReadValue<Vector2>() != Vector2.zero;
 
             float rawAngle = playerMenu.CalculateRawAngles();

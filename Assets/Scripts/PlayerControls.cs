@@ -469,6 +469,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Select"",
+                    ""type"": ""Button"",
+                    ""id"": ""2957b96d-3ca3-46da-a372-8b53251148f0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -603,6 +612,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""RightShoulder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f5dcfe85-5222-4f1a-8220-28a0713c59f0"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""068868da-ca65-413b-8b45-f4c3b360bd2c"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -660,6 +691,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_UI_Y = m_UI.FindAction("Y", throwIfNotFound: true);
         m_UI_LeftShoulder = m_UI.FindAction("LeftShoulder", throwIfNotFound: true);
         m_UI_RightShoulder = m_UI.FindAction("RightShoulder", throwIfNotFound: true);
+        m_UI_Select = m_UI.FindAction("Select", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -855,6 +887,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Y;
     private readonly InputAction m_UI_LeftShoulder;
     private readonly InputAction m_UI_RightShoulder;
+    private readonly InputAction m_UI_Select;
     public struct UIActions
     {
         private @PlayerControls m_Wrapper;
@@ -867,6 +900,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Y => m_Wrapper.m_UI_Y;
         public InputAction @LeftShoulder => m_Wrapper.m_UI_LeftShoulder;
         public InputAction @RightShoulder => m_Wrapper.m_UI_RightShoulder;
+        public InputAction @Select => m_Wrapper.m_UI_Select;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -900,6 +934,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @RightShoulder.started += instance.OnRightShoulder;
             @RightShoulder.performed += instance.OnRightShoulder;
             @RightShoulder.canceled += instance.OnRightShoulder;
+            @Select.started += instance.OnSelect;
+            @Select.performed += instance.OnSelect;
+            @Select.canceled += instance.OnSelect;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -928,6 +965,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @RightShoulder.started -= instance.OnRightShoulder;
             @RightShoulder.performed -= instance.OnRightShoulder;
             @RightShoulder.canceled -= instance.OnRightShoulder;
+            @Select.started -= instance.OnSelect;
+            @Select.performed -= instance.OnSelect;
+            @Select.canceled -= instance.OnSelect;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -987,5 +1027,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnY(InputAction.CallbackContext context);
         void OnLeftShoulder(InputAction.CallbackContext context);
         void OnRightShoulder(InputAction.CallbackContext context);
+        void OnSelect(InputAction.CallbackContext context);
     }
 }

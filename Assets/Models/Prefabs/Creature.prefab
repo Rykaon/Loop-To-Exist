@@ -476,6 +476,7 @@ GameObject:
   - component: {fileID: 7844494707028061591}
   - component: {fileID: 8855395115919338561}
   - component: {fileID: 3828777088389195397}
+  - component: {fileID: 5891060364673545196}
   m_Layer: 0
   m_Name: Bop
   m_TagString: Creature
@@ -700,6 +701,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &5891060364673545196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3930664706122972992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af95da0ba5b14044a99b36556a6e5b43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localPosition: {x: 0, y: 0, z: 0}
+  radius: 0.5
+  strength: 1
 --- !u!1 &4562347551613508264
 GameObject:
   m_ObjectHideFlags: 0

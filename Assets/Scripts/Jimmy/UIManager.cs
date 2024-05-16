@@ -1,6 +1,8 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -8,9 +10,28 @@ public class UIManager : MonoBehaviour
     [SerializeField] private UIInputManager inputManager;
     private bool menuPauseIsActive;
 
+    [Header("MainMenu References")]
+    [SerializeField] private bool isMainMenu;
+    [SerializeField] private Image blackScreen;
+
     private void Awake()
     {
-        inputManager.Initialize(this);
+        if (inputManager != null)
+        {
+            inputManager.Initialize(this);
+        }
+
+        if (isMainMenu)
+        {
+            StartCoroutine(StartMainMenu());
+        }
+    }
+
+    private IEnumerator StartMainMenu()
+    {
+        yield return new WaitForSecondsRealtime(2.5f);
+
+        blackScreen.DOFade(0f, 2.5f);
     }
 
     public void SetUIInput(PlayerManager player)
@@ -18,15 +39,16 @@ public class UIManager : MonoBehaviour
         inputManager.SetUIInput(player);
     }
 
-    private void Update()
+    public void SetMenuActive(bool isActive)
     {
-        if (GameManager.instance.playerControls.Player.Select.WasPressedThisFrame() && !menuPauseIsActive)
+        menuPauseIsActive = isActive;
+
+        if (menuPauseIsActive)
         {
-            menuPauseIsActive = true;
             Time.timeScale = 0f;
-        }else if (GameManager.instance.playerControls.Player.Select.WasPressedThisFrame() && menuPauseIsActive)
+        }
+        else
         {
-            menuPauseIsActive = false;
             Time.timeScale = 1f;
         }
     }
