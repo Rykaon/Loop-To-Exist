@@ -394,6 +394,7 @@ public class StateManager : MonoBehaviour
             isHeldObject = false;
             holdingPlayer = null;
             transform.SetParent(initParent, true);
+            objectCollider.isTrigger = false;
             rigidBody.useGravity = true;
             rigidBody.isKinematic = false;
             rigidBody.angularVelocity = Vector3.zero;
@@ -430,12 +431,12 @@ public class StateManager : MonoBehaviour
 
        throwDirection += Vector3.up * throwForceVertical;
 
+        objectCollider.isTrigger = false;
         rigidBody.constraints = RigidbodyConstraints.None;
         rigidBody.isKinematic = false;
         rigidBody.useGravity = true;
         rigidBody.velocity = Vector3.zero;
         rigidBody.AddForce(throwDirection, ForceMode.Impulse);
-        objectCollider.isTrigger = false;
         holdingPlayer = null;
     }
 

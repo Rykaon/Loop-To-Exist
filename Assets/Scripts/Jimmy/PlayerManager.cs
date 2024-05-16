@@ -315,6 +315,11 @@ public class PlayerManager : StateManager
             }
         }
 
+        if (equippedObject != null)
+        {
+            equippedObject.objectCollider.isTrigger = true;
+        }
+
         rigidBody.AddForce(jumpForce, ForceMode.Impulse);
         isJumping = true;
         isJumpingDown = false;
@@ -934,6 +939,11 @@ public class PlayerManager : StateManager
                         isJumpingDown = true;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", true);
+
+                        if (equippedObject != null)
+                        {
+                            equippedObject.objectCollider.isTrigger = false;
+                        }
                     }
                     else if ((RaycastFalling() || RaycastGrounded()) && isJumpingDown)
                     {
@@ -951,6 +961,11 @@ public class PlayerManager : StateManager
                         isJumpingDown = true;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", true);
+
+                        if (equippedObject != null)
+                        {
+                            equippedObject.objectCollider.isTrigger = false;
+                        }
                     }
                     else if ((RaycastFalling() || RaycastGrounded()) && isJumpingDown)
                     {
