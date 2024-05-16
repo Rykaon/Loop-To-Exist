@@ -226,7 +226,7 @@ public class GameManager : MonoBehaviour
 
         if (controlState == ControlState.World)
         {
-            if (Input.GetKeyDown(KeyCode.M))
+            if (Input.GetKeyDown(KeyCode.G))
             {
                 cameraManager.ExecuteCinematic(cameraManager.intro);
             }

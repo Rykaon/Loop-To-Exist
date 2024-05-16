@@ -33,7 +33,7 @@ public class DialogueTrigger : MonoBehaviour
             if (GameManager.instance.playerControls.Player.A.WasPressedThisFrame())
             {
                 Debug.Log("ENTER DIALOGUE");
-                DialogueManager.instance.EnterDialogueMode(inkJSON, lockPlayerForDialogue);
+                DialogueManager.instance.EnterDialogueMode(inkJSON, lockPlayerForDialogue, true);
             }
         }
         else

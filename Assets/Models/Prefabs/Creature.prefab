@@ -530,7 +530,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 4e7d06aab864bb94b86515a3c4e953b1, type: 3}
     volume: 0.841
     pitch: 1
-    loop: 0
+    loop: 1
     source: {fileID: 0}
   - name: Sfx_Creature_Fall
     clip: {fileID: 8300000, guid: 1ed55f6d14e173942a386c4ba8a76d40, type: 3}

@@ -52,7 +52,7 @@ public class StateManager : MonoBehaviour
     protected PlayerManager holdingPlayer = null;
     protected PlayerManager equippingPlayer = null;
     protected Joint joint = null;
-    private float jointBreakTreshold = 250f;
+    private float jointBreakTreshold = 1000f;
 
     public bool isHeldObject { get; private set; }
     public bool isHeld { get; private set; }

@@ -18,7 +18,7 @@ public class CreatureManager : StateManager
     [SerializeField] private LayerMask GroundLayer;
     private float angularSpeed = 200f;
     private float speed = 0.75f;
-    private float radius = 50f;
+    private float radius = 0.1f;
 
     [Header("Status")]
     public bool isActive = false;
@@ -69,6 +69,7 @@ public class CreatureManager : StateManager
         if (walkRoutine != null)
         {
             StopCoroutine(walkRoutine);
+            walkRoutine = null;
         }
 
         if (agent != null)
@@ -114,6 +115,13 @@ public class CreatureManager : StateManager
     public override void InitializeEquipObject(Transform parent)
     {
         base.InitializeEquipObject(parent);
+    }
+
+    public override void DropObject()
+    {
+        base.DropObject();
+        audioManager.Stop("Sfx_Creature_WhileGrab");
+
     }
 
     protected override void OnCollisionEnter(Collision collision)
@@ -207,6 +215,7 @@ public class CreatureManager : StateManager
         if (walkRoutine != null)
         {
             StopCoroutine(walkRoutine);
+            walkRoutine = null;
         }
 
         yield return new WaitForSecondsRealtime(rand);
@@ -231,7 +240,7 @@ public class CreatureManager : StateManager
     {
         audioManager.PlayVariation("Sfx_Creature_Walk", 0.15f, 0.1f, radius);
 
-        yield return new WaitForSecondsRealtime(0.35f);
+        yield return new WaitForSecondsRealtime(0.60f);
 
         walkRoutine = StartCoroutine(Walk());
     }

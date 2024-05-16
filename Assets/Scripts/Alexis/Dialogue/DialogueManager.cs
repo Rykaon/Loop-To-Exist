@@ -61,16 +61,8 @@ public class DialogueManager : MonoBehaviour
 
         instance = this;
 
-        dialogueVariables= new DialogueVariables(globalsInkFile);
-    }
+        dialogueVariables = new DialogueVariables(globalsInkFile);
 
-    public static DialogueManager GetInstance()
-    {
-        return instance;
-    }
-
-    private void Start()
-    {
         isActive = false;
         dialoguePanel.SetActive(false);
 
@@ -85,11 +77,21 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    public static DialogueManager GetInstance()
+    {
+        return instance;
+    }
+
+    private void Start()
+    {
+        
+    }
+
     private void Update()
     {
         if (isActive)
         {
-
+            Debug.Log("kljdbfkjdfbs");
             if (elapsedTime > timeToWaitToSkip && currentStory.currentChoices.Count == 0) //&& (GameManager.instance.playerControls.UI.A.WasPressedThisFrame()) 
             {
                 ContinueStory();
@@ -106,18 +108,20 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void EnterDialogueMode(TextAsset inkJSON, bool chracterLockState)
+    public void EnterDialogueMode(TextAsset inkJSON, bool characterLockState, bool isNonCinematic)
     {
         elapsedTime = 0f;
 
-        saveLockStateDialogue = chracterLockState;
-        if (chracterLockState)
+        saveLockStateDialogue = characterLockState;
+        if (characterLockState)
         {
             EnableDisable(true);
         }
 
+        isActive = isNonCinematic;
+
         currentStory = new Story(inkJSON.text);
-        isActive = true;
+        
         dialoguePanel.SetActive(true);
 
         dialogueVariables.StartListening(currentStory);
@@ -149,7 +153,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private void ContinueStory()
+    public void ContinueStory()
     {
         elapsedTime = 0f;
 
