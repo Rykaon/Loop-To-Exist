@@ -56,7 +56,7 @@ public class CreatureManager : StateManager
         base.ResetState();
     }
 
-    public override void SetHoldObject(Transform endPosition, float time)
+    public override void SetHoldObject(PlayerManager player, Transform endPosition, float time)
     {
         rigidBody.velocity = Vector3.zero;
         isRoaming = false;
@@ -85,7 +85,7 @@ public class CreatureManager : StateManager
         animator.SetBool("isWalking", false);
         animator.SetBool("isGrab", true);
         audioManager.Play("Sfx_Creature_OnGrab", radius);
-        base.SetHoldObject(endPosition, time);
+        base.SetHoldObject(player, endPosition, time);
     }
 
     public override void InitializeHoldObject(Transform parent)
@@ -107,9 +107,9 @@ public class CreatureManager : StateManager
         return base.GetThrowForce(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 
-    public override void SetEquipObject(Transform endPosition, float time)
+    public override void SetEquipObject(PlayerManager player, Transform endPosition, float time)
     {
-        base.SetEquipObject(endPosition, time);
+        base.SetEquipObject(player, endPosition, time);
     }
 
     public override void InitializeEquipObject(Transform parent)
@@ -126,6 +126,7 @@ public class CreatureManager : StateManager
 
     protected override void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.name);
         base.OnCollisionEnter(collision);
     }
 
@@ -150,7 +151,7 @@ public class CreatureManager : StateManager
 
         animator.SetBool("isWalking", false);
         animator.SetBool("isGrab", true);
-        
+
         base.OnJointBreak(breakForce);
         isHeldAnim = true;
     }

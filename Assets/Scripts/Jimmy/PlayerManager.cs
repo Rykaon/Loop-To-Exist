@@ -121,9 +121,9 @@ public class PlayerManager : StateManager
         base.ResetState();
     }
 
-    public override void SetHoldObject(Transform endPosition, float time)
+    public override void SetHoldObject(PlayerManager player, Transform endPosition, float time)
     {
-        base.SetHoldObject(endPosition, time);
+        base.SetHoldObject(player, endPosition, time);
     }
 
     public override void InitializeHoldObject(Transform parent)
@@ -141,9 +141,9 @@ public class PlayerManager : StateManager
         return base.GetThrowForce(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 
-    public override void SetEquipObject(Transform endPosition, float time)
+    public override void SetEquipObject(PlayerManager player, Transform endPosition, float time)
     {
-        base.SetEquipObject(endPosition, time);
+        base.SetEquipObject(player, endPosition, time);
     }
 
     public override void InitializeEquipObject(Transform parent)
@@ -339,7 +339,7 @@ public class PlayerManager : StateManager
             if (trigger.triggeredObjectsList.Count > 0 && trigger.current != null)
             {
                 heldObject = trigger.current;
-                heldObject.SetHoldObject(hand, 0.25f);
+                heldObject.SetHoldObject(this, hand, 0.75f);
                 animator.SetTrigger("Grab");
                 idleTime = 0;
                 AudioManager.instance.Play("Sfx_Player_Carry");
@@ -360,7 +360,7 @@ public class PlayerManager : StateManager
         if (equippedObject == null && heldObject != null)
         {
             equippedObject = heldObject;
-            equippedObject.SetEquipObject(head, 0.25f);
+            equippedObject.SetEquipObject(this, head, 0.75f);
             animator.SetTrigger("PutChapeau");
             heldObject = null;
             idleTime = 0;
@@ -377,7 +377,7 @@ public class PlayerManager : StateManager
         else if (equippedObject != null && heldObject == null)
         {
             heldObject = equippedObject;
-            equippedObject.SetHoldObject(hand, 0.25f);
+            equippedObject.SetHoldObject(this, hand, 0.75f);
             animator.SetTrigger("RemoveChapeau");
             equippedObject = null;
             idleTime = 0;
@@ -392,7 +392,6 @@ public class PlayerManager : StateManager
             if (heldObject.isHeld)
             {
                 StartCoroutine(CalculateThrowForce());
-                animator.SetTrigger("Throw");
                 idleTime = 0;
                 AudioManager.instance.Play("Sfx_Player_Throw");
             }
@@ -447,6 +446,7 @@ public class PlayerManager : StateManager
                 hitPoint = hit.point;
             }
 
+            animator.SetTrigger("Throw");
             heldObject.ThrowObject(startThrowForceHorizontal, startThrowForceVertical, hitPoint);
             heldObject = null;
         }
@@ -834,9 +834,8 @@ public class PlayerManager : StateManager
         }
     }
 
-    public void FallGravity()//Ajoute une gravit� fictive/ Lorsque le personnage retombe, donne un feeling avec plus de r�pondant.
+    public void FallGravity()
     {
-        //On applique la gravit� custom
         if (rigidBody.velocity.y < 0f)
         {
             rigidBody.AddForce(customGravity * fallGravityMultiplier, ForceMode.Acceleration);
@@ -847,7 +846,7 @@ public class PlayerManager : StateManager
         }
     }
 
-    private void Update()//Gère les temps pour le coyoteTime et JumpBuffering
+    private void Update()
     {
         jumpBufferTimer -= Time.fixedDeltaTime;
         if (playerControls == null)
@@ -859,7 +858,6 @@ public class PlayerManager : StateManager
             buttonSouthIsPressed = true;
             jumpBufferTimer = jumpBufferTime;
         }
-        //Debug.Log(jumpBufferTimer);
 
         if (RaycastGrounded())
         {
@@ -869,8 +867,6 @@ public class PlayerManager : StateManager
         {
             coyoteTimer -= Time.fixedDeltaTime;
         }
-        //Debug.Log(RaycastGrounded());
-
     }
 
     private void FixedUpdate()
@@ -884,6 +880,22 @@ public class PlayerManager : StateManager
         {
             if (isMainPlayer)
             {
+                if (heldObject != null)
+                {
+                    heldObject.rigidBody.velocity = Vector3.zero;
+                    heldObject.rigidBody.angularVelocity = Vector3.zero;
+                }
+                else
+                {
+                    hand.rotation = Quaternion.identity;
+                }
+
+                if (equippedObject != null)
+                {
+                    equippedObject.rigidBody.velocity = Vector3.zero;
+                    equippedObject.rigidBody.angularVelocity = Vector3.zero;
+                }
+
                 if (playerControls.Player.enabled && !playerControls.UI.enabled)
                 {
                     gameManager.UIManager.SetUIInput(this);

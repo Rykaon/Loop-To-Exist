@@ -332,7 +332,7 @@ GameObject:
   - component: {fileID: 6257653223578730151}
   m_Layer: 0
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Creature
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -472,7 +472,7 @@ GameObject:
   - component: {fileID: 5006748754500241956}
   - component: {fileID: 613228025212861397}
   - component: {fileID: 6088857713958615012}
-  - component: {fileID: 9110940259963560163}
+  - component: {fileID: 7272283819878818187}
   - component: {fileID: 7844494707028061591}
   - component: {fileID: 8855395115919338561}
   - component: {fileID: 3828777088389195397}
@@ -560,7 +560,7 @@ MonoBehaviour:
   states: 
   position: 0
   RigidBody: {fileID: 7844494707028061591}
-  ObjectCollider: {fileID: 9110940259963560163}
+  ObjectCollider: {fileID: 7272283819878818187}
   Renderer: {fileID: 6257653223578730151}
   Outline: {fileID: 8855395115919338561}
   stickedWall: {fileID: 0}
@@ -610,7 +610,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!65 &9110940259963560163
+--- !u!65 &7272283819878818187
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -626,11 +626,11 @@ BoxCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.110567, y: 2.7554104, z: 1.5373709}
-  m_Center: {x: 0.053736314, y: 1.3434278, z: -0.000000085149495}
+  m_Size: {x: 1.7617896, y: 2.7388659, z: 1.2980917}
+  m_Center: {x: 0.033120856, y: 1.33313, z: 0.016560428}
 --- !u!54 &7844494707028061591
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -657,7 +657,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!114 &8855395115919338561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -995,7 +995,7 @@ GameObject:
   - component: {fileID: 7611728856375937175}
   m_Layer: 0
   m_Name: Armature
-  m_TagString: Untagged
+  m_TagString: Creature
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

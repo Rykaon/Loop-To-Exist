@@ -13,6 +13,7 @@ using static Cinemachine.CinemachineFreeLook;
 using static UnityEngine.Rendering.VolumeComponent;
 using System.Linq;
 using Obi;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
     public ControlState controlState { get; private set; }
 
     [Header("Cinemachine Properties")]
+    [SerializeField] private Volume GlobalVolume;
     [SerializeField] public CameraManager cameraManager;
     [HideInInspector] public Camera _camera;
 
@@ -48,6 +50,7 @@ public class GameManager : MonoBehaviour
     [Header("Entities References")]
     [SerializeField] private List<StateManager> entities;
 
+    public Volume globalVolume { get; private set; }
     public UIManager UIManager { get; private set; }
     public RadialMenu playerMenu { get; private set; }
     public List<PlayerManager> playerList { get; private set; }
@@ -77,6 +80,7 @@ public class GameManager : MonoBehaviour
             Destroy(this);
         }
 
+        globalVolume = GlobalVolume;
         UIManager = uiManager;
         UIManager.gameManager = this;
         controlState = ControlState.UI;

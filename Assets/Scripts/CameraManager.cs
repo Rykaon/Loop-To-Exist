@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cinematic;
 using UnityEngine.VFX;
+using UnityEngine.Rendering.Universal;
 
 public class CameraManager : MonoBehaviour
 {
@@ -132,62 +133,56 @@ public class CameraManager : MonoBehaviour
     {
         float elapsedTime = 0f;
         float segmentTime = cameraTransitionDuration / 3;
-        GameObject warp = Instantiate(warpPrefab, target.parent.position + (Vector3.up * 1.5f), Quaternion.identity, target.parent);
-        warp.transform.localScale = Vector3.one;
-        VisualEffect warpEffect = warp.GetComponent<VisualEffect>();
-        float amountToSet = 0f;
         float fovToSet = 80f;
-
-        while (elapsedTime < segmentTime)
+        float lensToSet = -0.25f;
+        
+        if (!gameManager.globalVolume.profile.TryGet<LensDistortion>(out LensDistortion lensDistortion))
         {
-            float time = elapsedTime / segmentTime;
-            warp.transform.LookAt(Camera.main.transform);
-            float distance = Mathf.Abs((warp.transform.position - target.position).magnitude);
-            warpEffect.SetFloat("Distance", (distance * 100) + 1);
-
-            float amount = Mathf.Lerp(warpEffect.GetFloat("WarpAmount"), amountToSet, warpCurve.Evaluate(time));
-            warpEffect.SetFloat("WarpAmount", amount);
-            float fov = Mathf.Lerp(worldCamera.m_Lens.FieldOfView, fovToSet, fovCurve.Evaluate(time));
-            worldCamera.m_Lens.FieldOfView = fov;
-
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForFixedUpdate();
+            Debug.LogError("Lens Distortion effect not found in the Global Volume!");
+            yield break;
         }
-
-        elapsedTime = 0f;
-        amountToSet = 1f;
-
-        while (elapsedTime < segmentTime)
-        {
-            float time = elapsedTime / segmentTime;
-            warp.transform.LookAt(Camera.main.transform);
-            float distance = Mathf.Abs((warp.transform.position - target.position).magnitude);
-            warpEffect.SetFloat("Distance", (distance * 100) + 1);
-
-            float amount = Mathf.Lerp(warpEffect.GetFloat("WarpAmount"), amountToSet, warpCurve.Evaluate(time));
-            warpEffect.SetFloat("WarpAmount", amount);
-            float fov = Mathf.Lerp(worldCamera.m_Lens.FieldOfView, fovToSet, warpCurve.Evaluate(time));
-            worldCamera.m_Lens.FieldOfView = fov;
-
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForFixedUpdate();
-        }
-
-        elapsedTime = 0f;
-        amountToSet = 0f;
-        fovToSet = 45f;
         
         while (elapsedTime < segmentTime)
         {
             float time = elapsedTime / segmentTime;
-            warp.transform.LookAt(Camera.main.transform);
-            float distance = Mathf.Abs((warp.transform.position - target.position).magnitude);
-            warpEffect.SetFloat("Distance", (distance * 150) + 1);
+            
+            float fov = Mathf.Lerp(worldCamera.m_Lens.FieldOfView, fovToSet, fovCurve.Evaluate(time));
+            worldCamera.m_Lens.FieldOfView = fov;
+            float lens = Mathf.Lerp(lensDistortion.intensity.value, lensToSet, warpCurve.Evaluate(time));
+            lensDistortion.intensity.value = lens;
 
-            float amount = Mathf.Lerp(warpEffect.GetFloat("WarpAmount"), amountToSet, warpCurve.Evaluate(time));
-            warpEffect.SetFloat("WarpAmount", amount);
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        elapsedTime = 0f;
+        lensToSet = -0.75f;
+
+        while (elapsedTime < segmentTime)
+        {
+            float time = elapsedTime / segmentTime;
+            
             float fov = Mathf.Lerp(worldCamera.m_Lens.FieldOfView, fovToSet, warpCurve.Evaluate(time));
             worldCamera.m_Lens.FieldOfView = fov;
+            float lens = Mathf.Lerp(lensDistortion.intensity.value, lensToSet, fovCurve.Evaluate(time));
+            lensDistortion.intensity.value = lens;
+
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        elapsedTime = 0f;
+        fovToSet = 45f;
+        lensToSet = 0f;
+        
+        while (elapsedTime < segmentTime)
+        {
+            float time = elapsedTime / segmentTime;
+            
+            float fov = Mathf.Lerp(worldCamera.m_Lens.FieldOfView, fovToSet, fovCurve.Evaluate(time));
+            worldCamera.m_Lens.FieldOfView = fov;
+            float lens = Mathf.Lerp(lensDistortion.intensity.value, lensToSet, fovCurve.Evaluate(time));
+            lensDistortion.intensity.value = lens;
 
             elapsedTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();
@@ -196,14 +191,9 @@ public class CameraManager : MonoBehaviour
         elapsedTime = 0f;
         while (elapsedTime < cameraTransitionDuration)
         {
-            warp.transform.LookAt(Camera.main.transform);
-            float distance = Mathf.Abs((warp.transform.position - target.position).magnitude);
-            warpEffect.SetFloat("Distance", (distance * 150) + 1);
             elapsedTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();
         }
-
-        Destroy(warp);
     }
 
     public void SetCameraAim(bool value, Vector3 targetPos)
