@@ -559,6 +559,7 @@ MonoBehaviour:
   type: 3
   states: 
   position: 0
+  pivot: {fileID: 0}
   RigidBody: {fileID: 7844494707028061591}
   ObjectCollider: {fileID: 7272283819878818187}
   Renderer: {fileID: 6257653223578730151}
@@ -617,7 +618,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3930664706122972992}
-  m_Material: {fileID: 13400000, guid: 7f731aa4dff23bd479456c3253ed51c7, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

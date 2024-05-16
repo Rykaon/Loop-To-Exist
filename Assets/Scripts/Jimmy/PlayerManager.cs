@@ -901,7 +901,7 @@ public class PlayerManager : StateManager
             rot.z = 0f;
 
             equippedObject.transform.position = pos;
-            equippedObject.transform.rotation = Quaternion.Euler(rot);
+            equippedObject.transform.rotation = head.rotation;
             equippedObject.rigidBody.velocity = Vector3.zero;
             equippedObject.rigidBody.angularVelocity = Vector3.zero;
             equippedObject.rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
