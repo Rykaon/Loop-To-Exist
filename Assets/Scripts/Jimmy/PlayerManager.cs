@@ -839,7 +839,7 @@ public class PlayerManager : StateManager
         }
     }
 
-    public void FallGravity()
+    private void FallGravity()
     {
         if (rigidBody.velocity.y < 0f)
         {
@@ -848,6 +848,63 @@ public class PlayerManager : StateManager
         else
         {
             rigidBody.AddForce(customGravity, ForceMode.Acceleration);
+        }
+    }
+
+    private void HandleJoints()
+    {
+        if (heldObject != null)
+        {
+            heldObject.rigidBody.constraints = RigidbodyConstraints.None;
+            Vector3 pos = Vector3.zero;
+            if (heldObject.pivot != null)
+            {
+                Vector3 diff = heldObject.transform.position - heldObject.pivot.position;
+                pos = hand.transform.position + diff;
+            }
+            else
+            {
+                pos = hand.transform.position;
+            }
+
+            Vector3 rot = hand.localEulerAngles;
+            rot.x = 0f;
+            rot.z = 0f;
+
+            heldObject.transform.position = pos;
+            heldObject.transform.rotation = Quaternion.Euler(rot);
+            heldObject.rigidBody.velocity = Vector3.zero;
+            heldObject.rigidBody.angularVelocity = Vector3.zero;
+            heldObject.rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
+        }
+        else
+        {
+            hand.rotation = Quaternion.identity;
+        }
+
+        if (equippedObject != null)
+        {
+            equippedObject.rigidBody.constraints = RigidbodyConstraints.None;
+            Vector3 pos = Vector3.zero;
+            if (equippedObject.pivot != null)
+            {
+                Vector3 diff = equippedObject.transform.position - equippedObject.pivot.position;
+                pos = head.transform.position + diff;
+            }
+            else
+            {
+                pos = head.transform.position;
+            }
+
+            Vector3 rot = head.localEulerAngles;
+            rot.x = 0f;
+            rot.z = 0f;
+
+            equippedObject.transform.position = pos;
+            equippedObject.transform.rotation = Quaternion.Euler(rot);
+            equippedObject.rigidBody.velocity = Vector3.zero;
+            equippedObject.rigidBody.angularVelocity = Vector3.zero;
+            equippedObject.rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
         }
     }
 
@@ -885,21 +942,7 @@ public class PlayerManager : StateManager
         {
             if (isMainPlayer)
             {
-                if (heldObject != null)
-                {
-                    heldObject.rigidBody.velocity = Vector3.zero;
-                    heldObject.rigidBody.angularVelocity = Vector3.zero;
-                }
-                else
-                {
-                    hand.rotation = Quaternion.identity;
-                }
-
-                if (equippedObject != null)
-                {
-                    equippedObject.rigidBody.velocity = Vector3.zero;
-                    equippedObject.rigidBody.angularVelocity = Vector3.zero;
-                }
+                HandleJoints();
 
                 if (playerControls.Player.enabled && !playerControls.UI.enabled)
                 {

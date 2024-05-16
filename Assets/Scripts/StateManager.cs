@@ -16,7 +16,7 @@ public class StateManager : MonoBehaviour
     public Type type;
     public List<State> states;
     public Position position;
-    [SerializeField] protected Transform pivot;
+    [SerializeField] public Transform pivot;
     [SerializeField] protected Rigidbody RigidBody;
     [SerializeField] private Collider ObjectCollider;
     [SerializeField] private Renderer Renderer;
