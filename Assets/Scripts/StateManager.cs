@@ -16,6 +16,7 @@ public class StateManager : MonoBehaviour
     public Type type;
     public List<State> states;
     public Position position;
+    [SerializeField] protected Transform pivot;
     [SerializeField] protected Rigidbody RigidBody;
     [SerializeField] private Collider ObjectCollider;
     [SerializeField] private Renderer Renderer;
@@ -339,7 +340,19 @@ public class StateManager : MonoBehaviour
             endRot.x = 0f;
             endRot.z = 0f;
 
-            transform.position = Vector3.Lerp(transform.position, endPosition.position, time);
+            Vector3 pos = Vector3.zero;
+
+            if (pivot != null)
+            {
+                Vector3 diff = transform.position - pivot.position;
+                pos = endPosition.position + diff;
+            }
+            else
+            {
+                pos = endPosition.position;
+            }
+
+            transform.position = Vector3.Lerp(transform.position, pos, time);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(endRot), time);
 
             elapsedTime += Time.deltaTime;
@@ -505,7 +518,19 @@ public class StateManager : MonoBehaviour
             endRot.x = 0f;
             endRot.z = 0f;
 
-            transform.position = Vector3.Lerp(transform.position, endPosition.position, time);
+            Vector3 pos = Vector3.zero;
+
+            if (pivot != null)
+            {
+                Vector3 diff = transform.position - pivot.position;
+                pos = endPosition.position + diff;
+            }
+            else
+            {
+                pos = endPosition.position;
+            }
+
+            transform.position = Vector3.Lerp(transform.position, pos, time);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(endRot), time);
 
             elapsedTime += Time.deltaTime;
