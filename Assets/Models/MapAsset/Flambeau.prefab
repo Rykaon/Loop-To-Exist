@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3765406249478168865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2434834373965508279}
+  m_Layer: 0
+  m_Name: Pivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2434834373965508279
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3765406249478168865}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.49, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8922613090968095748}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4340124493276365141
 GameObject:
   m_ObjectHideFlags: 0
@@ -4895,9 +4926,11 @@ GameObject:
   - component: {fileID: 7142773170755751254}
   - component: {fileID: 4985045006607665787}
   - component: {fileID: 7655912443765575458}
+  - component: {fileID: 9071870920524012805}
+  - component: {fileID: 395643036658651261}
   m_Layer: 0
   m_Name: Flambeau
-  m_TagString: Untagged
+  m_TagString: Object
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4916,6 +4949,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6774779977566667843}
+  - {fileID: 2434834373965508279}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7579487913700345525
@@ -5017,3 +5051,56 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 2534964839176971238, guid: 4ed897c223198ea42854077020ae5a88, type: 3}
+--- !u!114 &9071870920524012805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797485714176821054}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!114 &395643036658651261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797485714176821054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca065c3f37b29cb4a9a8d74efbaa9f0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  states: 
+  position: 0
+  pivot: {fileID: 2434834373965508279}
+  RigidBody: {fileID: 4985045006607665787}
+  ObjectCollider: {fileID: 7655912443765575458}
+  Renderer: {fileID: 7142773170755751254}
+  Outline: {fileID: 9071870920524012805}
+  stickedWall: {fileID: 0}
+  dissolveMaterial: {fileID: 2100000, guid: 9cefab28cbd922346a664e5bc01fdb2e, type: 2}
+  stickyMaterial: {fileID: 2100000, guid: c067eaf8b4333384da4ed73b4860df4c, type: 2}
+  startThrowForceHorizontal: 15
+  startThrowForceVertical: 5
+  objectToStick: {fileID: 0}
+  stickedObjects: []
+  link: {fileID: 0}
+  linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
+  isSticked: 0
+  isLinked: 0
+  lastGroundedPosition: {x: 0, y: 0, z: 0}
+  lastGroundedRotation: {x: 0, y: 0, z: 0, w: 0}
