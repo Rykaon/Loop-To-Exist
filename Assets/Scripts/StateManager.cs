@@ -252,6 +252,15 @@ public class StateManager : MonoBehaviour
     public virtual void SetHoldObject(PlayerManager player, Transform endPosition, float time)
     {
         bool wasEquipped = false;
+
+        if (isEquipped)
+        {
+            isEquipped = false;
+            isEquippedObject = false;
+            equippingPlayer = null;
+            wasEquipped = true;
+        }
+
         position = Position.Held;
         if (states.Contains(State.Sticky))
         {

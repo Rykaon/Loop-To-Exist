@@ -574,7 +574,7 @@ MonoBehaviour:
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
   linkJoint: {fileID: 0}
-  isSticked: 0
+  isSticked: 1
   isLinked: 0
   lastGroundedPosition: {x: 0, y: 0, z: 0}
   lastGroundedRotation: {x: 0, y: 0, z: 0, w: 0}
