@@ -608,6 +608,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 73
   moveMassMultiplier: 1
+  walkRatio: 1.01
+  walkRatioMultiplier: 0.02
   maxSlopeAngle: 55
 --- !u!136 &7240834232986036538
 CapsuleCollider:

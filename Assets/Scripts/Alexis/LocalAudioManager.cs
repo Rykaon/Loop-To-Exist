@@ -34,6 +34,18 @@ public class LocalAudioManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(s.clip, transform.position, radius);
     }
 
+    public void Play(string name, float radius, Transform transform)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound : " + name + " not found !");
+            return;
+        }
+
+        AudioSource.PlayClipAtPoint(s.clip, transform.position, radius);
+    }
+
     public void PlayVariation(string name, float diffPitch, float diffVolume, float radius)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
@@ -49,7 +61,37 @@ public class LocalAudioManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(s.clip, transform.position, radius);
     }
 
+    public void PlayVariation(string name, float diffPitch, float diffVolume, float radius, Transform transform)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound : " + name + " not found !");
+            return;
+        }
+
+        s.source.pitch = s.pitch + UnityEngine.Random.Range(-diffPitch, diffPitch);
+        s.source.volume = s.volume + UnityEngine.Random.Range(-diffVolume, diffVolume);
+
+        AudioSource.PlayClipAtPoint(s.clip, transform.position, radius);
+    }
+
     public void PlayFixedVariation(string name, float diffPitch, float diffVolume, float radius)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound : " + name + " not found !");
+            return;
+        }
+
+        s.source.pitch = s.pitch + diffPitch;
+        s.source.volume = s.volume + diffVolume;
+
+        AudioSource.PlayClipAtPoint(s.clip, transform.position, radius);
+    }
+
+    public void PlayFixedVariation(string name, float diffPitch, float diffVolume, float radius, Transform transform)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null)

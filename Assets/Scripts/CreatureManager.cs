@@ -99,14 +99,15 @@ public class CreatureManager : StateManager
     {
         base.ThrowObject(throwForceHorizontal, throwForceVertical, hitpoint);
 
+        audioManager.Stop("Sfx_Creature_WhileGrab");
+        audioManager.Play("Sfx_Creature_OnThrow", radius);
+
         Vector3 rot = new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f));
         rigidBody.angularVelocity = rot;
     }
 
     protected override Vector3 GetThrowForce(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
     {
-        audioManager.Stop("Sfx_Creature_WhileGrab");
-        audioManager.Play("Sfx_Creature_OnThrow", radius);
         return base.GetThrowForce(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 

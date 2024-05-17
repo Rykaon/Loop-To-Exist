@@ -85,6 +85,7 @@ public class PlayerManager : StateManager
     [HideInInspector] protected float linkJumpMultiplier;
     public float moveMassMultiplier;
     public float walkRatio;
+    public float walkRatioMultiplier;
     private Coroutine walkRoutine = null;
 
     [Header("Slope Handling")]
@@ -272,10 +273,7 @@ public class PlayerManager : StateManager
         //Limit la Speed du joueur � la speed Max (Pas necessaire)
         Vector3 horizontalVelocity = rigidBody.velocity;
         horizontalVelocity.y = 0f;
-        if (isActive)
-        {
-            Debug.Log(Mathf.Pow(horizontalVelocity.magnitude, 1f));
-        }
+
         if (horizontalVelocity.sqrMagnitude > maxMoveSpeed * maxMoveSpeed)
         {
             rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
@@ -286,12 +284,13 @@ public class PlayerManager : StateManager
         Vector3 dir = rigidBody.velocity;
         dir.y = 0f;
 
-        if (dir.magnitude > 0.25f && dir.magnitude < 4f)
+        if (dir.magnitude >= 1f && dir.magnitude < 4f)
         {
             if (isActive && walkRoutine == null && RaycastFalling())
             {
-                AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.15f, 0.1f);
-                walkRoutine = StartCoroutine(Walk(walkRatio / (dir.magnitude / 2)));
+                Debug.Log("walkratio : " + walkRatio + " / magnitude : " + dir.magnitude);
+                AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.25f, 0.18f);
+                walkRoutine = StartCoroutine(Walk(walkRatio / dir.magnitude + (walkRatioMultiplier * dir.magnitude)));
             }
 
             animator.SetBool("isWalking", true);
@@ -299,11 +298,24 @@ public class PlayerManager : StateManager
         }
         else if (dir.magnitude >= 4f)
         {
+            if (isActive && walkRoutine == null && RaycastFalling())
+            {
+                Debug.Log("walkratio : " + walkRatio + " / magnitude : " + dir.magnitude);
+                AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.25f, 0.18f);
+                walkRoutine = StartCoroutine(Walk(walkRatio / dir.magnitude + (walkRatioMultiplier * dir.magnitude)));
+            }
+
             animator.SetBool("isRunning", true);
             animator.SetBool("isWalking", false);
         }
         else
         {
+            if (walkRoutine != null)
+            {
+                StopCoroutine(walkRoutine);
+                walkRoutine = null;
+            }
+
             animator.SetBool("isWalking", false);
             animator.SetBool("isRunning", false);
         }
@@ -619,12 +631,12 @@ public class PlayerManager : StateManager
 
         Vector3 dir = rigidBody.velocity;
         dir.y = 0f;
-
+        Debug.Log("walkratio : " + walkRatio + " / magnitude : " + dir.magnitude);
         if (isActive && dir.magnitude > 0.25f && RaycastFalling())
         {
-            AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.15f, 0.1f);
+            AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.25f, 0.18f);
 
-            walkRoutine = StartCoroutine(Walk(walkRatio / (dir.magnitude / 2)));
+            walkRoutine = StartCoroutine(Walk(walkRatio / dir.magnitude + (walkRatioMultiplier * dir.magnitude)));
         }
         else
         {

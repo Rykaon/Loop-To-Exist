@@ -20,6 +20,8 @@ public class DoorController : MonoBehaviour
     private Coroutine coroutine;
     private Tween open;
 
+    [SerializeField] private AudioSource[] audioSource;
+
     private void Awake()
     {
         state = State.Close;
@@ -73,15 +75,26 @@ public class DoorController : MonoBehaviour
         if (state == State.Open)
         {
             gateBody.useGravity = false;
+            audioSource[2].Play();
             open = gate.DOMove(openPosition, 1.5f).SetEase(openCurve);
             yield return new WaitForSecondsRealtime(1.5f);
             gateBody.isKinematic = true;
         }
         else
         {
+            audioSource[1].Play();
             gateBody.isKinematic = false;
             gateBody.useGravity = true;
             gateBody.AddForce(Vector3.down * 10, ForceMode.Impulse);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "TriggerSound")
+        {
+            audioSource[0].Play();
+
         }
     }
 }

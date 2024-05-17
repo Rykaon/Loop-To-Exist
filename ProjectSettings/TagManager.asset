@@ -9,6 +9,7 @@ TagManager:
   - Mushroom
   - Object
   - Creature
+  - TriggerSound
   layers:
   - Default
   - TransparentFX
