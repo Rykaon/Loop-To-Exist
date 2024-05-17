@@ -84,6 +84,8 @@ public class PlayerManager : StateManager
     [HideInInspector] protected float linkMoveMultiplier;
     [HideInInspector] protected float linkJumpMultiplier;
     public float moveMassMultiplier;
+    public float walkRatio;
+    private Coroutine walkRoutine = null;
 
     [Header("Slope Handling")]
     public float maxSlopeAngle;
@@ -270,6 +272,10 @@ public class PlayerManager : StateManager
         //Limit la Speed du joueur � la speed Max (Pas necessaire)
         Vector3 horizontalVelocity = rigidBody.velocity;
         horizontalVelocity.y = 0f;
+        if (isActive)
+        {
+            Debug.Log(Mathf.Pow(horizontalVelocity.magnitude, 1f));
+        }
         if (horizontalVelocity.sqrMagnitude > maxMoveSpeed * maxMoveSpeed)
         {
             rigidBody.velocity = horizontalVelocity.normalized * maxMoveSpeed + Vector3.up * rigidBody.velocity.y;
@@ -282,6 +288,12 @@ public class PlayerManager : StateManager
 
         if (dir.magnitude > 0.25f && dir.magnitude < 4f)
         {
+            if (isActive && walkRoutine == null && RaycastFalling())
+            {
+                AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.15f, 0.1f);
+                walkRoutine = StartCoroutine(Walk(walkRatio / (dir.magnitude / 2)));
+            }
+
             animator.SetBool("isWalking", true);
             animator.SetBool("isRunning", false);
         }
@@ -600,6 +612,25 @@ public class PlayerManager : StateManager
     ///////////////////////////////////////////////////
     ///          FONCTIONS UTILITAIRES              ///
     ///////////////////////////////////////////////////
+
+    private IEnumerator Walk(float value)
+    {
+        yield return new WaitForSecondsRealtime(value);
+
+        Vector3 dir = rigidBody.velocity;
+        dir.y = 0f;
+
+        if (isActive && dir.magnitude > 0.25f && RaycastFalling())
+        {
+            AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.15f, 0.1f);
+
+            walkRoutine = StartCoroutine(Walk(walkRatio / (dir.magnitude / 2)));
+        }
+        else
+        {
+            walkRoutine = null;
+        }
+    }
 
     public void LookAt(Vector2 value)
     {
