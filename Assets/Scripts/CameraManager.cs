@@ -33,7 +33,6 @@ public class CameraManager : MonoBehaviour
     [HideInInspector] public Transform previousTarget;
     [HideInInspector] public Transform currentTarget;
     [HideInInspector] public Coroutine cameraTransition = null;
-    [SerializeField] private GameObject warpPrefab;
     [SerializeField] private AnimationCurve warpCurve;
     [SerializeField] private AnimationCurve fovCurve;
     private Coroutine aimRoutine;
