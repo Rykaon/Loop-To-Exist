@@ -11,12 +11,12 @@ public class DoorSwitch : MonoBehaviour
     }
     public State state;
     
-    [SerializeField] private List<string> tagsToCheck;
-    [SerializeField] private DoorController doorController;
-    [SerializeField] private int nbrOfEntity;
-    private List<GameObject> objects = new List<GameObject>();
+    [SerializeField] protected List<string> tagsToCheck;
+    [SerializeField] protected DoorController doorController;
+    [SerializeField] protected int nbrOfEntity;
+    protected List<GameObject> objects = new List<GameObject>();
 
-    private void Awake()
+    protected virtual void Awake()
     {
         state = State.Inactive;
 
@@ -26,7 +26,7 @@ public class DoorSwitch : MonoBehaviour
         tagsToCheck.Add("Object");
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<StateManager>(out StateManager manager))
         {
@@ -90,7 +90,7 @@ public class DoorSwitch : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected virtual void OnTriggerExit(Collider other)
     {
         if (other.TryGetComponent<StateManager>(out StateManager manager))
         {
