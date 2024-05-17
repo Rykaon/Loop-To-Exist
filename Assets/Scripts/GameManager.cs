@@ -178,8 +178,12 @@ public class GameManager : MonoBehaviour
         int previous = Utilities.FindIndexInList(mainPlayer, playerList);
         int next = Utilities.FindIndexInList(player, playerList);
 
-        playerList[previous].SetIsMainPlayer(false);
-        playerMenu.elements[previous].SetColors();
+        if (previous != -1)
+        {
+            playerList[previous].SetIsMainPlayer(false);
+            playerMenu.elements[previous].SetColors();
+        }
+        
         mainPlayer = player;
         playerList[next].SetIsMainPlayer(true);
         playerMenu.elements[next].SetColors();

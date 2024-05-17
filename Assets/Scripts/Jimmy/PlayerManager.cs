@@ -470,6 +470,7 @@ public class PlayerManager : StateManager
         Vector3 cameraTargetPos = new Vector3(0, 3.5f, 0);
         if (isAiming)
         {
+            gameObject.layer = 2;
             Vector3 dir = Camera.main.transform.forward;
             dir.y = 0f;
             rigidBody.rotation = Quaternion.LookRotation(dir, Vector3.up);
@@ -479,6 +480,7 @@ public class PlayerManager : StateManager
         }
         else
         {
+            gameObject.layer = 3;
             gameManager.cameraManager.worldCamera.m_XAxis.Value = 0f;
             gameManager.cameraManager.worldCamera.m_YAxis.Value = 0.70f;
         }
@@ -488,12 +490,15 @@ public class PlayerManager : StateManager
 
     public void Shot(InputAction action)
     {
-        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f + Screen.height / 30f, 0f);
         Vector3 hitPoint = Vector3.zero;
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        float boxSize = 1f;
+
+        Vector3 rayDirection = ray.direction;
+
+        if (Physics.BoxCast(ray.origin, new Vector3(boxSize, boxSize, boxSize), rayDirection, out RaycastHit hit))
         {
             if (action == playerControls.Player.B)
             {
@@ -525,11 +530,10 @@ public class PlayerManager : StateManager
                     }
                 }
             }
+            
 
             hitPoint = hit.point;
         }
-
-        Vector3 rayDirection;
 
         if (hitPoint == Vector3.zero)
         {
@@ -614,12 +618,15 @@ public class PlayerManager : StateManager
 
     private void OutlineRaycast()
     {
-        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f + Screen.height / 30f, 0f);
         Vector3 hitPoint = Vector3.zero;
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        float boxSize = 1f;
+
+        Vector3 rayDirection = ray.direction;
+
+        if (Physics.BoxCast(ray.origin, new Vector3(boxSize, boxSize, boxSize), rayDirection, out RaycastHit hit))
         {
             if (hit.collider.tag == "Player" && hit.collider.transform != transform)
             {
@@ -640,8 +647,6 @@ public class PlayerManager : StateManager
 
             hitPoint = hit.point;
         }
-
-        Vector3 rayDirection;
 
         if (hitPoint == Vector3.zero)
         {

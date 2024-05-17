@@ -129,7 +129,6 @@ public class CreatureManager : StateManager
 
     protected override void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name);
         base.OnCollisionEnter(collision);
     }
 

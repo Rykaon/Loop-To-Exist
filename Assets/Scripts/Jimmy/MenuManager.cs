@@ -81,6 +81,8 @@ public class MenuManager : MonoBehaviour
         {
             creatureList[i].Initialize(null);
         }
+
+        AudioManager.instance.Play("Music_Main_Menu");
     }
 
     private void OnEnable()
@@ -125,5 +127,26 @@ public class MenuManager : MonoBehaviour
     private void FixedUpdate()
     {
         ResetInputState();
+
+        Vector2 leftStick = playerControls.UI.LeftStick.ReadValue<Vector2>();
+        float x = Mathf.Abs(leftStick.x);
+        float y = Mathf.Abs(leftStick.y);
+
+        if (playerControls.UI.A.IsPressed())
+        {
+            UIManager.ExecuteMainMenuButton();
+        }
+
+        if (leftStick != Vector2.zero && y > x)
+        {
+            if (leftStick.y > 0)
+            {
+                UIManager.NavigateMainMenu(-1);
+            }
+            else
+            {
+                UIManager.NavigateMainMenu(1);
+            }
+        }
     }
 }
