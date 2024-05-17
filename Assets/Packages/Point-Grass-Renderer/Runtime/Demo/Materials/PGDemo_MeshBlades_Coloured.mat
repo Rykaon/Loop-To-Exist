@@ -79,10 +79,10 @@ Material:
     - _WindScale: 0.4
     - _WindStr: 0.25
     m_Colors:
-    - _BottomCol: {r: 0.15352438, g: 0.4716981, b: 0.1713421, a: 1}
+    - _BottomCol: {r: 1, g: 1, b: 1, a: 1}
     - _NoiseRange: {r: -0.45, g: 1, b: 0, a: 0}
     - _SubsurfaceCol: {r: 0.19291806, g: 0.3018868, b: 0.14382343, a: 1}
-    - _TopCol: {r: 0.21493416, g: 0.6603774, b: 0.24243069, a: 1}
+    - _TopCol: {r: 1, g: 1, b: 1, a: 1}
     - _WindDirection: {r: 0.35, g: -0.1, b: 0.45, a: 0}
     - _WindScroll: {r: 0.75, g: -0.1, b: 0.25, a: 0}
   m_BuildTextureStacks: []

@@ -72,3 +72,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 fmod_editor.log
 fmod_editor.log
+fmod_editor.log
+Assets/External Assets/FMOD/Cache/Editor/FMODStudioCache.asset

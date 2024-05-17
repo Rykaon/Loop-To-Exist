@@ -23,9 +23,9 @@ public class ObjectManager : StateManager
         base.ResetState();
     }
 
-    public override void SetHoldObject(Transform endPosition, float time)
+    public override void SetHoldObject(PlayerManager player, Transform endPosition, float time)
     {
-        base.SetHoldObject(endPosition, time);
+        base.SetHoldObject(player, endPosition, time);
     }
 
     public override void InitializeHoldObject(Transform parent)
@@ -38,9 +38,9 @@ public class ObjectManager : StateManager
         base.ThrowObject(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 
-    public override void SetEquipObject(Transform endPosition, float time)
+    public override void SetEquipObject(PlayerManager player, Transform endPosition, float time)
     {
-        base.SetEquipObject(endPosition, time);
+        base.SetEquipObject(player, endPosition, time);
     }
 
     public override void InitializeEquipObject(Transform parent)

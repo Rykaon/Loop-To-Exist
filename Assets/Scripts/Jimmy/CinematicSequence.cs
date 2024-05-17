@@ -28,16 +28,18 @@ namespace Cinematic
 
         private GameManager gameManager;
         private CameraManager cameraManager;
+        private DialogueManager dialogueManager;
         private CinemachineVirtualCamera cinematicCamera;
         private Transform cameraTarget;
 
         private Vector3 camPos;
         private Vector3 camRot;
 
-        public void Execute(CameraManager cameraManager, GameManager gameManager, CinemachineVirtualCamera cinematicCamera, Transform cameraTarget)
+        public void Execute(CameraManager cameraManager, GameManager gameManager, DialogueManager dialogueManager, CinemachineVirtualCamera cinematicCamera, Transform cameraTarget)
         {
             this.cameraManager = cameraManager;
             this.gameManager = gameManager;
+            this.dialogueManager = dialogueManager;
             this.cinematicCamera = cinematicCamera;
             this.cameraTarget = cameraTarget;
             gameManager.mainPlayer.isActive = false;
@@ -53,48 +55,32 @@ namespace Cinematic
 
         private void InitializePlans()
         {
-            bool isCurve = false;
             int index = -1;
-            for (int i = 0; i < plans.Count - 1; i++)
+            for (int i = 0; i < plans.Count; i++)
             {
-                int next = i + 1;
                 plans[i].index = i;
-                if (i == plans.Count - 2)
-                {
-                    plans[next].index = next;
-                }
 
                 if (plans[i].transition == Transition.InterpolateCurve)
                 {
-                    if (!isCurve)
+                    if (plans[i].isFirstDialogue)
                     {
-                        isCurve = true;
                         index = i;
                         plans[index].curvedPlans = new List<CinematicPlan>();
                         plans[index].pathPosition = new List<Vector3>();
                         plans[index].pathRotation = new List<Vector3>();
-
-                        plans[index].curvedPlans.Add(plans[index]);
-                        plans[index].pathPosition.Add(plans[index].position);
-                        plans[index].pathRotation.Add(plans[index].rotation);
                     }
 
-                    plans[index].curvedPlans.Add(plans[next]);
-                    plans[index].pathPosition.Add(plans[next].position);
-                    plans[index].pathRotation.Add(plans[next].rotation);
-                    plans[index].lastPlan = plans[next];
-                }
-                else
-                {
-                    isCurve = false;
+                    plans[index].curvedPlans.Add(plans[i]);
+                    plans[index].pathPosition.Add(plans[i].position);
+                    plans[index].pathRotation.Add(plans[i].rotation);
+                    plans[index].lastPlan = plans[i];
                 }
             }
         }
 
         private IEnumerator ExecuteSequence()
         {
-            gameManager.mainPlayer.isActive = false;
-            gameManager.playerControls.Disable();
+            gameManager.ChangeState(GameManager.ControlState.UI);
 
             if (startTransition == Transition.Fade)
             {
@@ -127,17 +113,25 @@ namespace Cinematic
             for (int i = 0; i < plans.Count; i++)
             {
                 float duration = 0f;
+                float timeToDialogue = -1f;
+                CinematicPlan dialoguePlan = null;
 
                 if (plans[i].transition == Transition.InterpolateCurve)
                 {
-                    for (int j = 0; j < plans[i].curvedPlans.Count - 1; j++)
+                    for (int j = 0; j < plans[i].curvedPlans.Count; j++)
                     {
+                        if (plans[i].curvedPlans[j].isFirstDialogue)
+                        {
+                            timeToDialogue = duration;
+                            dialoguePlan = plans[i].curvedPlans[j];
+                        }
+                        
                         duration += plans[i].curvedPlans[j].duration;
                     }
 
-                    cameraManager.StartCoroutine(ExecutePath(plans[i], duration));
+                    cameraManager.StartCoroutine(ExecutePath(plans[i], duration, timeToDialogue, dialoguePlan));
 
-                    i = plans[i].lastPlan.index - 1;
+                    i = plans[i].lastPlan.index + 1;
                 }
                 else
                 {
@@ -148,7 +142,12 @@ namespace Cinematic
                         duration += plans[i].transitionDuration;
                     }
 
-                    cameraManager.StartCoroutine(ExecutePlan(plans[i]));
+                    if (plans[i].isFirstDialogue)
+                    {
+                        dialoguePlan = plans[i];
+                    }
+
+                    cameraManager.StartCoroutine(ExecutePlan(plans[i], dialoguePlan));
                 }
 
                 yield return new WaitForSecondsRealtime(duration);
@@ -177,13 +176,18 @@ namespace Cinematic
                 cameraManager.ChangeCamera(cameraManager.worldCamera);
             }
 
-            gameManager.playerControls.Disable();
-            gameManager.mainPlayer.isActive = true;
+            gameManager.ChangeState(GameManager.ControlState.World);
         }
 
-        private IEnumerator ExecutePlan(CinematicPlan plan)
+        private IEnumerator ExecutePlan(CinematicPlan plan, CinematicPlan dialoguePlan)
         {
             Debug.Log(plan.transition + " // " + plan.index);
+
+            if (dialoguePlan != null)
+            {
+                cameraManager.StartCoroutine(ExecuteDialogue(dialoguePlan));
+            }
+
             if (plan.transition == Transition.Cut)
             {
                 cameraTarget.position = plan.position;
@@ -205,15 +209,47 @@ namespace Cinematic
             yield return new WaitForSecondsRealtime(plan.duration);
         }
 
-        private IEnumerator ExecutePath(CinematicPlan plan, float duration)
+        private IEnumerator ExecutePath(CinematicPlan plan, float duration, float timeToDialogue, CinematicPlan dialoguePlan)
         {
             Debug.Log(plan.transition + " // " + plan.index);
             cameraTarget.DOLocalPath(plan.pathPosition.ToArray(), duration, PathType.CatmullRom).SetEase(Ease.Linear);
 
-            for (int i = 0; i < plan.curvedPlans.Count; i++)
+            int index = 0;
+            float totalElapsedTime = 0f;
+            float elapsedTime = 0f;
+            bool isDialogueLaunched = false;
+
+            while (totalElapsedTime < duration)
             {
-                cameraTarget.DORotate(plan.pathRotation[i], plan.curvedPlans[i].duration).SetEase(Ease.InOutSine);
-                yield return new WaitForSecondsRealtime(plan.curvedPlans[i].duration);
+                cameraTarget.DORotate(plan.pathRotation[index], plan.curvedPlans[index].duration).SetEase(Ease.InOutSine);
+
+                if (elapsedTime >= plan.curvedPlans[index].duration)
+                {
+                    index++;
+                    elapsedTime = 0f;
+                }
+
+                if (totalElapsedTime >= timeToDialogue && dialoguePlan != null && !isDialogueLaunched)
+                {
+                    isDialogueLaunched = true;
+                    cameraManager.StartCoroutine(ExecuteDialogue(dialoguePlan));
+                }
+
+                totalElapsedTime += Time.fixedDeltaTime;
+                elapsedTime += Time.fixedDeltaTime;
+                yield return new WaitForFixedUpdate();
+            }
+        }
+
+        private IEnumerator ExecuteDialogue(CinematicPlan dialoguePlan)
+        {
+            DialogueManager.instance.EnterDialogueMode(dialoguePlan.inkJSON, false, false);
+
+            for (int i = 0; i < dialoguePlan.dialogueDurations.Count; i++)
+            {
+                yield return new WaitForSecondsRealtime(dialoguePlan.dialogueDurations[i]);
+
+                DialogueManager.instance.ContinueStory();
             }
         }
     }
@@ -226,6 +262,9 @@ namespace Cinematic
         public CinematicSequence.Transition transition;
         public float duration;
         public float transitionDuration;
+        public bool isFirstDialogue;
+        public TextAsset inkJSON;
+        public List<float> dialogueDurations;
 
         [Header("Play properties")]
         public Vector3 position;
@@ -234,7 +273,6 @@ namespace Cinematic
         [HideInInspector] public Vector3 sceneLook = Vector3.zero;
 
         [HideInInspector] public int index = -1;
-        [HideInInspector] public bool isFirstCurvePlan = false;
         [HideInInspector] public CinematicPlan lastPlan = null;
         [HideInInspector] public List<CinematicPlan> curvedPlans = null;
         [HideInInspector] public List<Vector3> pathPosition = null;

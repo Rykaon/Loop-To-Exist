@@ -42,54 +42,134 @@ public class UIInputManager : MonoBehaviour
             ReturnObjectToPool(objectsInUse[i]);
         }
 
-        if (!player.isLadder && !player.isLadderTrigger)
+        if (player != null)
         {
-            if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
-            {
-                GetObjectFromPool(sprites.southGamepad, "Sauter");
-            }
-            else
-            {
-                GetObjectFromPool(sprites.southKeyboard, "Sauter");
-            }
-        }
-        else
-        {
-            if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
-            {
-                GetObjectFromPool(sprites.southGamepad, "Interagir");
-            }
-            else
-            {
-                GetObjectFromPool(sprites.southKeyboard, "Interagir");
-            }
-        }
-
-        if (!player.isAiming)
-        {
-            if (player.heldObject != null)
+            if (!player.isLadder && !player.isLadderTrigger)
             {
                 if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
                 {
-                    GetObjectFromPool(sprites.westGamepad, "Lâcher");
+                    GetObjectFromPool(sprites.southGamepad, "Sauter");
                 }
                 else
                 {
-                    GetObjectFromPool(sprites.westKeyboard, "Lâcher");
+                    GetObjectFromPool(sprites.southKeyboard, "Sauter");
                 }
+            }
+            else
+            {
+                if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
+                {
+                    GetObjectFromPool(sprites.southGamepad, "Interagir");
+                }
+                else
+                {
+                    GetObjectFromPool(sprites.southKeyboard, "Interagir");
+                }
+            }
 
-                if (player.equippedObject == null)
+            if (!player.isAiming)
+            {
+                if (player.heldObject != null)
                 {
                     if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
                     {
-                        GetObjectFromPool(sprites.northGamepad, "Équiper");
+                        GetObjectFromPool(sprites.westGamepad, "Lâcher");
                     }
                     else
                     {
-                        GetObjectFromPool(sprites.northKeyboard, "Équiper");
+                        GetObjectFromPool(sprites.westKeyboard, "Lâcher");
+                    }
+
+                    if (player.equippedObject == null)
+                    {
+                        if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
+                        {
+                            GetObjectFromPool(sprites.northGamepad, "Équiper");
+                        }
+                        else
+                        {
+                            GetObjectFromPool(sprites.northKeyboard, "Équiper");
+                        }
+                    }
+                    else
+                    {
+                        if (player.equippedObject.type == StateManager.Type.Mushroom)
+                        {
+                            MushroomManager mushroom = (MushroomManager)player.equippedObject;
+                            if (mushroom.stateToApply == StateManager.State.Sticky)
+                            {
+                                if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
+                                {
+                                    GetObjectFromPool(sprites.rightShoulderGamepad, "Sticky");
+                                }
+                                else
+                                {
+                                    GetObjectFromPool(sprites.rightShoulderKeyboard, "Sticky");
+                                }
+                            }
+                        }
                     }
                 }
                 else
+                {
+                    if (player.trigger.current != null && player.trigger.triggeredObjectsList.Count > 0)
+                    {
+                        if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
+                        {
+                            GetObjectFromPool(sprites.westGamepad, "Attraper");
+                        }
+                        else
+                        {
+                            GetObjectFromPool(sprites.westKeyboard, "Attraper");
+                        }
+                    }
+
+                    if (player.equippedObject != null)
+                    {
+                        if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
+                        {
+                            GetObjectFromPool(sprites.northGamepad, "Déséquiper");
+                        }
+                        else
+                        {
+                            GetObjectFromPool(sprites.northKeyboard, "Déséquiper");
+                        }
+                    }
+                }
+
+                if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
+                {
+                    GetObjectFromPool(sprites.leftShoulderGamepad, "Viser");
+                }
+                else
+                {
+                    GetObjectFromPool(sprites.leftShoulderKeyboard, "Viser");
+                }
+            }
+            else
+            {
+                if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
+                {
+                    GetObjectFromPool(sprites.eastGamepad, "Switch");
+                }
+                else
+                {
+                    GetObjectFromPool(sprites.eastKeyboard, "Switch");
+                }
+
+                if (player.heldObject != null)
+                {
+                    if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
+                    {
+                        GetObjectFromPool(sprites.westGamepad, "Lancer");
+                    }
+                    else
+                    {
+                        GetObjectFromPool(sprites.westKeyboard, "Lancer");
+                    }
+                }
+
+                if (player.equippedObject != null)
                 {
                     if (player.equippedObject.type == StateManager.Type.Mushroom)
                     {
@@ -104,83 +184,6 @@ public class UIInputManager : MonoBehaviour
                             {
                                 GetObjectFromPool(sprites.rightShoulderKeyboard, "Sticky");
                             }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (player.trigger.current != null && player.trigger.triggeredObjectsList.Count > 0)
-                {
-                    if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
-                    {
-                        GetObjectFromPool(sprites.westGamepad, "Attraper");
-                    }
-                    else
-                    {
-                        GetObjectFromPool(sprites.westKeyboard, "Attraper");
-                    }
-                }
-
-                if (player.equippedObject != null)
-                {
-                    if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
-                    {
-                        GetObjectFromPool(sprites.northGamepad, "Déséquiper");
-                    }
-                    else
-                    {
-                        GetObjectFromPool(sprites.northKeyboard, "Déséquiper");
-                    }
-                }
-            }
-
-            if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
-            {
-                GetObjectFromPool(sprites.leftShoulderGamepad, "Viser");
-            }
-            else
-            {
-                GetObjectFromPool(sprites.leftShoulderKeyboard, "Viser");
-            }
-        }
-        else
-        {
-            if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
-            {
-                GetObjectFromPool(sprites.eastGamepad, "Switch");
-            }
-            else
-            {
-                GetObjectFromPool(sprites.eastKeyboard, "Switch");
-            }
-
-            if (player.heldObject != null)
-            {
-                if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
-                {
-                    GetObjectFromPool(sprites.westGamepad, "Lancer");
-                }
-                else
-                {
-                    GetObjectFromPool(sprites.westKeyboard, "Lancer");
-                }
-            }
-
-            if (player.equippedObject != null)
-            {
-                if (player.equippedObject.type == StateManager.Type.Mushroom)
-                {
-                    MushroomManager mushroom = (MushroomManager)player.equippedObject;
-                    if (mushroom.stateToApply == StateManager.State.Sticky)
-                    {
-                        if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
-                        {
-                            GetObjectFromPool(sprites.rightShoulderGamepad, "Sticky");
-                        }
-                        else
-                        {
-                            GetObjectFromPool(sprites.rightShoulderKeyboard, "Sticky");
                         }
                     }
                 }

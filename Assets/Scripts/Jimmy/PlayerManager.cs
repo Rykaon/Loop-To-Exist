@@ -23,7 +23,9 @@ public class PlayerManager : StateManager
     [SerializeField] private Transform linkTarget;
     [SerializeField] public Transform cameraTarget;
 
+    [SerializeField] private Animator Animator;
     [SerializeField] private PlayerInteractionTrigger Trigger;
+    public Animator animator { get; private set; }
     public PlayerInteractionTrigger trigger { get; private set; }
 
     public PlayerControls playerControls { get; private set; }
@@ -36,6 +38,10 @@ public class PlayerManager : StateManager
     public bool isAiming = false;
     public bool isLadder = false;
     public bool isLadderTrigger = false;
+    public bool isJumping = false;
+    public bool isJumpingDown = false;
+    private float idleTime = 0f;
+    private Coroutine mainPlayerRoutine = null;
 
     [HideInInspector] public bool buttonSouthIsPressed = false;
     [HideInInspector] public bool buttonWestIsPressed = false;
@@ -53,6 +59,36 @@ public class PlayerManager : StateManager
 
     private StateManager target = null;
 
+    [Header("Move Properties")]
+    //[SerializeField] protected float moveSpeed = 20f;
+    [SerializeField] protected float maxMoveSpeed;
+    [SerializeField] protected float acceleration = 7f;
+    [SerializeField] protected float deceleration = 7f;
+    [SerializeField] protected float velPower = 0.9f; //inf�rieur � 1
+
+    [SerializeField] protected float jumpForce;
+    [Range(0f, 5f)][SerializeField] protected float jumpCutMultiplier;
+    [SerializeField] private float jumpBufferTime; // Temps de buffer pour le saut
+    public float jumpBufferTimer;
+    [SerializeField] private float coyoteTime; // Temps de coyote time
+    public float coyoteTimer;
+
+    [SerializeField] protected Vector3 customGravity;
+    [SerializeField] protected float fallGravityMultiplier;
+
+    [SerializeField] protected float collisionDetectionDistance;
+    [SerializeField] protected LayerMask GroundLayer;
+    [HideInInspector] protected Vector3 direction = Vector3.zero;
+    [HideInInspector] protected Vector2 jumpFrameMovementSave;
+    [HideInInspector] protected float linkMoveMultiplier;
+    [HideInInspector] protected float linkJumpMultiplier;
+    public float moveMassMultiplier;
+
+    [Header("Slope Handling")]
+    public float maxSlopeAngle;
+    private RaycastHit slopeHit;
+    private bool exitingSlope;
+
     ///////////////////////////////////////////////////
     ///            FONCTIONS H�RIT�ES               ///
     ///////////////////////////////////////////////////
@@ -63,6 +99,7 @@ public class PlayerManager : StateManager
 
         throwDirection = new Vector2(startThrowForceHorizontal, startThrowForceVertical);
 
+        animator = Animator;
         trigger = Trigger;
         heldObject = null;
         equippedObject = null;
@@ -70,7 +107,12 @@ public class PlayerManager : StateManager
         linkMoveMultiplier = 1.75f; //Le multiplieur associ� � la fonction Move() si le joueur est link. V�rifier le cas o� le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-�tre que �a m�rite une valeur dissoci�e
         linkJumpMultiplier = 5.25f; //Le multiplieur associ� � la fonction Jump() si le joueur est link
 
-        playerControls = gameManager.playerControls;
+        if (gameManager != null)
+        {
+            playerControls = gameManager.playerControls;
+        }
+        
+        animator.SetBool("isActive", false);
     }
 
     public override void SetState(State state)
@@ -83,9 +125,9 @@ public class PlayerManager : StateManager
         base.ResetState();
     }
 
-    public override void SetHoldObject(Transform endPosition, float time)
+    public override void SetHoldObject(PlayerManager player, Transform endPosition, float time)
     {
-        base.SetHoldObject(endPosition, time);
+        base.SetHoldObject(player, endPosition, time);
     }
 
     public override void InitializeHoldObject(Transform parent)
@@ -103,9 +145,9 @@ public class PlayerManager : StateManager
         return base.GetThrowForce(throwForceHorizontal, throwForceVertical, hitpoint);
     }
 
-    public override void SetEquipObject(Transform endPosition, float time)
+    public override void SetEquipObject(PlayerManager player, Transform endPosition, float time)
     {
-        base.SetEquipObject(endPosition, time);
+        base.SetEquipObject(player, endPosition, time);
     }
 
     public override void InitializeEquipObject(Transform parent)
@@ -131,47 +173,37 @@ public class PlayerManager : StateManager
     {
         if (value)
         {
-            isMainPlayer = true;
+            if (mainPlayerRoutine != null)
+            {
+                StopCoroutine(mainPlayerRoutine);
+            }
+
+            mainPlayerRoutine = StartCoroutine(IsMainPlayer());
+            idleTime = 0;
+            animator.SetBool("isActive", true);
         }
         else
         {
+            if (mainPlayerRoutine != null)
+            {
+                StopCoroutine(mainPlayerRoutine);
+            }
+
             isMainPlayer = false;
             isActive = false;
+            animator.SetBool("isActive", false);
         }
+    }
+
+    private IEnumerator IsMainPlayer()
+    {
+        yield return new WaitForSecondsRealtime(2f);
+        isMainPlayer = true;
     }
 
     ///////////////////////////////////////////////////
     ///           FONCTIONS D'ACTIONS               ///
     ///////////////////////////////////////////////////
-    [Header("Move Properties")]
-    //[SerializeField] protected float moveSpeed = 20f;
-    [SerializeField] protected float maxMoveSpeed;
-    [SerializeField] protected float acceleration = 7f;
-    [SerializeField] protected float deceleration = 7f;
-    [SerializeField] protected float velPower = 0.9f; //inf�rieur � 1
-
-    [SerializeField] protected float jumpForce;
-    [Range(0f, 5f)] [SerializeField] protected float jumpCutMultiplier;
-    [SerializeField] private float jumpBufferTime; // Temps de buffer pour le saut
-    public float jumpBufferTimer;
-    [SerializeField] private float coyoteTime; // Temps de coyote time
-    public float coyoteTimer;
-
-    [SerializeField] protected Vector3 customGravity;
-    [SerializeField] protected float fallGravityMultiplier;
-
-    [SerializeField] protected float collisionDetectionDistance;
-    [SerializeField] protected LayerMask GroundLayer;
-    [HideInInspector] protected Vector3 direction = Vector3.zero;
-    [HideInInspector] protected Vector2 jumpFrameMovementSave;
-    [HideInInspector] protected float linkMoveMultiplier;
-    [HideInInspector] protected float linkJumpMultiplier;
-    public float moveMassMultiplier;
-
-    [Header("Slope Handling")]
-    public float maxSlopeAngle;
-    private RaycastHit slopeHit;
-    private bool exitingSlope;
 
     public void Move(Vector2 inputValue)
     {
@@ -199,11 +231,9 @@ public class PlayerManager : StateManager
             }
 
             rigidBody.AddForce(direction, ForceMode.Impulse);
+            idleTime = 0;
         }
-        else
-        {
-            //Debug.Log("yo");
-        }
+
         //On calcule le vecteur de d�placement d�sir�.
         Vector3 TargetSpeed = new Vector3(direction.x * maxMoveSpeed, 0f, direction.z * maxMoveSpeed);
         //On prends la diff�rence en le vecteur d�sir� et le vecteur actuel.
@@ -238,6 +268,25 @@ public class PlayerManager : StateManager
 
         LookAt(inputValue);
 
+        Vector3 dir = rigidBody.velocity;
+        dir.y = 0f;
+
+        if (dir.magnitude > 0.25f && dir.magnitude < 4f)
+        {
+            animator.SetBool("isWalking", true);
+            animator.SetBool("isRunning", false);
+        }
+        else if (dir.magnitude >= 4f)
+        {
+            animator.SetBool("isRunning", true);
+            animator.SetBool("isWalking", false);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isRunning", false);
+        }
+
         direction = Vector3.zero;
     }
 
@@ -270,8 +319,17 @@ public class PlayerManager : StateManager
             }
         }
 
-        rigidBody.AddForce(jumpForce, ForceMode.Impulse);
+        if (equippedObject != null)
+        {
+            equippedObject.objectCollider.isTrigger = true;
+        }
 
+        rigidBody.AddForce(jumpForce, ForceMode.Impulse);
+        isJumping = true;
+        isJumpingDown = false;
+        animator.SetBool("isJumpingUp", true);
+        idleTime = 0;
+        AudioManager.instance.PlayVariation("Sfx_Player_Jump", 0.15f, 0.1f);
     }
 
     public void OnJumpUp()
@@ -290,13 +348,19 @@ public class PlayerManager : StateManager
             if (trigger.triggeredObjectsList.Count > 0 && trigger.current != null)
             {
                 heldObject = trigger.current;
-                heldObject.SetHoldObject(hand, 0.25f);
+                heldObject.SetHoldObject(this, hand, 0.75f);
+                animator.SetTrigger("Grab");
+                idleTime = 0;
+                AudioManager.instance.Play("Sfx_Player_Carry");
             }
         }
         else if (heldObject != null)
         {
             heldObject.DropObject();
+            animator.SetTrigger("Drop");
             heldObject = null;
+            idleTime = 0;
+            AudioManager.instance.Play("Sfx_Player_Drop");
         }
     }
 
@@ -305,14 +369,28 @@ public class PlayerManager : StateManager
         if (equippedObject == null && heldObject != null)
         {
             equippedObject = heldObject;
-            equippedObject.SetEquipObject(head, 0.25f);
+            equippedObject.SetEquipObject(this, head, 0.75f);
+            animator.SetTrigger("PutChapeau");
             heldObject = null;
+            idleTime = 0;
+
+            if (equippedObject.TryGetComponent<MushroomManager>(out MushroomManager mushroomManager))
+            {
+                AudioManager.instance.Play("Sfx_Player_GetPower");
+            }
+            else
+            {
+                AudioManager.instance.Play("Sfx_Player_OnHead");
+            }
         }
         else if (equippedObject != null && heldObject == null)
         {
             heldObject = equippedObject;
-            equippedObject.SetHoldObject(hand, 0.25f);
+            equippedObject.SetHoldObject(this, hand, 0.75f);
+            animator.SetTrigger("RemoveChapeau");
             equippedObject = null;
+            idleTime = 0;
+            AudioManager.instance.Play("Sfx_Player_OffHead");
         }
     }
 
@@ -323,6 +401,8 @@ public class PlayerManager : StateManager
             if (heldObject.isHeld)
             {
                 StartCoroutine(CalculateThrowForce());
+                idleTime = 0;
+                AudioManager.instance.Play("Sfx_Player_Throw");
             }
         }
     }
@@ -375,6 +455,7 @@ public class PlayerManager : StateManager
                 hitPoint = hit.point;
             }
 
+            animator.SetTrigger("Throw");
             heldObject.ThrowObject(startThrowForceHorizontal, startThrowForceVertical, hitPoint);
             heldObject = null;
         }
@@ -386,10 +467,22 @@ public class PlayerManager : StateManager
     {
         isAiming = value;
 
-        Vector3 cameraTargetPos = Vector3.zero;
+        Vector3 cameraTargetPos = new Vector3(0, 3.5f, 0);
         if (isAiming)
         {
-            cameraTargetPos = new Vector3(0, 2, 0);
+            gameObject.layer = 2;
+            Vector3 dir = Camera.main.transform.forward;
+            dir.y = 0f;
+            rigidBody.rotation = Quaternion.LookRotation(dir, Vector3.up);
+            gameManager.cameraManager.aimCamera.m_XAxis.Value = 0f;
+            gameManager.cameraManager.aimCamera.m_YAxis.Value = 0.70f;
+            cameraTargetPos = new Vector3(0, 6.25f, 0);
+        }
+        else
+        {
+            gameObject.layer = 3;
+            gameManager.cameraManager.worldCamera.m_XAxis.Value = 0f;
+            gameManager.cameraManager.worldCamera.m_YAxis.Value = 0.70f;
         }
 
         gameManager.cameraManager.SetCameraAim(value, cameraTargetPos);
@@ -397,12 +490,15 @@ public class PlayerManager : StateManager
 
     public void Shot(InputAction action)
     {
-        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f + Screen.height / 30f, 0f);
         Vector3 hitPoint = Vector3.zero;
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        float boxSize = 1f;
+
+        Vector3 rayDirection = ray.direction;
+
+        if (Physics.BoxCast(ray.origin, new Vector3(boxSize, boxSize, boxSize), rayDirection, out RaycastHit hit))
         {
             if (action == playerControls.Player.B)
             {
@@ -425,17 +521,19 @@ public class PlayerManager : StateManager
                                 target = null;
                             }
 
-                            gameManager.SetMainPlayer(playerManager, true);
+                            trigger.Clear();
+                            idleTime = 0;
+                            AudioManager.instance.Play("Sfx_Player_Swap");
+                            gameManager.SetMainPlayer(playerManager, true, true);
                             return;
                         }
                     }
                 }
             }
+            
 
             hitPoint = hit.point;
         }
-
-        Vector3 rayDirection;
 
         if (hitPoint == Vector3.zero)
         {
@@ -472,11 +570,16 @@ public class PlayerManager : StateManager
                                     {
                                         stateManager.SetState(equippedMushroom.stateToApply);
                                     }
+
+                                    idleTime = 0;
                                 }
                                 else
                                 {
                                     stateManager.SetState(equippedMushroom.stateToApply);
+                                    idleTime = 0;
                                 }
+
+                                AudioManager.instance.Play("Sfx_Player_Sticky");
                             }
                         }
                     }
@@ -503,11 +606,6 @@ public class PlayerManager : StateManager
             {
                 rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction, Vector3.up), 800 * Time.fixedDeltaTime));
             }
-            else
-            {
-                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.LookRotation(direction , Vector3.up), 100 * Time.fixedDeltaTime));
-            }
-
         }
         else
         {
@@ -520,12 +618,15 @@ public class PlayerManager : StateManager
 
     private void OutlineRaycast()
     {
-        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f + Screen.height / 30f, 0f);
         Vector3 hitPoint = Vector3.zero;
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        float boxSize = 1f;
+
+        Vector3 rayDirection = ray.direction;
+
+        if (Physics.BoxCast(ray.origin, new Vector3(boxSize, boxSize, boxSize), rayDirection, out RaycastHit hit))
         {
             if (hit.collider.tag == "Player" && hit.collider.transform != transform)
             {
@@ -546,8 +647,6 @@ public class PlayerManager : StateManager
 
             hitPoint = hit.point;
         }
-
-        Vector3 rayDirection;
 
         if (hitPoint == Vector3.zero)
         {
@@ -614,18 +713,9 @@ public class PlayerManager : StateManager
         return isCollisionDetected;
     }
 
-    //private void CollisionManagement()
-    //{
-
-    //    RaycastHit hit = Physics.CapsuleCast(transform.position - new Vector3(0,/*Player Heigh*/0, 0), )
-    //}
-
     private bool RaycastGrounded()
     {
-        //bool isCollisionDetected = Physics.Raycast(feet.position, Vector3.down, collisionDetectionDistance, GroundLayer);
-
         bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
-        //bool isCollisionDetected = false;
 
         if (isCollisionDetected)
         {
@@ -652,6 +742,13 @@ public class PlayerManager : StateManager
         {
             return isCollisionDetected;
         }
+    }
+
+    private bool RaycastFalling()
+    {
+        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance * 2, GroundLayer);
+
+        return isCollisionDetected;
     }
 
     private void OnDrawGizmos()//Permet de visualiser le boxCast pour la détection du ground
@@ -751,9 +848,8 @@ public class PlayerManager : StateManager
         }
     }
 
-    public void FallGravity()//Ajoute une gravit� fictive/ Lorsque le personnage retombe, donne un feeling avec plus de r�pondant.
+    private void FallGravity()
     {
-        //On applique la gravit� custom
         if (rigidBody.velocity.y < 0f)
         {
             rigidBody.AddForce(customGravity * fallGravityMultiplier, ForceMode.Acceleration);
@@ -764,30 +860,83 @@ public class PlayerManager : StateManager
         }
     }
 
-    private void Update()//Gère les temps pour le coyoteTime et JumpBuffering
+    private void HandleJoints()
     {
-        jumpBufferTimer -= Time.fixedDeltaTime;
-        if (playerControls == null)
+        if (heldObject != null)
         {
-            Debug.Log(transform.name);
-        }
-        if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
-        {
-            buttonSouthIsPressed = true;
-            jumpBufferTimer = jumpBufferTime;
-        }
-        //Debug.Log(jumpBufferTimer);
+            heldObject.rigidBody.constraints = RigidbodyConstraints.None;
+            Vector3 pos = Vector3.zero;
+            if (heldObject.pivot != null)
+            {
+                Vector3 diff = heldObject.transform.position - heldObject.pivot.position;
+                pos = hand.transform.position + diff;
+            }
+            else
+            {
+                pos = hand.transform.position;
+            }
 
-        if (RaycastGrounded())
-        {
-            coyoteTimer = coyoteTime;
+            Vector3 rot = hand.localEulerAngles;
+            rot.x = 0f;
+            rot.z = 0f;
+
+            heldObject.transform.position = pos;
+            heldObject.transform.rotation = Quaternion.Euler(rot);
+            heldObject.rigidBody.velocity = Vector3.zero;
+            heldObject.rigidBody.angularVelocity = Vector3.zero;
+            heldObject.rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
         }
         else
         {
-            coyoteTimer -= Time.fixedDeltaTime;
+            hand.rotation = Quaternion.identity;
         }
-        //Debug.Log(RaycastGrounded());
 
+        if (equippedObject != null)
+        {
+            equippedObject.rigidBody.constraints = RigidbodyConstraints.None;
+            Vector3 pos = Vector3.zero;
+            if (equippedObject.pivot != null)
+            {
+                Vector3 diff = equippedObject.transform.position - equippedObject.pivot.position;
+                pos = head.transform.position + diff;
+            }
+            else
+            {
+                pos = head.transform.position;
+            }
+
+            Vector3 rot = head.localEulerAngles;
+            rot.x = 0f;
+            rot.z = 0f;
+
+            equippedObject.transform.position = pos;
+            equippedObject.transform.rotation = Quaternion.Euler(rot);
+            equippedObject.rigidBody.velocity = Vector3.zero;
+            equippedObject.rigidBody.angularVelocity = Vector3.zero;
+            equippedObject.rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
+        }
+    }
+
+    private void Update()
+    {
+        jumpBufferTimer -= Time.fixedDeltaTime;
+        if (playerControls != null)
+        {
+            if (playerControls.Player.A.IsPressed() && !buttonSouthIsPressed)
+            {
+                buttonSouthIsPressed = true;
+                jumpBufferTimer = jumpBufferTime;
+            }
+
+            if (RaycastGrounded())
+            {
+                coyoteTimer = coyoteTime;
+            }
+            else
+            {
+                coyoteTimer -= Time.fixedDeltaTime;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -801,7 +950,17 @@ public class PlayerManager : StateManager
         {
             if (isMainPlayer)
             {
-                gameManager.UIManager.SetUIInput(this);
+                HandleJoints();
+
+                if (playerControls.Player.enabled && !playerControls.UI.enabled)
+                {
+                    gameManager.UIManager.SetUIInput(this);
+                }
+                else if (!playerControls.Player.enabled && playerControls.UI.enabled)
+                {
+                    gameManager.UIManager.SetUIInput(null);
+                }
+                
                 Move(playerControls.Player.LeftStick.ReadValue<Vector2>());
                 FallGravity();
 
@@ -819,9 +978,53 @@ public class PlayerManager : StateManager
                     Jump();
                 }
 
-                if (!playerControls.Player.A.IsPressed() && rigidBody.velocity.y > 0)
+                if (!playerControls.Player.A.IsPressed() && rigidBody.velocity.y >= 0)
                 {
                     OnJumpUp();
+                }
+
+                if (isJumping)
+                {
+                    if ((!RaycastFalling() || !RaycastGrounded()) && rigidBody.velocity.y < 0f && !isJumpingDown)
+                    {
+                        isJumpingDown = true;
+                        animator.SetBool("isJumpingUp", false);
+                        animator.SetBool("isJumpingDown", true);
+
+                        if (equippedObject != null)
+                        {
+                            equippedObject.objectCollider.isTrigger = false;
+                        }
+                    }
+                    else if ((RaycastFalling() || RaycastGrounded()) && isJumpingDown)
+                    {
+                        isJumping = false;
+                        isJumpingDown = false;
+                        animator.SetBool("isJumpingUp", false);
+                        animator.SetBool("isJumpingDown", false);
+                        AudioManager.instance.Play("Sfx_Player_Fall");
+                    }
+                }
+                else
+                {
+                    if ((!RaycastFalling() || !RaycastGrounded()) && rigidBody.velocity.y < 0f && !isJumpingDown)
+                    {
+                        isJumpingDown = true;
+                        animator.SetBool("isJumpingUp", false);
+                        animator.SetBool("isJumpingDown", true);
+
+                        if (equippedObject != null)
+                        {
+                            equippedObject.objectCollider.isTrigger = false;
+                        }
+                    }
+                    else if ((RaycastFalling() || RaycastGrounded()) && isJumpingDown)
+                    {
+                        isJumpingDown = false;
+                        animator.SetBool("isJumpingUp", false);
+                        animator.SetBool("isJumpingDown", false);
+                        AudioManager.instance.Play("Sfx_Player_Fall");
+                    }
                 }
 
                 trigger.UpdateOutline();
@@ -867,6 +1070,7 @@ public class PlayerManager : StateManager
                             if (!heldObject.states.Contains(equippedMushroom.stateToApply))
                             {
                                 heldObject.SetState(equippedMushroom.stateToApply);
+                                AudioManager.instance.Play("Sfx_Player_Sticky");
                             }
                         }
                     }
@@ -905,6 +1109,28 @@ public class PlayerManager : StateManager
                         buttonEastIsPressed = true;
                         Shot(playerControls.Player.B);
                     }
+                }
+
+                idleTime += Time.fixedDeltaTime;
+                if (idleTime > 10f)
+                {
+                    animator.SetBool("isShaking", true);
+                    idleTime = -3f;
+
+                    float random = UnityEngine.Random.Range(0f, 100f);
+
+                    if (random < 50)
+                    {
+                        AudioManager.instance.Play("Sfx_Player_Idle");
+                    }
+                    else
+                    {
+                        AudioManager.instance.Play("Sfx_Player_IdleAlt");
+                    }
+                }
+                else if (idleTime < 10f)
+                {
+                    animator.SetBool("isShaking", false);
                 }
             }
         }

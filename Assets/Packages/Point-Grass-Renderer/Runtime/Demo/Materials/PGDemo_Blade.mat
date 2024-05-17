@@ -13,6 +13,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - BOOLEAN_ALBEDOTEX_ON
   - ENUM_TRANSFORM_VIEW_SPACE_OFFSET
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -51,27 +52,27 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - BOOLEAN_ALBEDOTEX: 0
+    - BOOLEAN_ALBEDOTEX: 1
     - BOOLEAN_BLADECOL: 0
     - BOOLEAN_GROUNDCOL: 0
     - BOOLEAN_USEMESHNORMALS: 0
     - ENUM_TRANSFORM: 0
     - Vector1_BD8CCDF7: 0.5
-    - _Height: 0.75
+    - _Height: 1
     - _QueueControl: -1
     - _QueueOffset: 0
-    - _Smoothness: 0.534
+    - _Smoothness: 0.2
     - _SubsurfaceDist: 0.85
     - _SubsurfacePow: 2
     - _TopBright: 1
     - _Width: 0.075
     - _WindScale: 0.4
-    - _WindStr: 0.36
+    - _WindStr: 0.5
     m_Colors:
-    - _BottomCol: {r: 0.30055177, g: 0.41509432, b: 0.18600924, a: 1}
+    - _BottomCol: {r: 0.146508, g: 0.33962262, b: 0.08810965, a: 1}
     - _NoiseRange: {r: -0.4, g: 1, b: 0, a: 0}
     - _SubsurfaceCol: {r: 0.34210524, g: 0.5, b: 0.13157892, a: 1}
-    - _TopCol: {r: 0.4427122, g: 0.6886792, b: 0.23713954, a: 1}
+    - _TopCol: {r: 0.49305573, g: 0.745283, b: 0.23553754, a: 1}
     - _WindDirection: {r: 0.35, g: -0.1, b: 0.45, a: 0}
     - _WindScroll: {r: 0.75, g: -0.1, b: 0.25, a: 0}
   m_BuildTextureStacks: []

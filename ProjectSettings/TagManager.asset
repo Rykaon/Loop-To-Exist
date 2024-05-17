@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Mushroom
   - Object
+  - Creature
   layers:
   - Default
   - TransparentFX

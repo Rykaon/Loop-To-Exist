@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 public class StateManager : MonoBehaviour
 {
-    public enum Type { Player, Mushroom, Object }
+    public enum Type { Player, Mushroom, Object, Creature }
     public enum State { Default, Sticky, Link }
     public enum Position { Default, Held, Equipped }
 
@@ -16,11 +16,15 @@ public class StateManager : MonoBehaviour
     public Type type;
     public List<State> states;
     public Position position;
+    [SerializeField] public Transform pivot;
     [SerializeField] protected Rigidbody RigidBody;
     [SerializeField] private Collider ObjectCollider;
-    [SerializeField] private MeshRenderer Renderer;
+    [SerializeField] private Renderer Renderer;
     [SerializeField] private Outline Outline;
     public StickedWallElements stickedWall;
+    [SerializeField] private Material dissolveMaterial;
+    [SerializeField] private Material stickyMaterial;
+    private Material[] initMats = null;
 
     [Header("Throw Properties")]
     [SerializeField] public float startThrowForceHorizontal = 5;
@@ -31,10 +35,10 @@ public class StateManager : MonoBehaviour
     public GameManager gameManager { get; private set; }
     public Rigidbody rigidBody { get; private set; }
     public Collider objectCollider { get; private set; }
-    public MeshRenderer renderer { get; set; }
+    public Renderer renderer { get; set; }
     public Outline outline { get; set; }
 
-    protected Transform parent;
+    protected Transform initParent;
 
     public GameObject objectToStick = null;
     public List<GameObject> stickedObjects = new List<GameObject>();
@@ -49,7 +53,7 @@ public class StateManager : MonoBehaviour
     protected PlayerManager holdingPlayer = null;
     protected PlayerManager equippingPlayer = null;
     protected Joint joint = null;
-    private float jointBreakTreshold = 150f;
+    private float jointBreakTreshold = 1000f;
 
     public bool isHeldObject { get; private set; }
     public bool isHeld { get; private set; }
@@ -67,12 +71,12 @@ public class StateManager : MonoBehaviour
     {
         gameManager = instance;
         rigidBody = RigidBody;
-        parent = transform.parent;
         objectCollider = ObjectCollider;
         renderer = Renderer;
         outline = Outline;
         isHeldObject = false;
         isHeld = false;
+        initParent = transform.parent;
 
         lastGroundedPosition = rigidBody.position;
         lastGroundedRotation = rigidBody.rotation;
@@ -100,14 +104,19 @@ public class StateManager : MonoBehaviour
                     }
                 }
 
-                if (objectToStick.TryGetComponent<StateManager>(out StateManager stateManager))
+                if (objectToStick != null)
                 {
-                    stateManager.stickedObjects.Remove(gameObject);
+                    if (objectToStick.TryGetComponent<StateManager>(out StateManager stateManager))
+                    {
+                        stateManager.stickedObjects.Remove(gameObject);
+                    }
                 }
 
                 objectToStick = null;
                 isSticked = false;
                 rigidBody.useGravity = true;
+
+                StartCoroutine(RemoveSticky());
             }
             else if (state == State.Link)
             {
@@ -135,7 +144,60 @@ public class StateManager : MonoBehaviour
         else
         {
             states.Add(state);
+
+            if (state == State.Sticky)
+            {
+                StartCoroutine(SetSticky());
+            }
         }
+    }
+
+    private IEnumerator SetSticky()
+    {
+        float dissolveTime = 0.75f;
+        Material initMat = renderer.material;
+        Material dissolveMat = Instantiate(dissolveMaterial);
+        dissolveMat.SetTexture("_Albedo", initMat.mainTexture);
+        dissolveMat.SetFloat("_AlphaTreshold", 0f);
+        Material stickyMat = Instantiate(stickyMaterial);
+        dissolveMat.SetTexture("MainTexture", initMat.mainTexture);
+
+        initMats = renderer.materials;
+        Material[] stickyMats = new Material[2];
+        stickyMats[0] = stickyMat;
+        stickyMats[1] = dissolveMat;
+
+        renderer.materials = stickyMats;
+
+        float elapsedTime = 0f;
+        float treshold = 0f;
+        while (elapsedTime < dissolveTime)
+        {
+            float time = elapsedTime / dissolveTime;
+            treshold = Mathf.Lerp(treshold, 1f, time);
+            dissolveMat.SetFloat("_AlphaTreshold", treshold);
+            elapsedTime += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    private IEnumerator RemoveSticky()
+    {
+        Debug.Log("gfcxhgxc");
+        float dissolveTime = 0.75f;
+
+        float elapsedTime = 0f;
+        float treshold = 1f;
+        while (elapsedTime < dissolveTime)
+        {
+            float time = elapsedTime / dissolveTime;
+            treshold = Mathf.Lerp(treshold, 0f, time);
+            renderer.materials[1].SetFloat("_AlphaTreshold", treshold);
+            elapsedTime += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        renderer.materials = initMats;
     }
 
     public virtual void ResetState()
@@ -188,13 +250,22 @@ public class StateManager : MonoBehaviour
     ///                HOLD METHODS                 ///
     ///////////////////////////////////////////////////
 
-    public virtual void SetHoldObject(Transform endPosition, float time)
+    public virtual void SetHoldObject(PlayerManager player, Transform endPosition, float time)
     {
         bool wasEquipped = false;
+
+        if (isEquipped)
+        {
+            isEquipped = false;
+            isEquippedObject = false;
+            equippingPlayer = null;
+            wasEquipped = true;
+        }
+
         position = Position.Held;
         if (states.Contains(State.Sticky))
         {
-            transform.SetParent(parent, true);
+            transform.SetParent(initParent, true);
             
             if (joint != null)
             {
@@ -225,12 +296,13 @@ public class StateManager : MonoBehaviour
         }
 
         isHeldObject = true;
+        isHeld = true;
         objectCollider.isTrigger = true;
         rigidBody.useGravity = false;
 
         rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rigidBody.mass = 0.1f;
-        holdingPlayer = endPosition.parent.GetComponent<PlayerManager>();
+        holdingPlayer = player;
 
         if (!wasEquipped)
         {
@@ -264,26 +336,44 @@ public class StateManager : MonoBehaviour
             elapsedTime += Time.fixedDeltaTime;
 
             float time = elapsedTime / transitionDuration;
+            Vector3 endRot = endPosition.localEulerAngles;
+            endRot.x = 0f;
+            endRot.z = 0f;
 
-            transform.position = Vector3.Lerp(transform.position, endPosition.position, time);
-            transform.rotation = Quaternion.Slerp(transform.rotation, endPosition.rotation, time);
+            Vector3 pos = Vector3.zero;
+
+            if (pivot != null)
+            {
+                Vector3 diff = transform.position - pivot.position;
+                pos = endPosition.position + diff;
+            }
+            else
+            {
+                pos = endPosition.position;
+            }
+
+            transform.position = Vector3.Lerp(transform.position, pos, time);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(endRot), time);
 
             elapsedTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();
         }
 
-        InitializeHoldObject(parent);
+        InitializeHoldObject(endPosition);
     }
 
     public virtual void InitializeHoldObject(Transform parent)
     {
-        isHeld = true;
-
         objectCollider.isTrigger = false;
-        if (joint == null)
+        transform.SetParent(parent, true);
+        rigidBody.useGravity = false;
+        rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
+
+        /*if (joint == null)
         {
             joint = transform.AddComponent<FixedJoint>();
         }
+
         joint.connectedBody = holdingPlayer.transform.GetComponent<Rigidbody>();
         joint.enableCollision = true;
 
@@ -296,7 +386,7 @@ public class StateManager : MonoBehaviour
         {
             joint.breakForce = jointBreakTreshold;
             joint.breakTorque = jointBreakTreshold;
-        }
+        }*/
     }
 
     public virtual void DropObject()
@@ -309,7 +399,7 @@ public class StateManager : MonoBehaviour
                 joint = null;
             }
 
-            rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
+            rigidBody.constraints = RigidbodyConstraints.None;
             rigidBody.mass = 1f;
             holdingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
 
@@ -325,9 +415,10 @@ public class StateManager : MonoBehaviour
             isHeld = false;
             isHeldObject = false;
             holdingPlayer = null;
-            transform.parent = parent;
-
+            transform.SetParent(initParent, true);
+            objectCollider.isTrigger = false;
             rigidBody.useGravity = true;
+            rigidBody.isKinematic = false;
             rigidBody.angularVelocity = Vector3.zero;
         }
     }
@@ -352,7 +443,6 @@ public class StateManager : MonoBehaviour
 
         if (hitpoint != Vector3.zero)
         {
-            // Utiliser le hitpoint pour ajuster la direction du lancer
             Vector3 playerToHitPoint = hitpoint - transform.position;
             throwDirection = Vector3.ProjectOnPlane(playerToHitPoint, Vector3.up).normalized * throwForceHorizontal;
         }
@@ -361,13 +451,14 @@ public class StateManager : MonoBehaviour
             throwDirection = Camera.main.transform.forward.normalized * throwForceHorizontal;
         }
 
-        // Ajuster la force verticale (hauteur de l'arc)
-        throwDirection += Vector3.up * throwForceVertical;
+       throwDirection += Vector3.up * throwForceVertical;
 
-        // Appliquer la force au rigidbody
+        objectCollider.isTrigger = false;
+        rigidBody.constraints = RigidbodyConstraints.None;
+        rigidBody.isKinematic = false;
+        rigidBody.useGravity = true;
         rigidBody.velocity = Vector3.zero;
         rigidBody.AddForce(throwDirection, ForceMode.Impulse);
-        objectCollider.isTrigger = false;
         holdingPlayer = null;
     }
 
@@ -377,7 +468,6 @@ public class StateManager : MonoBehaviour
 
         if (hitpoint != Vector3.zero)
         {
-            // Utiliser le hitpoint pour ajuster la direction du lancer
             Vector3 playerToHitPoint = hitpoint - transform.position;
             throwDirection = Vector3.ProjectOnPlane(playerToHitPoint, Vector3.up).normalized * throwForceHorizontal;
         }
@@ -386,7 +476,6 @@ public class StateManager : MonoBehaviour
             throwDirection = Camera.main.transform.forward.normalized * throwForceHorizontal;
         }
 
-        // Ajuster la force verticale (hauteur de l'arc)
         throwDirection += Vector3.up * throwForceVertical;
         return throwDirection;
     }
@@ -395,11 +484,13 @@ public class StateManager : MonoBehaviour
     ///                EQUIP METHODS                ///
     ///////////////////////////////////////////////////
 
-    public virtual void SetEquipObject(Transform endPosition, float time)
+    public virtual void SetEquipObject(PlayerManager player, Transform endPosition, float time)
     {
         position = Position.Equipped;
         isHeld = false;
+        isEquipped = true;
         holdingPlayer = null;
+        equippingPlayer = player;
 
         if (joint != null)
         {
@@ -423,25 +514,40 @@ public class StateManager : MonoBehaviour
             elapsedTime += Time.fixedDeltaTime;
 
             float time = elapsedTime / transitionDuration;
+            Vector3 endRot = endPosition.localEulerAngles;
+            endRot.x = 0f;
+            endRot.z = 0f;
 
-            transform.position = Vector3.Lerp(transform.position, endPosition.position, time);
-            transform.rotation = Quaternion.Slerp(transform.rotation, endPosition.rotation, time);
+            Vector3 pos = Vector3.zero;
+
+            if (pivot != null)
+            {
+                Vector3 diff = transform.position - pivot.position;
+                pos = endPosition.position + diff;
+            }
+            else
+            {
+                pos = endPosition.position;
+            }
+
+            transform.position = Vector3.Lerp(transform.position, pos, time);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(endRot), time);
 
             elapsedTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();
         }
 
-        InitializeEquipObject(endPosition.parent);
+        InitializeEquipObject(endPosition);
     }
 
     public virtual void InitializeEquipObject(Transform parent)
     {
-        isEquipped = true;
-        equippingPlayer = parent.GetComponent<PlayerManager>();
-
         objectCollider.isTrigger = false;
-        
-        if (joint == null)
+        transform.SetParent(parent, true);
+        rigidBody.useGravity = false;
+        rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
+
+        /*if (joint == null)
         {
             joint = transform.AddComponent<FixedJoint>();
         }
@@ -457,7 +563,7 @@ public class StateManager : MonoBehaviour
         {
             joint.breakForce = jointBreakTreshold;
             joint.breakTorque = jointBreakTreshold;
-        }
+        }*/
     }
 
     protected GameObject GetFirstStickedObject(GameObject currentObject)
@@ -523,14 +629,6 @@ public class StateManager : MonoBehaviour
                 joint = transform.AddComponent<FixedJoint>();
             }
             joint.connectedBody = collision.transform.GetComponent<Rigidbody>();
-            //joint.breakForce = jointBreakTreshold * 100000;
-            //joint.breakTorque = jointBreakTreshold * 100000;
-
-            /*if (stickSnap == null)
-            {
-                stickSnap = transform.AddComponent<SnapRigidbodyPosition>();
-                stickSnap.Initialize(rigidBody, collision.transform);
-            }*/
 
             objectToStick = collision.gameObject;
             isSticked = true;
@@ -572,9 +670,10 @@ public class StateManager : MonoBehaviour
 
                 rigidBody.useGravity = true;
 
+                holdingPlayer.animator.SetTrigger("Drop");
                 holdingPlayer.heldObject = null;
                 holdingPlayer = null;
-                transform.parent = parent;
+                transform.SetParent(initParent, true);
             }
         }
         else if (isEquipped)
@@ -605,7 +704,7 @@ public class StateManager : MonoBehaviour
 
                 equippingPlayer.equippedObject = null;
                 equippingPlayer = null;
-                transform.parent = parent;
+                transform.SetParent(initParent, true);
             }
         }
         else if (isSticked)

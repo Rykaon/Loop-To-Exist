@@ -12,19 +12,22 @@ using UnityEngine.InputSystem.Users;
 using static Cinemachine.CinemachineFreeLook;
 using static UnityEngine.Rendering.VolumeComponent;
 using System.Linq;
-using Obi;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+
     public enum ControlState
     {
-        Menu,
+        UI,
         World
     }
 
     public ControlState controlState { get; private set; }
 
     [Header("Cinemachine Properties")]
+    [SerializeField] private Volume GlobalVolume;
     [SerializeField] public CameraManager cameraManager;
     [HideInInspector] public Camera _camera;
 
@@ -46,11 +49,13 @@ public class GameManager : MonoBehaviour
     [Header("Entities References")]
     [SerializeField] private List<StateManager> entities;
 
+    public Volume globalVolume { get; private set; }
     public UIManager UIManager { get; private set; }
     public RadialMenu playerMenu { get; private set; }
     public List<PlayerManager> playerList { get; private set; }
     public List<MushroomManager> mushroomList { get; private set; }
     public List<ObjectManager> objectList { get; private set; }
+    public List<CreatureManager> creatureList { get; private set; }
 
     private int playerIndex = 0;
     private int playerMaxIndex;
@@ -65,9 +70,19 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
+        globalVolume = GlobalVolume;
         UIManager = uiManager;
         UIManager.gameManager = this;
-        controlState = ControlState.Menu;
+        controlState = ControlState.UI;
         playerControls = new PlayerControls();
         playerControls.Player.Disable();
         playerControls.UI.Enable();
@@ -75,6 +90,7 @@ public class GameManager : MonoBehaviour
         playerList = entities.OfType<PlayerManager>().ToList();
         mushroomList = entities.OfType<MushroomManager>().ToList();
         objectList = entities.OfType<ObjectManager>().ToList();
+        creatureList = entities.OfType<CreatureManager>().ToList();
 
         for (int i = 0; i < playerList.Count; i++)
         {
@@ -91,13 +107,16 @@ public class GameManager : MonoBehaviour
             objectList[i].Initialize(this);
         }
 
-        playerList[0].SetIsMainPlayer(true);
+        for (int i = 0; i < creatureList.Count; i++)
+        {
+            creatureList[i].Initialize(this);
+        }
+
         mainPlayer = playerList[0];
-        SetCameraTarget(mainPlayer.transform, mainPlayer.transform);
 
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
-        SetMainPlayer(mainPlayer, true);
+        SetMainPlayer(mainPlayer, true, false);
     }
 
     private void OnEnable()
@@ -128,7 +147,7 @@ public class GameManager : MonoBehaviour
 
     public void ChangeState(ControlState state)
     {
-        if (state == ControlState.Menu)
+        if (state == ControlState.UI)
         {
             playerControls.Player.Disable();
             playerControls.UI.Enable();
@@ -144,23 +163,27 @@ public class GameManager : MonoBehaviour
         controlState = state;
     }
 
-    public void SetCameraTarget(Transform follow, Transform look)
+    public void SetCameraTarget(Transform follow, Transform look, bool isWarp)
     {
         if (cameraManager.cameraTransition != null)
         {
             StopCoroutine(cameraManager.cameraTransition);
         }
 
-        cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look));
+        cameraManager.cameraTransition = StartCoroutine(cameraManager.SetCameraTarget(follow, look, isWarp));
     }
 
-    public void SetMainPlayer(PlayerManager player, bool startRun)
+    public void SetMainPlayer(PlayerManager player, bool startRun, bool isWarp)
     {
         int previous = Utilities.FindIndexInList(mainPlayer, playerList);
         int next = Utilities.FindIndexInList(player, playerList);
 
-        playerList[previous].SetIsMainPlayer(false);
-        playerMenu.elements[previous].SetColors();
+        if (previous != -1)
+        {
+            playerList[previous].SetIsMainPlayer(false);
+            playerMenu.elements[previous].SetColors();
+        }
+        
         mainPlayer = player;
         playerList[next].SetIsMainPlayer(true);
         playerMenu.elements[next].SetColors();
@@ -168,17 +191,17 @@ public class GameManager : MonoBehaviour
         if (startRun)
         {
             ChangeState(ControlState.World);
-            StartRun();
+            StartRun(isWarp);
         }
         else
         {
-            SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
+            SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget, isWarp);
         }
     }
 
-    public void StartRun()
+    public void StartRun(bool isWarp)
     {
-        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget);
+        SetCameraTarget(mainPlayer.cameraTarget, mainPlayer.cameraTarget, isWarp);
         
         for (int i = 0; i < playerList.Count; i++)
         {
@@ -210,7 +233,13 @@ public class GameManager : MonoBehaviour
 
         if (controlState == ControlState.World)
         {
-            if (Input.GetKeyDown(KeyCode.M))
+            if (playerControls.Player.Select.WasPressedThisFrame())
+            {
+                ChangeState(ControlState.UI);
+                UIManager.SetMenuActive(true);
+            }
+
+            if (Input.GetKeyDown(KeyCode.G))
             {
                 cameraManager.ExecuteCinematic(cameraManager.intro);
             }
@@ -223,8 +252,14 @@ public class GameManager : MonoBehaviour
                 return;
             }
         }
-        else if (controlState == ControlState.Menu)
+        else if (controlState == ControlState.UI)
         {
+            if (playerControls.UI.Select.WasPressedThisFrame())
+            {
+                ChangeState(ControlState.World);
+                UIManager.SetMenuActive(false);
+            }
+
             bool joystickMoved = playerControls.UI.LeftStick.ReadValue<Vector2>() != Vector2.zero;
 
             float rawAngle = playerMenu.CalculateRawAngles();
@@ -250,24 +285,24 @@ public class GameManager : MonoBehaviour
 
                         if (cameraManager.currentTarget != playerMenu.elements[playerMenu.index].player.transform)
                         {
-                            SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget);
+                            SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget, false);
                         }
 
                         if (playerControls.UI.X.IsPressed())
                         {
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, false);
+                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, false, false);
                         }
 
                         if (playerControls.UI.Y.IsPressed())
                         {
                             playerMenu.gameObject.SetActive(false);
-                            StartRun();
+                            StartRun(false);
                         }
 
                         if (playerControls.UI.A.IsPressed())
                         {
                             playerMenu.gameObject.SetActive(false);
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, true);
+                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, true, false);
                         }
                     }
                     else
