@@ -454,7 +454,6 @@ public class StateManager : MonoBehaviour
        throwDirection += Vector3.up * throwForceVertical;
 
         objectCollider.isTrigger = false;
-        rigidBody.constraints = RigidbodyConstraints.None;
         rigidBody.isKinematic = false;
         rigidBody.useGravity = true;
         rigidBody.velocity = Vector3.zero;

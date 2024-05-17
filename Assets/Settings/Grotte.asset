@@ -305,92 +305,6 @@ MonoBehaviour:
   rounded:
     m_OverrideState: 0
     m_Value: 0
---- !u!114 &-2783354621201477491
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c01700fd266d6914ababb731e09af2eb, type: 3}
-  m_Name: DepthOfField
-  m_EditorClassIdentifier: 
-  active: 1
-  mode:
-    m_OverrideState: 1
-    m_Value: 2
-  gaussianStart:
-    m_OverrideState: 1
-    m_Value: 38.64
-  gaussianEnd:
-    m_OverrideState: 1
-    m_Value: 68.87
-  gaussianMaxRadius:
-    m_OverrideState: 1
-    m_Value: 1.299
-  highQualitySampling:
-    m_OverrideState: 0
-    m_Value: 0
-  focusDistance:
-    m_OverrideState: 1
-    m_Value: 3.19
-  aperture:
-    m_OverrideState: 1
-    m_Value: 11.5
-  focalLength:
-    m_OverrideState: 1
-    m_Value: 66
-  bladeCount:
-    m_OverrideState: 1
-    m_Value: 6
-  bladeCurvature:
-    m_OverrideState: 1
-    m_Value: 1
-  bladeRotation:
-    m_OverrideState: 1
-    m_Value: 100
---- !u!114 &-2402160174766217846
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
-  m_Name: Tonemapping
-  m_EditorClassIdentifier: 
-  active: 1
-  mode:
-    m_OverrideState: 1
-    m_Value: 1
-  neutralHDRRangeReductionMode:
-    m_OverrideState: 0
-    m_Value: 2
-  acesPreset:
-    m_OverrideState: 0
-    m_Value: 3
-  hueShiftAmount:
-    m_OverrideState: 0
-    m_Value: 0
-  detectPaperWhite:
-    m_OverrideState: 0
-    m_Value: 0
-  paperWhite:
-    m_OverrideState: 0
-    m_Value: 300
-  detectBrightnessLimits:
-    m_OverrideState: 0
-    m_Value: 1
-  minNits:
-    m_OverrideState: 0
-    m_Value: 0.005
-  maxNits:
-    m_OverrideState: 0
-    m_Value: 1000
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,10 +318,8 @@ MonoBehaviour:
   m_Name: Grotte
   m_EditorClassIdentifier: 
   components:
-  - {fileID: -2402160174766217846}
   - {fileID: 1238315430156395940}
   - {fileID: -3987343133059210612}
-  - {fileID: -2783354621201477491}
   - {fileID: -5791965718112478428}
   - {fileID: 6234885484479503550}
   - {fileID: -7741038511260713590}
@@ -452,12 +364,12 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 6
   dirtTexture:
-    m_OverrideState: 0
-    m_Value: {fileID: 2800000, guid: 33d7e89f1b3217146a7083956260d6d7, type: 3}
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: 683130bc7bedf9b49836fd4d55892ce2, type: 3}
     dimension: 1
   dirtIntensity:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1.67
 --- !u!114 &6234885484479503550
 MonoBehaviour:
   m_ObjectHideFlags: 3

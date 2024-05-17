@@ -16,6 +16,7 @@ using UnityEngine.Tilemaps;
 public class PlayerManager : StateManager
 {
     [Header("Player References")]
+    [SerializeField] private PhysicMaterial physicMaterial;
     [SerializeField] private Transform head;
     [SerializeField] private Transform hand;
     [SerializeField] private Transform feet;
@@ -135,6 +136,12 @@ public class PlayerManager : StateManager
         base.InitializeHoldObject(parent);
     }
 
+    public override void DropObject()
+    {
+        base.DropObject();
+        rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
+    }
+
     public override void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
     {
         base.ThrowObject(throwForceHorizontal, throwForceVertical, hitpoint);
@@ -191,6 +198,7 @@ public class PlayerManager : StateManager
 
             isMainPlayer = false;
             isActive = false;
+            objectCollider.material = null;
             animator.SetBool("isActive", false);
         }
     }
@@ -199,6 +207,7 @@ public class PlayerManager : StateManager
     {
         yield return new WaitForSecondsRealtime(2f);
         isMainPlayer = true;
+        objectCollider.material = physicMaterial;
     }
 
     ///////////////////////////////////////////////////

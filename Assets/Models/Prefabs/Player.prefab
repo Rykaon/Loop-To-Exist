@@ -566,6 +566,7 @@ MonoBehaviour:
   isLinked: 0
   lastGroundedPosition: {x: 0, y: 0, z: 0}
   lastGroundedRotation: {x: 0, y: 0, z: 0, w: 0}
+  physicMaterial: {fileID: 13400000, guid: 7f731aa4dff23bd479456c3253ed51c7, type: 2}
   head: {fileID: 4194247132682260400}
   hand: {fileID: 7310698133081631505}
   feet: {fileID: 5738480824880601504}
@@ -615,7 +616,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4978371639501338893}
-  m_Material: {fileID: 13400000, guid: 7f731aa4dff23bd479456c3253ed51c7, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -793,8 +794,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   localPosition: {x: 0, y: 0, z: 0}
-  radius: 0.5
-  strength: 1
+  radius: 1.05
+  strength: 1.54
 --- !u!4 &5646786114928468919 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,

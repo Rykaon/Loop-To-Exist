@@ -303,8 +303,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   localPosition: {x: 0, y: 0, z: 0}
-  radius: 1.5
-  strength: 1
+  radius: 2.42
+  strength: 1.37
 --- !u!1 &3522377946134844213
 GameObject:
   m_ObjectHideFlags: 0
