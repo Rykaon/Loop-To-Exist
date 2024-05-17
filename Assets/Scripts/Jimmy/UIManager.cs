@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     [Header("MainMenu References")]
     [SerializeField] private bool isMainMenu;
     [SerializeField] private Image blackScreen;
+    [SerializeField] private Image logo;
 
     private void Awake()
     {
