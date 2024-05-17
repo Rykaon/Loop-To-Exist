@@ -9,9 +9,6 @@ public class OrbeSwitch : DoorSwitch
     protected override void Awake()
     {
         state = State.Inactive;
-
-        tagsToCheck = new List<string>();
-        tagsToCheck.Add("Object");
     }
 
     protected void OnTriggerStay(Collider other)
@@ -28,8 +25,8 @@ public class OrbeSwitch : DoorSwitch
         }
     }
 
-    protected void SetActive()
+    protected IEnumerator SetActive()
     {
-
+        yield return null;
     }
 }

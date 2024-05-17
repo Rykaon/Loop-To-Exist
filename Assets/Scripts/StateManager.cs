@@ -25,6 +25,7 @@ public class StateManager : MonoBehaviour
     [SerializeField] private Material dissolveMaterial;
     [SerializeField] private Material stickyMaterial;
     private Material[] initMats = null;
+    private PlayerManager previousHoldingPlayer = null;
 
     [Header("Throw Properties")]
     [SerializeField] public float startThrowForceHorizontal = 5;
@@ -414,6 +415,7 @@ public class StateManager : MonoBehaviour
             position = Position.Default;
             isHeld = false;
             isHeldObject = false;
+            previousHoldingPlayer = holdingPlayer;
             holdingPlayer = null;
             transform.SetParent(initParent, true);
             objectCollider.isTrigger = false;
@@ -619,6 +621,14 @@ public class StateManager : MonoBehaviour
     {
         if (states.Contains(State.Sticky) && !isHeldObject  && !isEquipped && !isSticked)
         {
+            if (previousHoldingPlayer != null)
+            {
+                if (collision.gameObject == previousHoldingPlayer.gameObject)
+                {
+                    return;
+                }
+            }
+
             rigidBody.useGravity = false;
             rigidBody.velocity = Vector3.zero;
             rigidBody.angularVelocity = Vector3.zero;
