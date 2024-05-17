@@ -18,13 +18,13 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 1.05
+    m_Value: 0.99
   intensity:
     m_OverrideState: 1
-    m_Value: 2.29
+    m_Value: 2.77
   scatter:
     m_OverrideState: 1
-    m_Value: 0.923
+    m_Value: 0.92
   clamp:
     m_OverrideState: 0
     m_Value: 65472
@@ -33,7 +33,7 @@ MonoBehaviour:
     m_Value: {r: 0.8867924, g: 0.8631982, b: 0.7152901, a: 1}
   highQualityFiltering:
     m_OverrideState: 0
-    m_Value: 0
+    m_Value: 1
   downscale:
     m_OverrideState: 0
     m_Value: 0
@@ -68,10 +68,10 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.25
+    m_Value: 0.41
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.4
+    m_Value: 0.489
   rounded:
     m_OverrideState: 0
     m_Value: 0
@@ -108,8 +108,8 @@ MonoBehaviour:
           inWeight: 0
           outWeight: 0
         - serializedVersion: 3
-          time: 0.33226836
-          value: 0.25342464
+          time: 0.36102235
+          value: 0.21232879
           inSlope: 1
           outSlope: 1
           tangentMode: 0
@@ -117,8 +117,8 @@ MonoBehaviour:
           inWeight: 0
           outWeight: 0
         - serializedVersion: 3
-          time: 0.7060703
-          value: 0.73972607
+          time: 0.72523963
+          value: 0.65068495
           inSlope: 1.1864755
           outSlope: 1.1864755
           tangentMode: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
   red:
     m_OverrideState: 1
     m_Value:
-      <length>k__BackingField: 2
+      <length>k__BackingField: 3
       m_Loop: 0
       m_ZeroValue: 0
       m_Range: 1
@@ -151,6 +151,15 @@ MonoBehaviour:
           time: 0
           value: 0
           inSlope: 0
+          outSlope: 1
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 0.456869
+          value: 0.6232877
+          inSlope: 1
           outSlope: 1
           tangentMode: 0
           weightedMode: 0
@@ -200,9 +209,9 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
   blue:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value:
-      <length>k__BackingField: 2
+      <length>k__BackingField: 3
       m_Loop: 0
       m_ZeroValue: 0
       m_Range: 1
@@ -212,6 +221,15 @@ MonoBehaviour:
         - serializedVersion: 3
           time: 0
           value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 0.38977635
+          value: 0.7671233
           inSlope: 1
           outSlope: 1
           tangentMode: 0
@@ -303,10 +321,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e1dc532bcb41949b58bc4f2abfbb7e, type: 3}
   m_Name: LensDistortion
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: -0.33
   xMultiplier:
     m_OverrideState: 0
     m_Value: 1
@@ -408,13 +426,13 @@ MonoBehaviour:
     m_Value: 0
   focusDistance:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 2.24
   aperture:
     m_OverrideState: 1
-    m_Value: 13.5
+    m_Value: 15.4
   focalLength:
     m_OverrideState: 1
-    m_Value: 110
+    m_Value: 97
   bladeCount:
     m_OverrideState: 1
     m_Value: 6
