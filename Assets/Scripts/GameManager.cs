@@ -227,7 +227,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         ResetInputState();
 
@@ -260,77 +260,80 @@ public class GameManager : MonoBehaviour
                 UIManager.SetMenuActive(false);
             }
 
-            bool joystickMoved = playerControls.UI.LeftStick.ReadValue<Vector2>() != Vector2.zero;
-
-            float rawAngle = playerMenu.CalculateRawAngles();
-
-            if (!playerMenu.useGamepad)
+            if (playerMenu.isActive)
             {
-                playerMenu.currentAngle = playerMenu.NormalizeAngle(-rawAngle + 90 - playerMenu.globalOffset + (playerMenu.angleOffset / 2f));
-            }
-            else if (joystickMoved)
-            {
-                playerMenu.currentAngle = playerMenu.NormalizeAngle(-rawAngle + 90 - playerMenu.globalOffset + (playerMenu.angleOffset / 2f));
-            }
+                bool joystickMoved = playerControls.UI.LeftStick.ReadValue<Vector2>() != Vector2.zero;
 
-            if (playerMenu.angleOffset != 0 && playerMenu.useLazySelection)
-            {
-                playerMenu.index = (int)(playerMenu.currentAngle / playerMenu.angleOffset);
+                float rawAngle = playerMenu.CalculateRawAngles();
 
-                if (playerMenu.elements[playerMenu.index] != null)
+                if (!playerMenu.useGamepad)
                 {
-                    if (playerMenu.elements[playerMenu.index].active)
+                    playerMenu.currentAngle = playerMenu.NormalizeAngle(-rawAngle + 90 - playerMenu.globalOffset + (playerMenu.angleOffset / 2f));
+                }
+                else if (joystickMoved)
+                {
+                    playerMenu.currentAngle = playerMenu.NormalizeAngle(-rawAngle + 90 - playerMenu.globalOffset + (playerMenu.angleOffset / 2f));
+                }
+
+                if (playerMenu.angleOffset != 0 && playerMenu.useLazySelection)
+                {
+                    playerMenu.index = (int)(playerMenu.currentAngle / playerMenu.angleOffset);
+
+                    if (playerMenu.elements[playerMenu.index] != null)
                     {
-                        playerMenu.SelectButton(playerMenu.index);
+                        if (playerMenu.elements[playerMenu.index].active)
+                        {
+                            playerMenu.SelectButton(playerMenu.index);
 
-                        if (cameraManager.currentTarget != playerMenu.elements[playerMenu.index].player.transform)
-                        {
-                            SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget, false);
-                        }
-
-                        if (playerControls.UI.X.IsPressed())
-                        {
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, false, false);
-                        }
-
-                        if (playerControls.UI.Y.IsPressed())
-                        {
-                            playerMenu.gameObject.SetActive(false);
-                            StartRun(false);
-                        }
-
-                        if (playerControls.UI.A.IsPressed())
-                        {
-                            playerMenu.gameObject.SetActive(false);
-                            SetMainPlayer(playerMenu.elements[playerMenu.index].player, true, false);
-                        }
-                    }
-                    else
-                    {
-                        if (playerMenu.previousActiveIndex != playerMenu.index)
-                        {
-                            if (playerMenu.elements[playerMenu.previousActiveIndex].active)
+                            if (cameraManager.currentTarget != playerMenu.elements[playerMenu.index].player.transform)
                             {
-                                playerMenu.elements[playerMenu.previousActiveIndex].UnHighlightThisElement();
+                                SetCameraTarget(playerMenu.elements[playerMenu.index].player.cameraTarget, playerMenu.elements[playerMenu.index].player.cameraTarget, false);
+                            }
+
+                            if (playerControls.UI.X.IsPressed())
+                            {
+                                SetMainPlayer(playerMenu.elements[playerMenu.index].player, false, false);
+                            }
+
+                            if (playerControls.UI.Y.IsPressed())
+                            {
+                                playerMenu.gameObject.SetActive(false);
+                                StartRun(false);
+                            }
+
+                            if (playerControls.UI.A.IsPressed())
+                            {
+                                playerMenu.gameObject.SetActive(false);
+                                SetMainPlayer(playerMenu.elements[playerMenu.index].player, true, false);
+                            }
+                        }
+                        else
+                        {
+                            if (playerMenu.previousActiveIndex != playerMenu.index)
+                            {
+                                if (playerMenu.elements[playerMenu.previousActiveIndex].active)
+                                {
+                                    playerMenu.elements[playerMenu.previousActiveIndex].UnHighlightThisElement();
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            if (playerMenu.useSelectionFollower && playerMenu.selectionFollowerContainer != null)
-            {
-                if (rawAngle != 0)
+                if (playerMenu.useSelectionFollower && playerMenu.selectionFollowerContainer != null)
                 {
-                    playerMenu.selectionFollowerContainer.rotation = Quaternion.Euler(0, 0, rawAngle + 270);
-                }
-                else
-                {
-                    playerMenu.selectionFollowerContainer.rotation = Quaternion.Euler(0, 0, 90 + 270);
-                    playerMenu.elements[playerMenu.previousActiveIndex].UnHighlightThisElement();
-                    playerMenu.elements[playerMenu.index].UnHighlightThisElement();
-                    playerMenu.previousActiveIndex = 0;
-                    playerMenu.index = 0;
+                    if (rawAngle != 0)
+                    {
+                        playerMenu.selectionFollowerContainer.rotation = Quaternion.Euler(0, 0, rawAngle + 270);
+                    }
+                    else
+                    {
+                        playerMenu.selectionFollowerContainer.rotation = Quaternion.Euler(0, 0, 90 + 270);
+                        playerMenu.elements[playerMenu.previousActiveIndex].UnHighlightThisElement();
+                        playerMenu.elements[playerMenu.index].UnHighlightThisElement();
+                        playerMenu.previousActiveIndex = 0;
+                        playerMenu.index = 0;
+                    }
                 }
             }
         }
