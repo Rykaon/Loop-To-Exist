@@ -5,6 +5,13 @@ using UnityEngine;
 public class GlobalVolumeController : MonoBehaviour
 {
     [SerializeField] private BoxCollider collider;
+    [SerializeField] private List<string> soundNames;
+    [SerializeField] private List<float> volumes;
+
+    private void Awake()
+    {
+        
+    }
 
     public bool IsTransformInsideBoundingBox(Transform target)
     {
@@ -52,11 +59,19 @@ public class GlobalVolumeController : MonoBehaviour
     {
         if (isActive)
         {
-            // Fade pour augmenter le son du nouveau volume
+            Debug.Log("Play : " + soundNames);
+            for (int i = 0; i < soundNames.Count; i++)
+            {
+                AudioManager.instance.FadeInAndPlay(soundNames[i], fadeDuration, volumes[i]);
+            }
         }
         else
         {
-            // Fade pour baisser le son de l'ancien volume
+            Debug.Log("Stop : " + soundNames);
+            for (int i = 0; i < soundNames.Count; i++)
+            {
+                AudioManager.instance.FadeOutAndStop(soundNames[i], fadeDuration);
+            }
         }
     }
 }

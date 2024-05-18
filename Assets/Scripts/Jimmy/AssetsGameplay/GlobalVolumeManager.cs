@@ -17,27 +17,33 @@ public class GlobalVolumeManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        for (int i = 0; i < volumes.Count; i++)
+        if(GameManager.instance.mainPlayer != null)
         {
-            bool isInVolume = volumes[i].IsTransformInsideBoundingBox(Camera.main.transform);
-
-            if (isInVolume)
+            if(GameManager.instance.mainPlayer.isActive)
             {
-                if (currentVolume == null)
+                for (int i = 0; i < volumes.Count; i++)
                 {
-                    currentVolume = new GlobalVolumeController();
-                    currentVolume.SetSoundVolume(isInVolume, fadeDuration);
-                }
-                else
-                {
-                    if (previousVolume != volumes[i] && currentVolume != volumes[i])
-                    {
-                        previousVolume = currentVolume;
-                        currentVolume = volumes[i];
+                    bool isInVolume = volumes[i].IsTransformInsideBoundingBox(GameManager.instance.mainPlayer.transform);
 
-                        previousVolume.SetSoundVolume(false, fadeDuration);
-                        currentVolume.SetSoundVolume(true, fadeDuration);
-                        return;
+                    if (isInVolume)
+                    {
+                        if (currentVolume == null)
+                        {
+                            currentVolume = volumes[i];
+                            currentVolume.SetSoundVolume(isInVolume, fadeDuration);
+                        }
+                        else
+                        {
+                            if (currentVolume != volumes[i])
+                            {
+                                previousVolume = currentVolume;
+                                currentVolume = volumes[i];
+
+                                previousVolume.SetSoundVolume(false, fadeDuration);
+                                currentVolume.SetSoundVolume(true, fadeDuration);
+                                return;
+                            }
+                        }
                     }
                 }
             }

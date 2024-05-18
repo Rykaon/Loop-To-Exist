@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using DG.Tweening;
 
 public class AudioManager : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class AudioManager : MonoBehaviour
             s.source.pitch = s.pitch;
             s.source.loop = s.loop;
         }
+
+        Debug.Log("MONGROSBOOL");
     }
 
     public void Play(string name)
@@ -86,25 +89,60 @@ public class AudioManager : MonoBehaviour
         s.source.Stop();
     }
 
-    public void FadeOutAndStop(string name)
+    public void FadeOutAndStop(string name, float duration)
     {
-        StartCoroutine(FadeOutAndStopCoroutine(name));
+        StartCoroutine(FadeOutAndStopCoroutine(name,duration));
     }
 
-    IEnumerator FadeOutAndStopCoroutine(string name)
+    IEnumerator FadeOutAndStopCoroutine(string name, float duration)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
+        float elapsedTime = 0f;
+        float volume = s.source.volume;
+        float VolumeToSet = 0;
+        AnimationCurve curve = Utilities.ConvertEaseToCurve(Ease.InSine);
 
-        float startVolume = s.source.volume;
-
-        while (s.source.volume > 0)
+        while (elapsedTime < duration)
         {
-            s.source.volume -= Time.deltaTime * 0.5f;
-            yield return null;
+            float time = elapsedTime / duration;
+            volume = Mathf.Lerp(volume, VolumeToSet, curve.Evaluate(time));
+
+            s.source.volume = volume;
+
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
         }
 
         s.source.Stop();
-        s.source.volume = startVolume;
+    }
+
+    public void FadeInAndPlay(string name, float duration, float volumeToSet)
+    {
+        StartCoroutine(FadeInAndPlayCoroutine(name, duration, volumeToSet));
+    }
+
+    IEnumerator FadeInAndPlayCoroutine(string name, float duration, float volumeToSet)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        float elapsedTime = 0f;
+        float volume = 0;
+        AnimationCurve curve = Utilities.ConvertEaseToCurve(Ease.InSine);
+
+        Debug.Log(name);
+
+        s.source.volume = volume;
+        s.source.Play();
+
+        while (elapsedTime < duration)
+        {
+            float time = elapsedTime / duration;
+            volume = Mathf.Lerp(volume, volumeToSet, curve.Evaluate(time));
+
+            s.source.volume = volume;
+
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
     }
 
     public void PitchShiftDown(string name)
