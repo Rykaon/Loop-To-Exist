@@ -15,75 +15,82 @@ public class DoorSwitch : MonoBehaviour
     [SerializeField] protected DoorController doorController;
     [SerializeField] protected int nbrOfEntity;
     protected List<GameObject> objects = new List<GameObject>();
+    [SerializeField] private bool isOrbe;
 
     protected virtual void Awake()
     {
-        state = State.Inactive;
+        if (!isOrbe)
+        {
+            state = State.Inactive;
 
-        tagsToCheck = new List<string>();
-        tagsToCheck.Add("Player");
-        tagsToCheck.Add("Mushroom");
-        tagsToCheck.Add("Object");
+            tagsToCheck = new List<string>();
+            tagsToCheck.Add("Player");
+            tagsToCheck.Add("Mushroom");
+            tagsToCheck.Add("Object");
+        }
     }
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<StateManager>(out StateManager manager))
+        if (!isOrbe)
         {
-            if (!manager.isHeld && !manager.isEquipped)
+            if (other.TryGetComponent<StateManager>(out StateManager manager))
             {
-                List<GameObject> list = new List<GameObject>();
-                list.Add(other.gameObject);
-                if (manager.GetType() == typeof(PlayerManager))
+                if (!manager.isHeld && !manager.isEquipped)
                 {
-                    PlayerManager player = (PlayerManager)manager;
-
-                    foreach (GameObject go in player.stickedObjects)
+                    List<GameObject> list = new List<GameObject>();
+                    list.Add(other.gameObject);
+                    if (manager.GetType() == typeof(PlayerManager))
                     {
-                        list.Add(go);
+                        PlayerManager player = (PlayerManager)manager;
+
+                        foreach (GameObject go in player.stickedObjects)
+                        {
+                            list.Add(go);
+                        }
+
+                        if (player.heldObject != null)
+                        {
+                            list.Add(player.heldObject.gameObject);
+                            foreach (GameObject go in player.heldObject.stickedObjects)
+                            {
+                                list.Add(go);
+                            }
+                        }
+
+                        if (player.equippedObject != null)
+                        {
+                            list.Add(player.equippedObject.gameObject);
+                            foreach (GameObject go in player.equippedObject.stickedObjects)
+                            {
+                                list.Add(go);
+                            }
+                        }
                     }
-
-                    if (player.heldObject != null)
+                    else
                     {
-                        list.Add(player.heldObject.gameObject);
-                        foreach (GameObject go in player.heldObject.stickedObjects)
+                        foreach (GameObject go in manager.stickedObjects)
                         {
                             list.Add(go);
                         }
                     }
 
-                    if (player.equippedObject != null)
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        list.Add(player.equippedObject.gameObject);
-                        foreach (GameObject go in player.equippedObject.stickedObjects)
+                        if (tagsToCheck.Contains(list[i].tag) && !objects.Contains(list[i]))
                         {
-                            list.Add(go);
+                            objects.Add(list[i]);
                         }
                     }
-                }
-                else
-                {
-                    foreach (GameObject go in manager.stickedObjects)
-                    {
-                        list.Add(go);
-                    }
-                }
 
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (tagsToCheck.Contains(list[i].tag) && !objects.Contains(list[i]))
+                    if (objects.Count >= nbrOfEntity)
                     {
-                        objects.Add(list[i]);
-                    }
-                }
-
-                if (objects.Count >= nbrOfEntity)
-                {
-                    Debug.Log(transform.parent.name + " is Active");
-                    state = State.Active;
-                    if (doorController.state == DoorController.State.Close)
-                    {
-                        doorController.CheckSwitches();
+                        Debug.Log(transform.parent.name + " is Active");
+                        state = State.Active;
+                        if (doorController.state == DoorController.State.Close)
+                        {
+                            doorController.CheckSwitches();
+                        }
                     }
                 }
             }
@@ -92,62 +99,65 @@ public class DoorSwitch : MonoBehaviour
 
     protected virtual void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent<StateManager>(out StateManager manager))
+        if (!isOrbe)
         {
-            if (!manager.isHeld && !manager.isEquipped)
+            if (other.TryGetComponent<StateManager>(out StateManager manager))
             {
-                List<GameObject> list = new List<GameObject>();
-                list.Add(other.gameObject);
-                if (manager.GetType() == typeof(PlayerManager))
+                if (!manager.isHeld && !manager.isEquipped)
                 {
-                    PlayerManager player = (PlayerManager)manager;
-
-                    foreach (GameObject go in player.stickedObjects)
+                    List<GameObject> list = new List<GameObject>();
+                    list.Add(other.gameObject);
+                    if (manager.GetType() == typeof(PlayerManager))
                     {
-                        list.Add(go);
+                        PlayerManager player = (PlayerManager)manager;
+
+                        foreach (GameObject go in player.stickedObjects)
+                        {
+                            list.Add(go);
+                        }
+
+                        if (player.heldObject != null)
+                        {
+                            list.Add(player.heldObject.gameObject);
+                            foreach (GameObject go in player.heldObject.stickedObjects)
+                            {
+                                list.Add(go);
+                            }
+                        }
+
+                        if (player.equippedObject != null)
+                        {
+                            list.Add(player.equippedObject.gameObject);
+                            foreach (GameObject go in player.equippedObject.stickedObjects)
+                            {
+                                list.Add(go);
+                            }
+                        }
                     }
-
-                    if (player.heldObject != null)
+                    else
                     {
-                        list.Add(player.heldObject.gameObject);
-                        foreach (GameObject go in player.heldObject.stickedObjects)
+                        foreach (GameObject go in manager.stickedObjects)
                         {
                             list.Add(go);
                         }
                     }
 
-                    if (player.equippedObject != null)
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        list.Add(player.equippedObject.gameObject);
-                        foreach (GameObject go in player.equippedObject.stickedObjects)
+                        if (tagsToCheck.Contains(list[i].tag) && objects.Contains(list[i]))
                         {
-                            list.Add(go);
+                            objects.Remove(list[i]);
                         }
                     }
-                }
-                else
-                {
-                    foreach (GameObject go in manager.stickedObjects)
-                    {
-                        list.Add(go);
-                    }
-                }
 
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (tagsToCheck.Contains(list[i].tag) && objects.Contains(list[i]))
+                    if (objects.Count < nbrOfEntity)
                     {
-                        objects.Remove(list[i]);
-                    }
-                }
-
-                if (objects.Count < nbrOfEntity)
-                {
-                    Debug.Log(transform.parent.name + " is Inactive");
-                    state = State.Inactive;
-                    if (doorController.state == DoorController.State.Open)
-                    {
-                        doorController.CheckSwitches();
+                        Debug.Log(transform.parent.name + " is Inactive");
+                        state = State.Inactive;
+                        if (doorController.state == DoorController.State.Open)
+                        {
+                            doorController.CheckSwitches();
+                        }
                     }
                 }
             }

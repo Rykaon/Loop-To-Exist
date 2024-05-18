@@ -25,6 +25,7 @@ public class PlayerManager : StateManager
     [SerializeField] public Transform cameraTarget;
 
     [SerializeField] private Animator Animator;
+    [SerializeField] private Animator stickyAnimator;
     [SerializeField] private PlayerInteractionTrigger Trigger;
     public Animator animator { get; private set; }
     public PlayerInteractionTrigger trigger { get; private set; }
@@ -107,16 +108,17 @@ public class PlayerManager : StateManager
         trigger = Trigger;
         heldObject = null;
         equippedObject = null;
-        moveMassMultiplier = 1; //Ne pas toucher.
-        linkMoveMultiplier = 1.75f; //Le multiplieur associ� � la fonction Move() si le joueur est link. V�rifier le cas o� le joueur tient un objet qui est link. Fonction Move(), ligne 173. J'ai fait une division mais peut-�tre que �a m�rite une valeur dissoci�e
-        linkJumpMultiplier = 5.25f; //Le multiplieur associ� � la fonction Jump() si le joueur est link
+        moveMassMultiplier = 1;
+        linkMoveMultiplier = 1.75f;
+        linkJumpMultiplier = 5.25f;
 
         if (gameManager != null)
         {
             playerControls = gameManager.playerControls;
         }
-        
+
         animator.SetBool("isActive", false);
+        stickyAnimator.SetBool("isActive", false);
     }
 
     public override void SetState(State state)
@@ -191,6 +193,7 @@ public class PlayerManager : StateManager
             mainPlayerRoutine = StartCoroutine(IsMainPlayer());
             idleTime = 0;
             animator.SetBool("isActive", true);
+            stickyAnimator.SetBool("isActive", true);
         }
         else
         {
@@ -203,6 +206,7 @@ public class PlayerManager : StateManager
             isActive = false;
             objectCollider.material = null;
             animator.SetBool("isActive", false);
+            stickyAnimator.SetBool("isActive", false);
         }
     }
 
@@ -219,12 +223,10 @@ public class PlayerManager : StateManager
 
     public void Move(Vector2 inputValue)
     {
-        //On r�cup�re la direction donn� par le joystick
         Vector3 inputDirection = new Vector3(inputValue.x, 0f, inputValue.y);
 
         if (!RaycastCollision() && inputValue != Vector2.zero)
         {
-            //On y multiplie la direction du forward et du right de la cam�ra pour avoir la direction globale du joueur.
             direction += inputDirection.x * Utilities.GetCameraRight(gameManager.transform);
             direction += inputDirection.z * Utilities.GetCameraForward(gameManager.transform);
 
@@ -246,12 +248,9 @@ public class PlayerManager : StateManager
             idleTime = 0;
         }
 
-        //On calcule le vecteur de d�placement d�sir�.
         Vector3 TargetSpeed = new Vector3(direction.x * maxMoveSpeed, 0f, direction.z * maxMoveSpeed);
-        //On prends la diff�rence en le vecteur d�sir� et le vecteur actuel.
         Vector3 SpeedDiff = TargetSpeed - new Vector3(rigidBody.velocity.x, 0f, rigidBody.velocity.z);
 
-        //On calcule check si il faut accelerer ou decelerer.
         float AccelRate;
         if (Mathf.Abs(TargetSpeed.x) > 0.01f || Mathf.Abs(TargetSpeed.z) > 0.01f)
 
@@ -262,15 +261,10 @@ public class PlayerManager : StateManager
         {
             AccelRate = deceleration;
         }
-        //On applique l'acceleration � la SpeedDiff, La puissance permet d'augmenter l'acceleration si la vitesse est plus �lev�e.
-        //Enfin on multiplie par le signe de SpeedDiff pour avoir la bonne direction.
         Vector3 movement = new Vector3(Mathf.Pow(Mathf.Abs(SpeedDiff.x) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.x), 0f, Mathf.Pow(Mathf.Abs(SpeedDiff.z) * AccelRate, velPower) * Mathf.Sign(SpeedDiff.z));
 
-        //On applique la force au GO
         rigidBody.AddForce(movement, ForceMode.Force);
 
-
-        //Limit la Speed du joueur � la speed Max (Pas necessaire)
         Vector3 horizontalVelocity = rigidBody.velocity;
         horizontalVelocity.y = 0f;
 
@@ -288,25 +282,27 @@ public class PlayerManager : StateManager
         {
             if (isActive && walkRoutine == null && RaycastFalling())
             {
-                Debug.Log("walkratio : " + walkRatio + " / magnitude : " + dir.magnitude);
                 AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.25f, 0.18f);
                 walkRoutine = StartCoroutine(Walk(walkRatio / dir.magnitude + (walkRatioMultiplier * dir.magnitude)));
             }
 
             animator.SetBool("isWalking", true);
             animator.SetBool("isRunning", false);
+            stickyAnimator.SetBool("isWalking", true);
+            stickyAnimator.SetBool("isRunning", false);
         }
         else if (dir.magnitude >= 4f)
         {
             if (isActive && walkRoutine == null && RaycastFalling())
             {
-                Debug.Log("walkratio : " + walkRatio + " / magnitude : " + dir.magnitude);
                 AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.25f, 0.18f);
                 walkRoutine = StartCoroutine(Walk(walkRatio / dir.magnitude + (walkRatioMultiplier * dir.magnitude)));
             }
 
             animator.SetBool("isRunning", true);
             animator.SetBool("isWalking", false);
+            stickyAnimator.SetBool("isRunning", true);
+            stickyAnimator.SetBool("isWalking", false);
         }
         else
         {
@@ -318,6 +314,8 @@ public class PlayerManager : StateManager
 
             animator.SetBool("isWalking", false);
             animator.SetBool("isRunning", false);
+            stickyAnimator.SetBool("isWalking", false);
+            stickyAnimator.SetBool("isRunning", false);
         }
 
         direction = Vector3.zero;
@@ -361,6 +359,7 @@ public class PlayerManager : StateManager
         isJumping = true;
         isJumpingDown = false;
         animator.SetBool("isJumpingUp", true);
+        stickyAnimator.SetBool("isJumpingUp", true);
         idleTime = 0;
         AudioManager.instance.PlayVariation("Sfx_Player_Jump", 0.15f, 0.1f);
     }
@@ -383,6 +382,7 @@ public class PlayerManager : StateManager
                 heldObject = trigger.current;
                 heldObject.SetHoldObject(this, hand, 0.75f);
                 animator.SetTrigger("Grab");
+                stickyAnimator.SetTrigger("Grab");
                 idleTime = 0;
                 AudioManager.instance.Play("Sfx_Player_Carry");
             }
@@ -391,6 +391,7 @@ public class PlayerManager : StateManager
         {
             heldObject.DropObject();
             animator.SetTrigger("Drop");
+            stickyAnimator.SetTrigger("Drop");
             heldObject = null;
             idleTime = 0;
             AudioManager.instance.Play("Sfx_Player_Drop");
@@ -404,6 +405,7 @@ public class PlayerManager : StateManager
             equippedObject = heldObject;
             equippedObject.SetEquipObject(this, head, 0.75f);
             animator.SetTrigger("PutChapeau");
+            stickyAnimator.SetTrigger("PutChapeau");
             heldObject = null;
             idleTime = 0;
 
@@ -421,6 +423,7 @@ public class PlayerManager : StateManager
             heldObject = equippedObject;
             equippedObject.SetHoldObject(this, hand, 0.75f);
             animator.SetTrigger("RemoveChapeau");
+            stickyAnimator.SetTrigger("RemoveChapeau");
             equippedObject = null;
             idleTime = 0;
             AudioManager.instance.Play("Sfx_Player_OffHead");
@@ -489,6 +492,7 @@ public class PlayerManager : StateManager
             }
 
             animator.SetTrigger("Throw");
+            stickyAnimator.SetTrigger("Throw");
             heldObject.ThrowObject(startThrowForceHorizontal, startThrowForceVertical, hitPoint);
             heldObject = null;
         }
@@ -631,7 +635,7 @@ public class PlayerManager : StateManager
 
         Vector3 dir = rigidBody.velocity;
         dir.y = 0f;
-        Debug.Log("walkratio : " + walkRatio + " / magnitude : " + dir.magnitude);
+
         if (isActive && dir.magnitude > 0.25f && RaycastFalling())
         {
             AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.25f, 0.18f);
@@ -680,6 +684,11 @@ public class PlayerManager : StateManager
 
         if (Physics.BoxCast(ray.origin, new Vector3(boxSize, boxSize, boxSize), rayDirection, out RaycastHit hit))
         {
+            if (hit.collider != null)
+            {
+                Debug.Log(hit.collider.name);
+            }
+
             if (hit.collider.tag == "Player" && hit.collider.transform != transform)
             {
                 if (hit.collider.TryGetComponent<PlayerManager>(out PlayerManager playerManager))
@@ -1032,6 +1041,8 @@ public class PlayerManager : StateManager
                         isJumpingDown = true;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", true);
+                        stickyAnimator.SetBool("isJumpingUp", false);
+                        stickyAnimator.SetBool("isJumpingDown", true);
 
                         if (equippedObject != null)
                         {
@@ -1044,6 +1055,8 @@ public class PlayerManager : StateManager
                         isJumpingDown = false;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", false);
+                        stickyAnimator.SetBool("isJumpingUp", false);
+                        stickyAnimator.SetBool("isJumpingDown", false);
                         AudioManager.instance.Play("Sfx_Player_Fall");
                     }
                 }
@@ -1054,6 +1067,8 @@ public class PlayerManager : StateManager
                         isJumpingDown = true;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", true);
+                        stickyAnimator.SetBool("isJumpingUp", false);
+                        stickyAnimator.SetBool("isJumpingDown", true);
 
                         if (equippedObject != null)
                         {
@@ -1065,6 +1080,8 @@ public class PlayerManager : StateManager
                         isJumpingDown = false;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", false);
+                        stickyAnimator.SetBool("isJumpingUp", false);
+                        stickyAnimator.SetBool("isJumpingDown", false);
                         AudioManager.instance.Play("Sfx_Player_Fall");
                     }
                 }
@@ -1157,6 +1174,7 @@ public class PlayerManager : StateManager
                 if (idleTime > 10f)
                 {
                     animator.SetBool("isShaking", true);
+                    stickyAnimator.SetBool("isShaking", true);
                     idleTime = -3f;
 
                     float random = UnityEngine.Random.Range(0f, 100f);
@@ -1173,6 +1191,7 @@ public class PlayerManager : StateManager
                 else if (idleTime < 10f)
                 {
                     animator.SetBool("isShaking", false);
+                    stickyAnimator.SetBool("isShaking", false);
                 }
             }
         }

@@ -2,8 +2,10 @@ using DG.Tweening;
 using Obi;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
 public class StateManager : MonoBehaviour
@@ -22,9 +24,16 @@ public class StateManager : MonoBehaviour
     [SerializeField] private Renderer Renderer;
     [SerializeField] private Outline Outline;
     public StickedWallElements stickedWall;
+
+    [SerializeField] protected Renderer stickyRenderer;
     [SerializeField] private Material dissolveMaterial;
     [SerializeField] private Material stickyMaterial;
-    private Material[] initMats = null;
+    private Material initMat = null;
+    private Material stickyMat = null;
+    private Material dissolveMat = null;
+    private Coroutine stickyChange = null;
+    private Coroutine stickyEffect = null;
+    private AnimationCurve inOutCurve = null;
     private PlayerManager previousHoldingPlayer = null;
 
     [Header("Throw Properties")]
@@ -78,6 +87,7 @@ public class StateManager : MonoBehaviour
         isHeldObject = false;
         isHeld = false;
         initParent = transform.parent;
+        inOutCurve = Utilities.ConvertEaseToCurve(Ease.InOutSine);
 
         lastGroundedPosition = rigidBody.position;
         lastGroundedRotation = rigidBody.rotation;
@@ -117,7 +127,13 @@ public class StateManager : MonoBehaviour
                 isSticked = false;
                 rigidBody.useGravity = true;
 
-                StartCoroutine(RemoveSticky());
+                if (stickyChange != null)
+                {
+                    StopCoroutine(stickyChange);
+                    stickyChange = null;
+                }
+
+                stickyChange = StartCoroutine(SetSticky(1f));
             }
             else if (state == State.Link)
             {
@@ -148,57 +164,34 @@ public class StateManager : MonoBehaviour
 
             if (state == State.Sticky)
             {
-                StartCoroutine(SetSticky());
+                if (stickyChange != null)
+                {
+                    StopCoroutine(stickyChange);
+                    stickyChange = null;
+                }
+
+                stickyChange = StartCoroutine(SetSticky(0f));
             }
         }
     }
 
-    private IEnumerator SetSticky()
+    private IEnumerator SetSticky(float value)
     {
         float dissolveTime = 0.75f;
-        Material initMat = renderer.material;
-        Material dissolveMat = Instantiate(dissolveMaterial);
-        dissolveMat.SetTexture("_Albedo", initMat.mainTexture);
-        dissolveMat.SetFloat("_AlphaTreshold", 0f);
-        Material stickyMat = Instantiate(stickyMaterial);
-        dissolveMat.SetTexture("MainTexture", initMat.mainTexture);
 
-        initMats = renderer.materials;
-        Material[] stickyMats = new Material[2];
-        stickyMats[0] = stickyMat;
-        stickyMats[1] = dissolveMat;
-
-        renderer.materials = stickyMats;
+        float dissolve = stickyRenderer.material.GetFloat("_Dissolve");
+        float dissolveToSet = value;
 
         float elapsedTime = 0f;
-        float treshold = 0f;
         while (elapsedTime < dissolveTime)
         {
             float time = elapsedTime / dissolveTime;
-            treshold = Mathf.Lerp(treshold, 1f, time);
-            dissolveMat.SetFloat("_AlphaTreshold", treshold);
-            elapsedTime += Time.fixedDeltaTime;
+            dissolve = Mathf.Lerp(dissolve, dissolveToSet, time);
+
+            stickyRenderer.material.SetFloat("_Dissolve", dissolve);
+            elapsedTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();
         }
-    }
-
-    private IEnumerator RemoveSticky()
-    {
-        Debug.Log("gfcxhgxc");
-        float dissolveTime = 0.75f;
-
-        float elapsedTime = 0f;
-        float treshold = 1f;
-        while (elapsedTime < dissolveTime)
-        {
-            float time = elapsedTime / dissolveTime;
-            treshold = Mathf.Lerp(treshold, 0f, time);
-            renderer.materials[1].SetFloat("_AlphaTreshold", treshold);
-            elapsedTime += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
-
-        renderer.materials = initMats;
     }
 
     public virtual void ResetState()
@@ -369,25 +362,6 @@ public class StateManager : MonoBehaviour
         transform.SetParent(parent, true);
         rigidBody.useGravity = false;
         rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
-
-        /*if (joint == null)
-        {
-            joint = transform.AddComponent<FixedJoint>();
-        }
-
-        joint.connectedBody = holdingPlayer.transform.GetComponent<Rigidbody>();
-        joint.enableCollision = true;
-
-        if (states.Contains(State.Link))
-        {
-            joint.breakForce = float.PositiveInfinity;//jointBreakTreshold * 100;
-            joint.breakTorque = float.PositiveInfinity;//jointBreakTreshold * 100;
-        }
-        else
-        {
-            joint.breakForce = jointBreakTreshold;
-            joint.breakTorque = jointBreakTreshold;
-        }*/
     }
 
     public virtual void DropObject()
@@ -547,24 +521,6 @@ public class StateManager : MonoBehaviour
         transform.SetParent(parent, true);
         rigidBody.useGravity = false;
         rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
-
-        /*if (joint == null)
-        {
-            joint = transform.AddComponent<FixedJoint>();
-        }
-        joint.connectedBody = equippingPlayer.transform.GetComponent<Rigidbody>();
-        joint.enableCollision = true;
-
-        if (states.Contains(State.Link))
-        {
-            joint.breakForce = float.PositiveInfinity;//jointBreakTreshold * 100;
-            joint.breakTorque = float.PositiveInfinity;//jointBreakTreshold * 100;
-        }
-        else
-        {
-            joint.breakForce = jointBreakTreshold;
-            joint.breakTorque = jointBreakTreshold;
-        }*/
     }
 
     protected GameObject GetFirstStickedObject(GameObject currentObject)

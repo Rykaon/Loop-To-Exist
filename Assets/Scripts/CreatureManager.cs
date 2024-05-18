@@ -10,6 +10,7 @@ public class CreatureManager : StateManager
     [SerializeField] private LocalAudioManager AudioManager;
     [SerializeField] private Transform feet;
     [SerializeField] private Animator Animator;
+    [SerializeField] private Animator stickyAnimator;
     [SerializeField] private NavMeshAgent Agent;
 
     [Header("Properties")]
@@ -84,6 +85,8 @@ public class CreatureManager : StateManager
 
         animator.SetBool("isWalking", false);
         animator.SetBool("isGrab", true);
+        stickyAnimator.SetBool("isWalking", false);
+        stickyAnimator.SetBool("isGrab", true);
         audioManager.Play("Sfx_Creature_OnGrab", radius);
         base.SetHoldObject(player, endPosition, time);
     }
@@ -154,6 +157,8 @@ public class CreatureManager : StateManager
 
         animator.SetBool("isWalking", false);
         animator.SetBool("isGrab", true);
+        stickyAnimator.SetBool("isWalking", false);
+        stickyAnimator.SetBool("isGrab", true);
 
         base.OnJointBreak(breakForce);
         isHeldAnim = true;
@@ -202,6 +207,7 @@ public class CreatureManager : StateManager
         }
 
         animator.SetBool("isWalking", true);
+        stickyAnimator.SetBool("isWalking", true);
         roamRoutine = null;
 
         if (walkRoutine == null)
@@ -215,7 +221,8 @@ public class CreatureManager : StateManager
         float rand = Random.Range(2f, 5f);
         agent.ResetPath();
         animator.SetBool("isWalking", false);
-        
+        stickyAnimator.SetBool("isWalking", false);
+
         if (walkRoutine != null)
         {
             StopCoroutine(walkRoutine);
@@ -232,6 +239,7 @@ public class CreatureManager : StateManager
         }
 
         animator.SetBool("isWalking", true);
+        stickyAnimator.SetBool("isWalking", true);
         roamRoutine = null;
 
         if (walkRoutine == null)
@@ -274,6 +282,7 @@ public class CreatureManager : StateManager
                     }
 
                     animator.SetBool("isGrab", false);
+                    stickyAnimator.SetBool("isGrab", false);
                     roamRoutine = StartCoroutine(WaitAndRoam());
                     audioManager.PlayFixedVariation("Sfx_Creature_Fall", 1.25f, 0f, radius);
                 }

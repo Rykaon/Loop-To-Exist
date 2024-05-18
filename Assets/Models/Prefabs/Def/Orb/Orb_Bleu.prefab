@@ -60,6 +60,7 @@ MonoBehaviour:
   stickedWall: {fileID: 0}
   dissolveMaterial: {fileID: 2100000, guid: 9cefab28cbd922346a664e5bc01fdb2e, type: 2}
   stickyMaterial: {fileID: 2100000, guid: c067eaf8b4333384da4ed73b4860df4c, type: 2}
+  stickyMaterial2: {fileID: 2100000, guid: 9b81f1b07e03fec4a996141f9ef9bb45, type: 2}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
@@ -100,7 +101,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a5d24d5cc6c5ebb4faf0358c079461e9, type: 2}
+  - {fileID: 2100000, guid: e01c44a040fa0e640b3c3690b4df19e9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
