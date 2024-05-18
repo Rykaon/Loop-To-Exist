@@ -49,7 +49,7 @@ MonoBehaviour:
     m_Value: 0.64
   scatter:
     m_OverrideState: 1
-    m_Value: 0.77
+    m_Value: 0.987
   clamp:
     m_OverrideState: 1
     m_Value: 65472
@@ -57,7 +57,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: {r: 0.030215396, g: 0.88987774, b: 0.9150943, a: 1}
   highQualityFiltering:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0
   downscale:
     m_OverrideState: 0
@@ -105,6 +105,8 @@ MonoBehaviour:
   - {fileID: -754261539083059701}
   - {fileID: 418716675096741316}
   - {fileID: -5445654766867297309}
+  - {fileID: 9147266117735844415}
+  - {fileID: 8532775278289785562}
 --- !u!114 &418716675096741316
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -133,3 +135,44 @@ MonoBehaviour:
   rounded:
     m_OverrideState: 0
     m_Value: 0
+--- !u!114 &8532775278289785562
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221518ef91623a7438a71fef23660601, type: 3}
+  m_Name: WhiteBalance
+  m_EditorClassIdentifier: 
+  active: 1
+  temperature:
+    m_OverrideState: 1
+    m_Value: 16
+  tint:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &9147266117735844415
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5485954d14dfb9a4c8ead8edb0ded5b1, type: 3}
+  m_Name: LiftGammaGain
+  m_EditorClassIdentifier: 
+  active: 1
+  lift:
+    m_OverrideState: 1
+    m_Value: {x: 0.9917298, y: 1, z: 0.9937974, w: -5.246888e-10}
+  gamma:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  gain:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0.47887325}

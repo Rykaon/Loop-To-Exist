@@ -177,7 +177,7 @@ public class StateManager : MonoBehaviour
 
     private IEnumerator SetSticky(float value)
     {
-        float dissolveTime = 0.75f;
+        float dissolveTime = 1.5f;
 
         float dissolve = stickyRenderer.material.GetFloat("_Dissolve");
         float dissolveToSet = value;
