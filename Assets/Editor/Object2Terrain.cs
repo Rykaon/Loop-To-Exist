@@ -121,6 +121,12 @@ public class Object2Terrain : EditorWindow {
  
 			cleanUp();    
 		}
+
+		string name = Selection.activeGameObject.name;
+		string assetPath = "Assets/TerrainData/" + name +".asset"; // Modify the path as needed
+		AssetDatabase.CreateAsset(terrain, assetPath);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
 	}
  
     void ShowProgressBar(float progress, float maxProgress){
