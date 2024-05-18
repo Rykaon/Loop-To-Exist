@@ -2255,7 +2255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1759120996}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -7967,7 +7967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 309563715}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -9473,7 +9473,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 762890077}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -12251,7 +12251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 666514866}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -13729,7 +13729,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 803977960}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -24220,7 +24220,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 562801006}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.30098584, y: -0.3451411, z: 0.09513546, w: 0.8838747}
+  m_LocalRotation: {x: -0.30098587, y: -0.34514108, z: 0.09513545, w: 0.88387465}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -25483,7 +25483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 879981624}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -29879,7 +29879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1676317794}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -30119,7 +30119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1626210856}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -30665,7 +30665,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1610151370}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -34313,7 +34313,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754599312}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539063, y: 0.102074854, z: -0.0329463, w: 0.94616693}
+  m_LocalRotation: {x: 0.30539063, y: 0.102074854, z: -0.032946303, w: 0.94616693}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -38480,7 +38480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 107854438}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -40011,7 +40011,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1134470418}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -41065,7 +41065,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1339297190}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -44364,7 +44364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 407308540}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -59012,7 +59012,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1765973405}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -70475,7 +70475,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1865798329}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -78202,6 +78202,11 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 7.09
       objectReference: {fileID: 0}
+    - target: {fileID: 6867350039043934997, guid: 13057a0bcdf783347ac3dfbddecd1f7c,
+        type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 8058716436093219561, guid: 13057a0bcdf783347ac3dfbddecd1f7c,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -79499,7 +79504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 208203917}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -84847,7 +84852,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1597279377}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -90024,7 +90029,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 654780498}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -97165,7 +97170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 44491671}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -97531,7 +97536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 941653995}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -98657,7 +98662,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 1972027810}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
@@ -100876,7 +100881,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distSource: 0
-  baseMesh: {fileID: 0}
+  baseMesh: {fileID: 362889956}
   terrain: {fileID: 0}
   terrainLayers: []
   chunkCount: {x: 8, y: 8}
