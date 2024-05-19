@@ -173,11 +173,6 @@ public class PlayerManager : StateManager
         base.OnCollisionEnter(collision);
     }
 
-    protected override void OnJointBreak(float breakForce)
-    {
-        base.OnJointBreak(breakForce);
-    }
-
     ///////////////////////////////////////////////////
     ///          FONCTIONS DE GESTIONS              ///
     ///////////////////////////////////////////////////
@@ -205,7 +200,6 @@ public class PlayerManager : StateManager
 
             isMainPlayer = false;
             isActive = false;
-            objectCollider.material = null;
             animator.SetBool("isActive", false);
             stickyAnimator.SetBool("isActive", false);
         }
@@ -215,7 +209,6 @@ public class PlayerManager : StateManager
     {
         yield return new WaitForSecondsRealtime(2f);
         isMainPlayer = true;
-        objectCollider.material = physicMaterial;
     }
 
     ///////////////////////////////////////////////////
@@ -281,6 +274,11 @@ public class PlayerManager : StateManager
 
         if (dir.magnitude >= 1f && dir.magnitude < 4f)
         {
+            if (!isJumping && !isJumpingDown && objectCollider.material == null && isActive)
+            {
+                objectCollider.material = physicMaterial;
+            }
+
             if (isActive && walkRoutine == null && RaycastFalling())
             {
                 AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.25f, 0.18f);
@@ -294,6 +292,11 @@ public class PlayerManager : StateManager
         }
         else if (dir.magnitude >= 4f)
         {
+            if (!isJumping && !isJumpingDown && objectCollider.material == null && isActive)
+            {
+                objectCollider.material = physicMaterial;
+            }
+
             if (isActive && walkRoutine == null && RaycastFalling())
             {
                 AudioManager.instance.PlayVariation("Sfx_Player_Steps", 0.25f, 0.18f);
@@ -311,6 +314,11 @@ public class PlayerManager : StateManager
             {
                 StopCoroutine(walkRoutine);
                 walkRoutine = null;
+            }
+
+            if (!isJumping && !isJumpingDown && objectCollider.material != physicMaterial)
+            {
+                objectCollider.material = null;
             }
 
             animator.SetBool("isWalking", false);
@@ -356,6 +364,7 @@ public class PlayerManager : StateManager
             equippedObject.objectCollider.isTrigger = true;
         }
 
+        objectCollider.material = physicMaterial;
         rigidBody.AddForce(jumpForce, ForceMode.Impulse);
         isJumping = true;
         isJumpingDown = false;
@@ -528,15 +537,13 @@ public class PlayerManager : StateManager
 
     public void Shot(InputAction action)
     {
-        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f + Screen.height / 30f, 0f);
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
         Vector3 hitPoint = Vector3.zero;
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
 
-        float boxSize = 1f;
-
         Vector3 rayDirection = ray.direction;
 
-        if (Physics.BoxCast(ray.origin, new Vector3(boxSize, boxSize, boxSize), rayDirection, out RaycastHit hit))
+        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit))
         {
             if (action == playerControls.Player.B)
             {
@@ -675,15 +682,13 @@ public class PlayerManager : StateManager
 
     private void OutlineRaycast()
     {
-        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f + Screen.height / 30f, 0f);
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
         Vector3 hitPoint = Vector3.zero;
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
 
-        float boxSize = 1f;
-
         Vector3 rayDirection = ray.direction;
 
-        if (Physics.BoxCast(ray.origin, new Vector3(boxSize, boxSize, boxSize), rayDirection, out RaycastHit hit))
+        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit))
         {
             if (hit.collider != null)
             {
@@ -838,7 +843,7 @@ public class PlayerManager : StateManager
         Vector3 startVelocity;
         float mass = 1;
 
-        List<GameObject> stickedList = GetStickedObjects(GetFirstStickedObject(heldObject.gameObject));
+        /*List<GameObject> stickedList = GetStickedObjects(GetFirstStickedObject(heldObject.gameObject));
 
         foreach (GameObject stickedObject in stickedList)
         {
@@ -846,7 +851,7 @@ public class PlayerManager : StateManager
             {
                 mass += 0.1f;
             }
-        }
+        }*/
 
         Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
         Vector3 hitPoint = Vector3.zero;
@@ -926,46 +931,20 @@ public class PlayerManager : StateManager
     {
         if (heldObject != null)
         {
-            heldObject.rigidBody.constraints = RigidbodyConstraints.None;
-            Vector3 pos = Vector3.zero;
-            if (heldObject.pivot != null)
+            if (!heldObject.rigidBody.isKinematic)
             {
-                Vector3 diff = heldObject.transform.position - heldObject.pivot.position;
-                pos = hand.transform.position + diff;
+                heldObject.rigidBody.constraints = RigidbodyConstraints.None;
+                heldObject.rigidBody.isKinematic = true;
             }
-            else
-            {
-                pos = hand.transform.position;
-            }
-
-            heldObject.transform.position = pos;
-            heldObject.rigidBody.velocity = Vector3.zero;
-            heldObject.rigidBody.angularVelocity = Vector3.zero;
-            heldObject.rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
-        }
-        else
-        {
-            hand.rotation = Quaternion.identity;
         }
 
         if (equippedObject != null)
         {
-            equippedObject.rigidBody.constraints = RigidbodyConstraints.None;
-            Vector3 pos = Vector3.zero;
-            if (equippedObject.pivot != null)
+            if (!equippedObject.rigidBody.isKinematic)
             {
-                Vector3 diff = equippedObject.transform.position - equippedObject.pivot.position;
-                pos = head.transform.position + diff;
+                equippedObject.rigidBody.constraints = RigidbodyConstraints.None;
+                equippedObject.rigidBody.isKinematic = true;
             }
-            else
-            {
-                pos = head.transform.position;
-            }
-
-            equippedObject.transform.position = pos;
-            equippedObject.rigidBody.velocity = Vector3.zero;
-            equippedObject.rigidBody.angularVelocity = Vector3.zero;
-            equippedObject.rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
         }
     }
 
@@ -996,14 +975,13 @@ public class PlayerManager : StateManager
         if (playerControls != null)
         {
             ResetInputState();
+            HandleJoints();
         }
 
         if (isActive)
         {
             if (isMainPlayer)
             {
-                HandleJoints();
-
                 if (playerControls.Player.enabled && !playerControls.UI.enabled)
                 {
                     gameManager.UIManager.SetUIInput(this);
@@ -1066,6 +1044,7 @@ public class PlayerManager : StateManager
                     if ((!RaycastFalling() || !RaycastGrounded()) && rigidBody.velocity.y < 0f && !isJumpingDown)
                     {
                         isJumpingDown = true;
+                        objectCollider.material = physicMaterial;
                         animator.SetBool("isJumpingUp", false);
                         animator.SetBool("isJumpingDown", true);
                         stickyAnimator.SetBool("isJumpingUp", false);
@@ -1195,10 +1174,6 @@ public class PlayerManager : StateManager
                     stickyAnimator.SetBool("isShaking", false);
                 }
             }
-        }
-        else
-        {
-            
         }
     }
 }

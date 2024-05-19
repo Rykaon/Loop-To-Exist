@@ -4456,7 +4456,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 107517431}
   ObjectCollider: {fileID: 107517432}
   Renderer: {fileID: 107517433}
@@ -5184,7 +5185,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 122397879}
   ObjectCollider: {fileID: 122397885}
   Renderer: {fileID: 122397886}
@@ -5989,7 +5991,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 151598901}
   ObjectCollider: {fileID: 151598902}
   Renderer: {fileID: 1832922869}
@@ -11365,7 +11368,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 296944978}
   ObjectCollider: {fileID: 296944979}
   Renderer: {fileID: 296944980}
@@ -13082,7 +13086,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 337291235}
   ObjectCollider: {fileID: 337291234}
   Renderer: {fileID: 337291233}
@@ -14019,7 +14024,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 348809183}
   ObjectCollider: {fileID: 348809184}
   Renderer: {fileID: 348809185}
@@ -15854,7 +15860,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 394690240}
   ObjectCollider: {fileID: 394690242}
   Renderer: {fileID: 394690243}
@@ -17743,7 +17750,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 415759101}
   ObjectCollider: {fileID: 415759102}
   Renderer: {fileID: 415759103}
@@ -23772,7 +23780,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 558642075}
   ObjectCollider: {fileID: 558642076}
   Renderer: {fileID: 558642077}
@@ -24052,7 +24061,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 562801006}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.30098587, y: -0.34514108, z: 0.09513545, w: 0.88387465}
+  m_LocalRotation: {x: -0.30098584, y: -0.3451411, z: 0.09513546, w: 0.8838747}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -24347,7 +24356,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 575696891}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539963, y: 0.1018162, z: -0.032862816, w: 0.9461948}
+  m_LocalRotation: {x: 0.30538842, y: 0.1021383, z: -0.032966785, w: 0.9461601}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -24791,7 +24800,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 591979456}
   ObjectCollider: {fileID: 591979455}
   Renderer: {fileID: 591979454}
@@ -25795,7 +25805,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 615409334}
   ObjectCollider: {fileID: 615409333}
   Renderer: {fileID: 615409332}
@@ -27821,7 +27832,8 @@ MonoBehaviour:
   type: 1
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 621526484}
   ObjectCollider: {fileID: 621526485}
   Renderer: {fileID: 621526486}
@@ -31176,7 +31188,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 694215656}
   ObjectCollider: {fileID: 694215657}
   Renderer: {fileID: 694215658}
@@ -31842,7 +31855,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 702911950}
   ObjectCollider: {fileID: 702911951}
   Renderer: {fileID: 702911952}
@@ -34145,7 +34159,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754599312}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539963, y: 0.1018162, z: -0.032862816, w: 0.9461948}
+  m_LocalRotation: {x: 0.30538842, y: 0.1021383, z: -0.032966785, w: 0.9461601}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -35503,7 +35517,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 776845755}
   ObjectCollider: {fileID: 776845756}
   Renderer: {fileID: 776845757}
@@ -38831,7 +38846,8 @@ MonoBehaviour:
   type: 1
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 823824331}
   ObjectCollider: {fileID: 823824332}
   Renderer: {fileID: 823824333}
@@ -42036,7 +42052,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 877161433}
   ObjectCollider: {fileID: 877161432}
   Renderer: {fileID: 877161431}
@@ -43380,7 +43397,8 @@ MonoBehaviour:
   type: 1
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 903306329}
   ObjectCollider: {fileID: 903306330}
   Renderer: {fileID: 903306331}
@@ -47123,7 +47141,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 991071607}
   ObjectCollider: {fileID: 991071608}
   Renderer: {fileID: 991071609}
@@ -50618,7 +50637,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1058487422}
   ObjectCollider: {fileID: 1058487421}
   Renderer: {fileID: 1058487420}
@@ -56987,7 +57007,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1184185065}
   ObjectCollider: {fileID: 1184185066}
   Renderer: {fileID: 1184185067}
@@ -57347,7 +57368,7 @@ Transform:
   m_GameObject: {fileID: 1190873609}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 69.3, y: 19.55, z: 287.2}
+  m_LocalPosition: {x: -11.74, y: 8.28, z: 6.66}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -57466,7 +57487,8 @@ MonoBehaviour:
   type: 1
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1190873611}
   ObjectCollider: {fileID: 1190873612}
   Renderer: {fileID: 1190873613}
@@ -58606,7 +58628,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1236263523}
   ObjectCollider: {fileID: 1236263524}
   Renderer: {fileID: 1236263525}
@@ -62343,7 +62366,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1289835974}
   ObjectCollider: {fileID: 1289835975}
   Renderer: {fileID: 1289835976}
@@ -62532,7 +62556,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1291278220}
   ObjectCollider: {fileID: 1291278221}
   Renderer: {fileID: 1291278222}
@@ -64529,7 +64554,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1340828205}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539963, y: 0.1018162, z: -0.032862816, w: 0.9461948}
+  m_LocalRotation: {x: 0.30538842, y: 0.1021383, z: -0.032966785, w: 0.9461601}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -65236,7 +65261,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1350112226}
   ObjectCollider: {fileID: 1350112225}
   Renderer: {fileID: 1350112224}
@@ -66145,7 +66171,8 @@ MonoBehaviour:
   type: 1
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1361257496}
   ObjectCollider: {fileID: 1361257497}
   Renderer: {fileID: 1361257498}
@@ -67167,7 +67194,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1387312517}
   ObjectCollider: {fileID: 1387312518}
   Renderer: {fileID: 1387312519}
@@ -73317,7 +73345,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1548585264}
   ObjectCollider: {fileID: 1548585263}
   Renderer: {fileID: 1548585262}
@@ -75772,7 +75801,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1593330374
 Transform:
   m_ObjectHideFlags: 0
@@ -76851,7 +76880,8 @@ MonoBehaviour:
   type: 1
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1608930830}
   ObjectCollider: {fileID: 1608930831}
   Renderer: {fileID: 1608930832}
@@ -78452,7 +78482,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1655542880}
   ObjectCollider: {fileID: 1655542879}
   Renderer: {fileID: 1655542878}
@@ -80495,7 +80526,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1682980750}
   ObjectCollider: {fileID: 1682980751}
   Renderer: {fileID: 1682980752}
@@ -80768,7 +80800,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1692371080}
   ObjectCollider: {fileID: 1692371079}
   Renderer: {fileID: 1692371078}
@@ -81193,7 +81226,8 @@ MonoBehaviour:
   type: 1
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1699919687}
   ObjectCollider: {fileID: 1699919688}
   Renderer: {fileID: 1699919689}
@@ -82906,7 +82940,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1737378797}
   ObjectCollider: {fileID: 1737378798}
   Renderer: {fileID: 1737378799}
@@ -84299,7 +84334,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1749327362}
   ObjectCollider: {fileID: 1749327363}
   Renderer: {fileID: 1749327364}
@@ -88601,7 +88637,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1832922867}
   ObjectCollider: {fileID: 1832922868}
   Renderer: {fileID: 1832922869}
@@ -89066,7 +89103,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1837419417}
   ObjectCollider: {fileID: 1837419416}
   Renderer: {fileID: 1837419415}
@@ -92096,7 +92134,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1905582592}
   ObjectCollider: {fileID: 1905582593}
   Renderer: {fileID: 1905582594}
@@ -92969,7 +93008,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 1946454121}
   ObjectCollider: {fileID: 1946454120}
   Renderer: {fileID: 1946454119}
@@ -94739,6 +94779,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cylinder
       objectReference: {fileID: 0}
+    - target: {fileID: 7655912443765575458, guid: d4fe25968efa4ac429554f78d138de41,
+        type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8922613090968095748, guid: d4fe25968efa4ac429554f78d138de41,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -95101,7 +95146,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 2003478792}
   ObjectCollider: {fileID: 2003478793}
   Renderer: {fileID: 2003478794}
@@ -95887,7 +95933,8 @@ MonoBehaviour:
   type: 2
   states: 01000000
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 2014996384}
   ObjectCollider: {fileID: 2014996383}
   Renderer: {fileID: 2014996382}
@@ -96324,7 +96371,8 @@ MonoBehaviour:
   type: 0
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 2018601953}
   ObjectCollider: {fileID: 2018601954}
   Renderer: {fileID: 2018601955}
@@ -99923,7 +99971,8 @@ MonoBehaviour:
   type: 1
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 2112288369}
   ObjectCollider: {fileID: 2112288370}
   Renderer: {fileID: 2112288371}

@@ -94,20 +94,22 @@ public class DoorSwitch : MonoBehaviour
 
                     if (objects.Count >= nbrOfEntity)
                     {
-                        Debug.Log(transform.parent.name + " is Active");
-                        state = State.Active;
-
-                        if (effectRoutine != null)
+                        if (state == State.Inactive)
                         {
-                            StopCoroutine(effectRoutine);
-                            effectRoutine = null;
-                        }
+                            state = State.Active;
 
-                        effectRoutine = StartCoroutine(SetActive(true));
+                            if (effectRoutine != null)
+                            {
+                                StopCoroutine(effectRoutine);
+                                effectRoutine = null;
+                            }
 
-                        if (doorController.state == DoorController.State.Close)
-                        {
-                            doorController.CheckSwitches();
+                            effectRoutine = StartCoroutine(SetActive(true));
+
+                            if (doorController.state == DoorController.State.Close)
+                            {
+                                doorController.CheckSwitches();
+                            }
                         }
                     }
                 }
@@ -115,7 +117,7 @@ public class DoorSwitch : MonoBehaviour
         }
     }
 
-    protected virtual void OnTriggerExit(Collider other)
+    protected virtual void OnTriggerStay(Collider other)
     {
         if (!isOrbe)
         {
@@ -162,15 +164,92 @@ public class DoorSwitch : MonoBehaviour
 
                     for (int i = 0; i < list.Count; i++)
                     {
-                        if (tagsToCheck.Contains(list[i].tag) && objects.Contains(list[i]))
+                        if (tagsToCheck.Contains(list[i].tag) && !objects.Contains(list[i]))
                         {
-                            objects.Remove(list[i]);
+                            objects.Add(list[i]);
                         }
                     }
 
-                    if (objects.Count < nbrOfEntity)
+                    if (objects.Count >= nbrOfEntity)
                     {
-                        Debug.Log(transform.parent.name + " is Inactive");
+                        if (state == State.Inactive)
+                        {
+                            state = State.Active;
+
+                            if (effectRoutine != null)
+                            {
+                                StopCoroutine(effectRoutine);
+                                effectRoutine = null;
+                            }
+
+                            effectRoutine = StartCoroutine(SetActive(true));
+
+                            if (doorController.state == DoorController.State.Close)
+                            {
+                                doorController.CheckSwitches();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected virtual void OnTriggerExit(Collider other)
+    {
+        if (!isOrbe)
+        {
+            if (other.TryGetComponent<StateManager>(out StateManager manager))
+            {
+                List<GameObject> list = new List<GameObject>();
+                list.Add(other.gameObject);
+                if (manager.GetType() == typeof(PlayerManager))
+                {
+                    PlayerManager player = (PlayerManager)manager;
+
+                    foreach (GameObject go in player.stickedObjects)
+                    {
+                        list.Add(go);
+                    }
+
+                    if (player.heldObject != null)
+                    {
+                        list.Add(player.heldObject.gameObject);
+                        foreach (GameObject go in player.heldObject.stickedObjects)
+                        {
+                            list.Add(go);
+                        }
+                    }
+
+                    if (player.equippedObject != null)
+                    {
+                        list.Add(player.equippedObject.gameObject);
+                        foreach (GameObject go in player.equippedObject.stickedObjects)
+                        {
+                            list.Add(go);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (GameObject go in manager.stickedObjects)
+                    {
+                        list.Add(go);
+                    }
+                }
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (tagsToCheck.Contains(list[i].tag) && objects.Contains(list[i]))
+                    {
+                        objects.Remove(list[i]);
+                    }
+                }
+
+                if (objects.Count < nbrOfEntity)
+                {
+                    if (state == State.Active)
+                    {
                         state = State.Inactive;
 
                         if (effectRoutine != null)

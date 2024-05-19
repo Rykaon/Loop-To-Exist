@@ -1161,7 +1161,7 @@ MonoBehaviour:
   linkedObject: {fileID: 0}
   linkAttachment: {fileID: 0}
   linkJoint: {fileID: 0}
-  isSticked: 1
+  isSticked: 0
   isLinked: 0
   lastGroundedPosition: {x: 0, y: 0, z: 0}
   lastGroundedRotation: {x: 0, y: 0, z: 0, w: 0}
@@ -1170,6 +1170,7 @@ MonoBehaviour:
   Animator: {fileID: 6088857713958615012}
   stickyAnimator: {fileID: 6217019145348069268}
   Agent: {fileID: 3828777088389195397}
+  animationRoot: {fileID: 279604561263562310}
   roamingRadius: 10
   collisionDetectionDistance: 0.25
   GroundLayer:

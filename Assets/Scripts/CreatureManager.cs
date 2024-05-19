@@ -137,34 +137,6 @@ public class CreatureManager : StateManager
         base.OnCollisionEnter(collision);
     }
 
-    protected override void OnJointBreak(float breakForce)
-    {
-        isRoaming = false;
-
-        if (roamRoutine != null)
-        {
-            StopCoroutine(roamRoutine);
-        }
-
-        if (agent != null)
-        {
-            if (agent.enabled)
-            {
-                agent.ResetPath();
-            }
-
-            Destroy(agent);
-        }
-
-        animator.SetBool("isWalking", false);
-        animator.SetBool("isGrab", true);
-        stickyAnimator.SetBool("isWalking", false);
-        stickyAnimator.SetBool("isGrab", true);
-
-        base.OnJointBreak(breakForce);
-        isHeldAnim = true;
-    }
-
     ///////////////////////////////////////////////////
     ///           FONCTIONS UTILITAIRES             ///
     ///////////////////////////////////////////////////
@@ -262,7 +234,7 @@ public class CreatureManager : StateManager
     {
         if (isActive)
         {
-            if (!isHeld && !isEquipped && isHeldAnim)
+            if (!isHeld && !isEquipped && !isSticked && isHeldAnim)
             {
                 if (RaycastGrounded())
                 {
