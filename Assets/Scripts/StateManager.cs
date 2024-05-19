@@ -132,6 +132,16 @@ public class StateManager : MonoBehaviour
                 objectToStick = null;
                 isSticked = false;
                 rigidBody.useGravity = true;
+                rigidBody.isKinematic = true;
+
+                if (transform.tag == "Player")
+                {
+                    rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
+                }
+                else
+                {
+                    rigidBody.constraints = RigidbodyConstraints.None;
+                }
 
                 if (stickyChange != null)
                 {
@@ -360,7 +370,15 @@ public class StateManager : MonoBehaviour
                 joint = null;
             }
 
-            rigidBody.constraints = RigidbodyConstraints.None;
+            if (transform.tag == "Player")
+            {
+                rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
+            }
+            else
+            {
+                rigidBody.constraints = RigidbodyConstraints.None;
+            }
+
             rigidBody.mass = 1f;
             holdingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
 
@@ -545,7 +563,6 @@ public class StateManager : MonoBehaviour
 
             rigidBody.velocity = Vector3.zero;
             rigidBody.angularVelocity = Vector3.zero;
-            rigidBody.mass = 0f;
             rigidBody.useGravity = false;
             rigidBody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
 
