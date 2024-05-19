@@ -136,7 +136,7 @@ public class UIManager : MonoBehaviour
 
         if (mainMenuIndex == 0)
         {
-            SceneManager.LoadScene("MainScene");
+            SceneManager.LoadScene(1);
         }
         else if (mainMenuIndex == 1)
         {
