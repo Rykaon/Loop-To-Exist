@@ -30480,7 +30480,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 786537218}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.30098584, y: -0.3451411, z: 0.09513546, w: 0.8838747}
+  m_LocalRotation: {x: -0.30098587, y: -0.34514108, z: 0.09513545, w: 0.88387465}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -58725,7 +58725,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1482788875}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539063, y: 0.102074854, z: -0.0329463, w: 0.94616693}
+  m_LocalRotation: {x: 0.30539003, y: 0.10209193, z: -0.032951817, w: 0.9461651}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -69980,7 +69980,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1753561687}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539063, y: 0.102074854, z: -0.0329463, w: 0.94616693}
+  m_LocalRotation: {x: 0.30539003, y: 0.10209193, z: -0.032951817, w: 0.9461651}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -74936,7 +74936,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1880721765}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539063, y: 0.102074854, z: -0.0329463, w: 0.94616693}
+  m_LocalRotation: {x: 0.30539003, y: 0.10209193, z: -0.032951817, w: 0.9461651}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -84132,6 +84132,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RockCrystal
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722826788199520707, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
