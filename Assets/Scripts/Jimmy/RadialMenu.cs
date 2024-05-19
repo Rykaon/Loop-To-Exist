@@ -91,6 +91,9 @@ public class RadialMenu : MonoBehaviour
                 }
             }
         }
+
+        transform.gameObject.SetActive(false);
+        isActive = false;
     }
 
     private void OnEnable()
@@ -105,6 +108,8 @@ public class RadialMenu : MonoBehaviour
 
     public void EnableDisable(bool enabled)
     {
+        isActive = enabled;
+
         if (enabled && gameManager.controlState == GameManager.ControlState.World)
         {
             gameManager.ChangeState(GameManager.ControlState.UI);
@@ -126,17 +131,6 @@ public class RadialMenu : MonoBehaviour
             return Mathf.Atan2(gameManager.playerControls.UI.LeftStick.ReadValue<Vector2>().y, gameManager.playerControls.UI.LeftStick.ReadValue<Vector2>().x) * Mathf.Rad2Deg;
         }
     }
-
-    void Update()
-    {
-        if (isActive)
-        {
-            
-
-            
-        } 
-    }
-
 
     //Selects the button with the specified index.
     public void SelectButton(int i)

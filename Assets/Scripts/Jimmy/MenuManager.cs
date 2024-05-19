@@ -134,18 +134,18 @@ public class MenuManager : MonoBehaviour
 
         if (playerControls.UI.A.IsPressed())
         {
-            UIManager.ExecuteMainMenuButton();
+            UIManager.ExecuteMenuButton();
         }
 
         if (leftStick != Vector2.zero && y > x)
         {
             if (leftStick.y > 0)
             {
-                UIManager.NavigateMainMenu(-1);
+                UIManager.NavigateMenu(-1);
             }
             else
             {
-                UIManager.NavigateMainMenu(1);
+                UIManager.NavigateMenu(1);
             }
         }
     }

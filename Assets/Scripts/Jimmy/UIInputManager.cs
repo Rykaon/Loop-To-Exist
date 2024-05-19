@@ -150,11 +150,11 @@ public class UIInputManager : MonoBehaviour
             {
                 if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
                 {
-                    GetObjectFromPool(sprites.eastGamepad, "Switch");
+                    GetObjectFromPool(sprites.eastGamepad, "Transfert");
                 }
                 else
                 {
-                    GetObjectFromPool(sprites.eastKeyboard, "Switch");
+                    GetObjectFromPool(sprites.eastKeyboard, "Transfert");
                 }
 
                 if (player.heldObject != null)

@@ -5,23 +5,29 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static GameManager;
 
 public class UIManager : MonoBehaviour
 {
+    [Header("GameMenu References")]
     [HideInInspector] public GameManager gameManager;
     [SerializeField] private UIInputManager inputManager;
-    private bool menuPauseIsActive;
+    public bool menuPauseIsActive;
+    public Coroutine toggleMenuPause = null;
 
     [Header("MainMenu References")]
     [SerializeField] private bool isMainMenu;
+
+    [Header("Shared References")]
+    [SerializeField] private Image logo;
     [SerializeField] private Image blackScreen;
     [SerializeField] private Image endScreen;
-    [SerializeField] private Image logo;
     [SerializeField] private Image buttonSelection;
     [SerializeField] private List<TextMeshProUGUI> buttonTexts;
+
     [HideInInspector] private List<float> positions;
-    [HideInInspector] public bool canNavigateMainMenu;
-    [HideInInspector] public int mainMenuIndex = 0;
+    [HideInInspector] public bool canNavigateMenu;
+    [HideInInspector] public int menuIndex = 0;
     [HideInInspector] private int previousMainMenuIndex = -1;
     [HideInInspector] private Vector3 buttonSelectionPos = Vector3.zero;
 
@@ -32,19 +38,62 @@ public class UIManager : MonoBehaviour
             inputManager.Initialize(this);
         }
 
+        positions = new List<float>();
+        for (int i = 0; i < buttonTexts.Count; i++)
+        {
+            positions.Add(buttonTexts[i].rectTransform.anchoredPosition.y);
+        }
+
+        buttonSelectionPos = buttonSelection.rectTransform.anchoredPosition;
+        buttonSelectionPos.y = positions[0];
+        buttonSelection.rectTransform.anchoredPosition = buttonSelectionPos;
+
         if (isMainMenu)
         {
-            positions = new List<float>();
-            for (int i = 0; i < buttonTexts.Count; i++)
-            {
-                positions.Add(buttonTexts[i].rectTransform.anchoredPosition.y);
-            }
-
-            buttonSelectionPos = buttonSelection.rectTransform.anchoredPosition;
-            buttonSelectionPos.y = positions[0];
-            buttonSelection.rectTransform.anchoredPosition = buttonSelectionPos;
             StartCoroutine(StartMainMenu());
         }
+    }
+
+    private IEnumerator StartGameMenu()
+    {
+        AudioManager.instance.Play("Sfx_Menu_Open");
+
+        menuIndex = 0;
+        buttonSelectionPos = buttonSelection.rectTransform.anchoredPosition;
+        buttonSelectionPos.y = positions[0];
+        buttonSelection.rectTransform.anchoredPosition = buttonSelectionPos;
+
+        blackScreen.DOFade(0.75f, 0.25f).SetUpdate(true);
+        logo.DOFade(1f, 0.25f).SetUpdate(true);
+        buttonSelection.DOFade(1f, 0.25f).SetUpdate(true);
+        for (int i = 0; i < buttonTexts.Count; i++)
+        {
+            buttonTexts[i].DOColor(Color.white, 0.25f).SetUpdate(true);
+        }
+
+        yield return new WaitForSecondsRealtime(0.25f);
+        canNavigateMenu = true;
+        toggleMenuPause = null;
+    }
+
+    private IEnumerator CloseGameMenu()
+    {
+        AudioManager.instance.Play("Sfx_Menu_Close");
+        canNavigateMenu = false;
+
+        blackScreen.DOFade(0f, 0.25f).SetUpdate(true);
+        logo.DOFade(0f, 0.25f).SetUpdate(true);
+        buttonSelection.DOFade(0f, 0.25f).SetUpdate(true);
+        for (int i = 0; i < buttonTexts.Count; i++)
+        {
+            buttonTexts[i].DOColor(new Color(1, 1, 1, 0), 0.25f).SetUpdate(true);
+        }
+
+        yield return new WaitForSecondsRealtime(0.25f);
+
+        toggleMenuPause = null;
+        gameManager.ChangeState(ControlState.World);
+        SetGameMenuActive(false);
     }
 
     private IEnumerator StartMainMenu()
@@ -65,80 +114,113 @@ public class UIManager : MonoBehaviour
         }
 
         yield return new WaitForSecondsRealtime(0.75f);
-        canNavigateMainMenu = true;
+        canNavigateMenu = true;
     }
 
-    public void NavigateMainMenu(int value)
+    public void NavigateMenu(int value)
     {
-        if (!canNavigateMainMenu)
+        if (!canNavigateMenu)
         {
             return;
         }
 
-        previousMainMenuIndex = mainMenuIndex;
-        mainMenuIndex += value;
+        previousMainMenuIndex = menuIndex;
+        menuIndex += value;
 
-        if (mainMenuIndex == buttonTexts.Count && value > 0)
+        if (menuIndex == buttonTexts.Count && value > 0)
         {
-            mainMenuIndex = 0;
+            menuIndex = 0;
         }
-        else if (mainMenuIndex == -1 && value < 0)
+        else if (menuIndex == -1 && value < 0)
         {
-            mainMenuIndex = buttonTexts.Count - 1;
+            menuIndex = buttonTexts.Count - 1;
         }
 
         AudioManager.instance.Play("Sfx_Menu_Change");
-        StartCoroutine(SetMainMenuButton(mainMenuIndex));
+        StartCoroutine(SetMenuButton(menuIndex));
     }
 
-    private IEnumerator SetMainMenuButton(int index)
+    private IEnumerator SetMenuButton(int index)
     {
-        canNavigateMainMenu = false;
+        canNavigateMenu = false;
         buttonSelectionPos.y = positions[index];
-        buttonSelection.rectTransform.DOAnchorPos3D(buttonSelectionPos, 0.15f).SetEase(Ease.InOutExpo);
+        buttonSelection.rectTransform.DOAnchorPos3D(buttonSelectionPos, 0.15f).SetEase(Ease.InOutExpo).SetUpdate(true);
 
         if (previousMainMenuIndex != -1)
         {
-            buttonTexts[previousMainMenuIndex].rectTransform.DOScale(1f, 0.5f).SetEase(Ease.OutElastic);
+            buttonTexts[previousMainMenuIndex].rectTransform.DOScale(1f, 0.5f).SetEase(Ease.OutElastic).SetUpdate(true);
         }
-        buttonTexts[mainMenuIndex].rectTransform.DOScale(1.1f, 0.5f).SetEase(Ease.OutElastic);
+        buttonTexts[menuIndex].rectTransform.DOScale(1.1f, 0.5f).SetEase(Ease.OutElastic).SetUpdate(true);
 
         yield return new WaitForSecondsRealtime(0.25f);
-        canNavigateMainMenu = true;
+        canNavigateMenu = true;
     }
 
-    public void ExecuteMainMenuButton()
+    public void ExecuteMenuButton()
     {
-        if (!canNavigateMainMenu)
+        if (!canNavigateMenu)
         {
             return;
         }
 
-        if (mainMenuIndex == 0)
+        if (menuIndex == 0)
         {
-            StartCoroutine(ExecuteMainMenuButton(0));
+            if (isMainMenu)
+            {
+                StartCoroutine(ExecuteMainMenuButton(0));
+            }
+            else
+            {
+                StartCoroutine(ExecuteGameMenuButton(0));
+            }
         }
-        else if (mainMenuIndex == 1)
+        else if (menuIndex == 1)
         {
-            StartCoroutine(ExecuteMainMenuButton(1));
+            if (isMainMenu)
+            {
+                StartCoroutine(ExecuteMainMenuButton(1));
+            }
+            else
+            {
+                StartCoroutine(ExecuteGameMenuButton(1));
+            }
         }
 
         AudioManager.instance.Play("Sfx_Dialogue_Next");
     }
 
+    private IEnumerator ExecuteGameMenuButton(int value)
+    {
+        canNavigateMenu = false;
+        buttonTexts[menuIndex].rectTransform.DOScale(0.9f, 0.5f).SetEase(Ease.InBounce).SetUpdate(true);
+        yield return new WaitForSecondsRealtime(0.5f);
+
+
+        if (menuIndex == 0)
+        {
+            toggleMenuPause = StartCoroutine(CloseGameMenu());
+        }
+        else if (menuIndex == 1)
+        {
+            endScreen.DOFade(1f, 0.5f).SetUpdate(true);
+            yield return new WaitForSecondsRealtime(0.5f);
+            Application.Quit();
+        }
+    }
+
     private IEnumerator ExecuteMainMenuButton(int value)
     {
-        canNavigateMainMenu = false;
-        buttonTexts[mainMenuIndex].rectTransform.DOScale(0.9f, 0.5f).SetEase(Ease.InBounce);
+        canNavigateMenu = false;
+        buttonTexts[menuIndex].rectTransform.DOScale(0.9f, 0.5f).SetEase(Ease.InBounce);
         yield return new WaitForSecondsRealtime(0.5f);
         endScreen.DOFade(1f, 0.5f);
         yield return new WaitForSecondsRealtime(0.5f);
 
-        if (mainMenuIndex == 0)
+        if (menuIndex == 0)
         {
             SceneManager.LoadScene(1);
         }
-        else if (mainMenuIndex == 1)
+        else if (menuIndex == 1)
         {
             Application.Quit();
         }
@@ -149,13 +231,14 @@ public class UIManager : MonoBehaviour
         inputManager.SetUIInput(player);
     }
 
-    public void SetMenuActive(bool isActive)
+    public void SetGameMenuActive(bool isActive)
     {
         menuPauseIsActive = isActive;
 
         if (menuPauseIsActive)
         {
             Time.timeScale = 0f;
+            toggleMenuPause = StartCoroutine(StartGameMenu());
         }
         else
         {

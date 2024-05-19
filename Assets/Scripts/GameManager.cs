@@ -237,8 +237,11 @@ public class GameManager : MonoBehaviour
         {
             if (playerControls.Player.Select.WasPressedThisFrame())
             {
-                ChangeState(ControlState.UI);
-                UIManager.SetMenuActive(true);
+                if (UIManager.toggleMenuPause == null)
+                {
+                    ChangeState(ControlState.UI);
+                    UIManager.SetGameMenuActive(true);
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.G))
@@ -256,16 +259,31 @@ public class GameManager : MonoBehaviour
         }
         else if (controlState == ControlState.UI)
         {
-            if (playerControls.UI.Select.WasPressedThisFrame())
+            Vector2 leftStick = playerControls.UI.LeftStick.ReadValue<Vector2>();
+            float x = Mathf.Abs(leftStick.x);
+            float y = Mathf.Abs(leftStick.y);
+
+            if (playerControls.UI.A.IsPressed())
             {
-                ChangeState(ControlState.World);
-                UIManager.SetMenuActive(false);
+                UIManager.ExecuteMenuButton();
+            }
+
+            if (leftStick != Vector2.zero && y > x)
+            {
+                if (leftStick.y > 0)
+                {
+                    UIManager.NavigateMenu(-1);
+                }
+                else
+                {
+                    UIManager.NavigateMenu(1);
+                }
             }
 
             if (playerMenu.isActive)
             {
                 bool joystickMoved = playerControls.UI.LeftStick.ReadValue<Vector2>() != Vector2.zero;
-
+                Debug.Log(joystickMoved);
                 float rawAngle = playerMenu.CalculateRawAngles();
 
                 if (!playerMenu.useGamepad)
