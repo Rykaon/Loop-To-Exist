@@ -1,6 +1,9 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
 
 public class DoorSwitch : MonoBehaviour
 {
@@ -14,6 +17,12 @@ public class DoorSwitch : MonoBehaviour
     [SerializeField] protected List<string> tagsToCheck;
     [SerializeField] protected DoorController doorController;
     [SerializeField] protected int nbrOfEntity;
+    [SerializeField] protected Transform pressurePlate;
+    [SerializeField] protected MeshRenderer pressurePlateRenderer;
+    [SerializeField] protected Color colorActive;
+    [SerializeField] protected Color colorInactive;
+    private float intensity = 3f;
+    private Coroutine effectRoutine = null;
     protected List<GameObject> objects = new List<GameObject>();
     [SerializeField] private bool isOrbe;
 
@@ -87,6 +96,15 @@ public class DoorSwitch : MonoBehaviour
                     {
                         Debug.Log(transform.parent.name + " is Active");
                         state = State.Active;
+
+                        if (effectRoutine != null)
+                        {
+                            StopCoroutine(effectRoutine);
+                            effectRoutine = null;
+                        }
+
+                        effectRoutine = StartCoroutine(SetActive(true));
+
                         if (doorController.state == DoorController.State.Close)
                         {
                             doorController.CheckSwitches();
@@ -154,6 +172,15 @@ public class DoorSwitch : MonoBehaviour
                     {
                         Debug.Log(transform.parent.name + " is Inactive");
                         state = State.Inactive;
+
+                        if (effectRoutine != null)
+                        {
+                            StopCoroutine(effectRoutine);
+                            effectRoutine = null;
+                        }
+
+                        effectRoutine = StartCoroutine(SetActive(false));
+
                         if (doorController.state == DoorController.State.Open)
                         {
                             doorController.CheckSwitches();
@@ -161,6 +188,43 @@ public class DoorSwitch : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    private IEnumerator SetActive(bool value)
+    {
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+        Color colorToSet;
+        AnimationCurve curve;
+
+        Color startColor = pressurePlateRenderer.material.GetColor("_EmissionColor");
+
+        if (value)
+        {
+            colorToSet = colorActive;
+            curve = Utilities.ConvertEaseToCurve(Ease.OutSine);
+            
+            pressurePlate.DOLocalMove(Vector3.zero + Vector3.down * 0.04f, duration).SetEase(Ease.OutSine);
+        }
+        else
+        {
+            colorToSet = colorInactive;
+            curve = Utilities.ConvertEaseToCurve(Ease.InSine);
+            
+            pressurePlate.DOLocalMove(Vector3.zero, duration).SetEase(Ease.InSine);
+        }
+
+        
+
+        while (elapsedTime < duration)
+        {
+            float time = elapsedTime / duration;
+
+            pressurePlateRenderer.material.SetColor("_EmissionColor", new Color(Mathf.Lerp(startColor.r, colorToSet.r, curve.Evaluate(time)), Mathf.Lerp(startColor.g, colorToSet.g, curve.Evaluate(time)), Mathf.Lerp(startColor.b, colorToSet.b, curve.Evaluate(time)) * intensity));
+
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
         }
     }
 }

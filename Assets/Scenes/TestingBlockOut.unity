@@ -21058,6 +21058,7 @@ MonoBehaviour:
   - {fileID: 498731046}
   gate: {fileID: 512059837}
   gateBody: {fileID: 512059833}
+  doorEmissive: {fileID: 0}
   openCurve:
     serializedVersion: 2
     m_Curve:
@@ -24220,7 +24221,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 562801006}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.30098587, y: -0.34514108, z: 0.09513545, w: 0.88387465}
+  m_LocalRotation: {x: -0.30098584, y: -0.3451411, z: 0.09513546, w: 0.8838747}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -24515,7 +24516,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 575696891}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539063, y: 0.102074854, z: -0.0329463, w: 0.94616693}
+  m_LocalRotation: {x: 0.30538714, y: 0.10217468, z: -0.032978524, w: 0.94615614}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -34313,7 +34314,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754599312}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539063, y: 0.102074854, z: -0.032946303, w: 0.94616693}
+  m_LocalRotation: {x: 0.30538714, y: 0.10217468, z: -0.032978524, w: 0.94615614}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -41532,10 +41533,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collider: {fileID: 859147205}
-  soundNames:
-  - Amb_ZoneB
-  volumes:
-  - 0.5
+  soundNames: []
+  volumes: []
 --- !u!65 &859147205
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -43256,12 +43255,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collider: {fileID: 894203935}
-  soundNames:
-  - Music_FinTuto
-  - Amb_ZoneA
-  volumes:
-  - 0.35
-  - 0.6
+  soundNames: []
+  volumes: []
 --- !u!65 &894203935
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -58011,7 +58006,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1037110743}
   isActive: 1
-  useGamepad: 0
+  useGamepad: 1
   useLazySelection: 1
   useSelectionFollower: 1
   selectionFollowerContainer: {fileID: 1794897334}
@@ -64819,7 +64814,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1340828205}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539063, y: 0.102074854, z: -0.0329463, w: 0.94616693}
+  m_LocalRotation: {x: 0.30538714, y: 0.10217468, z: -0.032978524, w: 0.94615614}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -71309,12 +71304,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collider: {fileID: 1493062227}
-  soundNames:
-  - Amb_ZoneTuto
-  - Music_Intro_Loop
-  volumes:
-  - 0.5
-  - 0.25
+  soundNames: []
+  volumes: []
 --- !u!65 &1493062227
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -87568,7 +87559,7 @@ PrefabInstance:
     - target: {fileID: 1616861715932925005, guid: b5ccc3e57481f9d48b9d84809c07c590,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -3.9997559
+      value: -3.999817
       objectReference: {fileID: 0}
     - target: {fileID: 1616861715932925005, guid: b5ccc3e57481f9d48b9d84809c07c590,
         type: 3}
@@ -101214,6 +101205,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1650121054}
     m_Modifications:
+    - target: {fileID: 909583941885927686, guid: 90c8eeef41ae819419aed2c7947bbef1,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2041774827004057986, guid: 90c8eeef41ae819419aed2c7947bbef1,
         type: 3}
       propertyPath: m_Name
@@ -101365,6 +101361,7 @@ SceneRoots:
   - {fileID: 1463950507}
   - {fileID: 1356782673}
   - {fileID: 1359041879}
+  - {fileID: 618550392}
   - {fileID: 1656668761}
   - {fileID: 353517875}
   - {fileID: 233936367}
@@ -101373,7 +101370,6 @@ SceneRoots:
   - {fileID: 842392830}
   - {fileID: 720194193}
   - {fileID: 1656127258}
-  - {fileID: 618550392}
   - {fileID: 228129396}
   - {fileID: 720258868}
   - {fileID: 60732797}

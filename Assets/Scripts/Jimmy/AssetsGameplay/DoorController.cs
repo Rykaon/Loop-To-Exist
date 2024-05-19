@@ -15,11 +15,13 @@ public class DoorController : MonoBehaviour
     [SerializeField] private List<DoorSwitch> switchs;
     [SerializeField] private Transform gate;
     [SerializeField] private Rigidbody gateBody;
+    [SerializeField] private MeshRenderer motifRenderer;
     [SerializeField] private AnimationCurve openCurve;
     private Vector3 openPosition;
     private Coroutine coroutine;
     private Tween open;
-
+    private bool isFirst = true;
+    
     [SerializeField] private AudioSource[] audioSource;
 
     private void Awake()
@@ -72,17 +74,30 @@ public class DoorController : MonoBehaviour
 
     private IEnumerator OpenClose()
     {
+        float duration = 1.5f;
+
         if (state == State.Open)
         {
+            if (!isFirst)
+            {
+                audioSource[2].Play();
+            }
+
             gateBody.useGravity = false;
-            audioSource[2].Play();
-            open = gate.DOMove(openPosition, 1.5f).SetEase(openCurve);
-            yield return new WaitForSecondsRealtime(1.5f);
+            open = gate.DOMove(openPosition, duration).SetEase(openCurve);
+            yield return new WaitForSecondsRealtime(duration);
+            gateBody.isKinematic = true;
+
+            yield return new WaitForSecondsRealtime(duration);
             gateBody.isKinematic = true;
         }
         else
         {
-            audioSource[1].Play();
+            if (!isFirst)
+            {
+                audioSource[1].Play();
+            }
+            
             gateBody.isKinematic = false;
             gateBody.useGravity = true;
             gateBody.AddForce(Vector3.down * 10, ForceMode.Impulse);
@@ -93,8 +108,14 @@ public class DoorController : MonoBehaviour
     {
         if (other.gameObject.tag == "TriggerSound")
         {
-            audioSource[0].Play();
-
+            if (isFirst)
+            {
+                isFirst = false;
+            }
+            else if (!isFirst)
+            {
+                audioSource[0].Play();
+            }
         }
     }
 }
