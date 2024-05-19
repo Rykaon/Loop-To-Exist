@@ -58,9 +58,9 @@ MonoBehaviour:
   Renderer: {fileID: 7553918703911016056}
   Outline: {fileID: 898095566641467406}
   stickedWall: {fileID: 0}
+  stickyRenderer: {fileID: 0}
   dissolveMaterial: {fileID: 2100000, guid: 9cefab28cbd922346a664e5bc01fdb2e, type: 2}
   stickyMaterial: {fileID: 2100000, guid: c067eaf8b4333384da4ed73b4860df4c, type: 2}
-  stickyMaterial2: {fileID: 2100000, guid: 9b81f1b07e03fec4a996141f9ef9bb45, type: 2}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
   objectToStick: {fileID: 0}
