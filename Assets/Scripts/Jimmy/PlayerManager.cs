@@ -23,6 +23,7 @@ public class PlayerManager : StateManager
     [SerializeField] private Transform eye;
     [SerializeField] private Transform linkTarget;
     [SerializeField] public Transform cameraTarget;
+    [SerializeField] public Transform animationRoot;
 
     [SerializeField] private Animator Animator;
     [SerializeField] private Animator stickyAnimator;

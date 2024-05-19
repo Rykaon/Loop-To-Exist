@@ -136,12 +136,12 @@ public class GameManager : MonoBehaviour
             if (playerInput.currentControlScheme == mouseScheme && previousControlScheme != mouseScheme)
             {
                 previousControlScheme = mouseScheme;
-                playerMenu.useGamepad = true;
+                playerMenu.useGamepad = false;
             }
             else if (playerInput.currentControlScheme == gamepadScheme && previousControlScheme != gamepadScheme)
             {
                 previousControlScheme = gamepadScheme;
-                playerMenu.useGamepad = false;
+                playerMenu.useGamepad = true;
             }
         }
 

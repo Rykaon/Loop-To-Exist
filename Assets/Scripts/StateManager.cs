@@ -64,6 +64,7 @@ public class StateManager : MonoBehaviour
     protected PlayerManager equippingPlayer = null;
     protected Joint joint = null;
     private float jointBreakTreshold = 1000f;
+    private PlayerManager stickHoldingPlayer = null;
 
     public bool isHeldObject { get; private set; }
     public bool isHeld { get; private set; }
@@ -164,6 +165,11 @@ public class StateManager : MonoBehaviour
 
             if (state == State.Sticky)
             {
+                if (isHeld)
+                {
+                    stickHoldingPlayer = holdingPlayer;
+                }
+
                 if (stickyChange != null)
                 {
                     StopCoroutine(stickyChange);
@@ -254,6 +260,11 @@ public class StateManager : MonoBehaviour
             isEquippedObject = false;
             equippingPlayer = null;
             wasEquipped = true;
+        }
+
+        if (stickHoldingPlayer == null && states.Contains(State.Sticky))
+        {
+            stickHoldingPlayer = player;
         }
 
         position = Position.Held;
@@ -577,6 +588,71 @@ public class StateManager : MonoBehaviour
     {
         if (states.Contains(State.Sticky) && !isHeldObject  && !isEquipped && !isSticked)
         {
+            /*if (stickHoldingPlayer != null)
+            {
+                if (collision.gameObject == holdingPlayer.gameObject)
+                {
+                    return;
+                }
+                else
+                {
+                    stickHoldingPlayer = null;
+                }
+            }
+
+            rigidBody.velocity = Vector3.zero;
+            rigidBody.angularVelocity = Vector3.zero;
+            rigidBody.useGravity = false;
+            rigidBody.constraints = RigidbodyConstraints.FreezePosition;
+
+            objectToStick = collision.gameObject;
+            isSticked = true;
+
+            Transform root = collision.transform;
+            bool isAnimated = false;
+
+            if (collision.transform.TryGetComponent<StateManager>(out StateManager stateManager))
+            {
+                stateManager.stickedObjects.Add(this.gameObject);
+
+                if (stateManager.tag == "Player")
+                {
+                    PlayerManager playerManager = (PlayerManager)stateManager;
+                    root = playerManager.animationRoot;
+                    isAnimated = true;
+                }
+                else if (stateManager.tag == "Creature")
+                {
+                    CreatureManager creatureManager = (CreatureManager)stateManager;
+                    root = creatureManager.animationRoot;
+                    isAnimated = true;
+                }
+            }
+
+            Vector3 contactPoint = Vector3.zero;
+
+            foreach (ContactPoint contact in collision.contacts)
+            {
+                if (contact.thisCollider == collision.collider || contact.otherCollider == collision.collider)
+                {
+                    contactPoint = contact.point;
+                    break;
+                }
+            }
+
+            if (isAnimated)
+            {
+                float contactDistance = Vector3.Distance(transform.position, contactPoint);
+                Transform nearestTransform = GetNearestTransform(contactPoint, contactDistance, root);
+                
+                if (nearestTransform != null)
+                {
+                    root = nearestTransform;
+                }
+            }
+
+            transform.SetParent(root, true);*/
+
             if (previousHoldingPlayer != null)
             {
                 if (collision.gameObject == previousHoldingPlayer.gameObject)
@@ -604,6 +680,44 @@ public class StateManager : MonoBehaviour
             }
 
             Debug.Log(collision.transform.name);
+        }
+    }
+
+    private Transform GetNearestTransform(Vector3 contactPoint, float distance, Transform transform)
+    {
+        float thisDistance = Vector3.Distance(contactPoint, transform.position);
+
+        if (thisDistance < distance)
+        {
+            if (transform.childCount > 0)
+            {
+                Transform nearerChild = null;
+
+                for (int i = 0; i < transform.childCount; ++i)
+                {
+                    Transform child = GetNearestTransform(contactPoint, thisDistance, transform.GetChild(i));
+                   
+                    if (child != null)
+                    {
+                        nearerChild = child;
+                    }
+
+                    if (i == transform.childCount - 1 && nearerChild != null)
+                    {
+                        return nearerChild;
+                    }
+                    else
+                    {
+                        return transform;
+                    }
+                }
+            }
+
+            return transform;
+        }
+        else
+        { 
+            return null;
         }
     }
 

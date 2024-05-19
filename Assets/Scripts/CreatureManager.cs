@@ -12,6 +12,7 @@ public class CreatureManager : StateManager
     [SerializeField] private Animator Animator;
     [SerializeField] private Animator stickyAnimator;
     [SerializeField] private NavMeshAgent Agent;
+    [SerializeField] public Transform animationRoot;
 
     [Header("Properties")]
     [SerializeField] private float roamingRadius;
