@@ -1929,8 +1929,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   localPosition: {x: 0, y: 0, z: 0}
-  radius: 1.05
-  strength: 1.54
+  radius: 0.6
+  strength: 1.25
 --- !u!4 &5646786114928468919 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3373580124247035017, guid: ba1dde5c07dc4fd489dae2bfd738b55d,

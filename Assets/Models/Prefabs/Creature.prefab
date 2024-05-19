@@ -1299,7 +1299,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   localPosition: {x: 0, y: 0, z: 0}
-  radius: 0.5
+  radius: 0.4
   strength: 1
 --- !u!1 &4231937748949227796
 GameObject:
