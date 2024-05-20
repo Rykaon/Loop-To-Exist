@@ -1739,7 +1739,7 @@ MonoBehaviour:
   customGravity: {x: 0, y: -30, z: 0}
   fallGravityMultiplier: 1.5
   collisionDetectionDistance: 0.25
-  GroundLayer:
+  RaycastLayer:
     serializedVersion: 2
     m_Bits: 73
   moveMassMultiplier: 1

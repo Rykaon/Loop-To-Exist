@@ -548,7 +548,7 @@ public class PlayerManager : StateManager
 
         Vector3 rayDirection = ray.direction;
 
-        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit))
+        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit, RaycastLayer))
         {
             if (action == playerControls.Player.B)
             {
@@ -597,7 +597,7 @@ public class PlayerManager : StateManager
         ray.origin = eye.position;
         ray.direction = rayDirection;
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, RaycastLayer))
         {
             if (action == playerControls.Player.RT)
             {
@@ -700,7 +700,7 @@ public class PlayerManager : StateManager
 
         Vector3 rayDirection = ray.direction;
 
-        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit))
+        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit, RaycastLayer))
         {
             if (hit.collider != null)
             {
@@ -739,7 +739,7 @@ public class PlayerManager : StateManager
         ray.origin = eye.position;
         ray.direction = rayDirection;
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, RaycastLayer))
         {
             if (equippedObject != null)
             {
