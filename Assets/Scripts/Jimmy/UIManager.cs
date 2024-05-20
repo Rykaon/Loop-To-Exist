@@ -2,10 +2,12 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static GameManager;
+using System.Threading.Tasks;
 
 public class UIManager : MonoBehaviour
 {
@@ -211,19 +213,64 @@ public class UIManager : MonoBehaviour
     private IEnumerator ExecuteMainMenuButton(int value)
     {
         canNavigateMenu = false;
-        buttonTexts[menuIndex].rectTransform.DOScale(0.9f, 0.5f).SetEase(Ease.InBounce);
-        yield return new WaitForSecondsRealtime(0.5f);
-        endScreen.DOFade(1f, 0.5f);
-        yield return new WaitForSecondsRealtime(0.5f);
 
         if (menuIndex == 0)
         {
-            SceneManager.LoadScene(1);
+            Debug.Log("Start");
+            LoadScene(1);
         }
         else if (menuIndex == 1)
         {
+            buttonTexts[menuIndex].rectTransform.DOScale(0.9f, 0.5f).SetEase(Ease.InBounce);
+            yield return new WaitForSecondsRealtime(0.5f);
+            endScreen.DOFade(1f, 0.5f);
+            yield return new WaitForSecondsRealtime(0.5f);
             Application.Quit();
         }
+    }
+
+    private IEnumerator StartGameScene()
+    {
+        endScreen.DOFade(1f, 0.5f);
+        yield return new WaitForSecondsRealtime(0.5f);
+    }
+
+    private IEnumerator Loading()
+    {
+        endScreen.DOFade(1f, 0.5f);
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        bool sceneIsDone = false;
+
+        while (!sceneIsDone)
+        {
+            Debug.Log("Loading");
+        }
+    }
+
+    private async Task LoadScene(int sceneId)
+    {
+        var scene = SceneManager.LoadSceneAsync(sceneId);
+        scene.allowSceneActivation = false;
+
+        //StartCoroutine(Loading());
+
+        do
+        {
+            await Task.Yield();
+        }
+        while (scene.progress < 0.9f);
+
+        StartCoroutine(StartGameScene());
+
+        await WaitForSecondsRealtime(0.5f);
+
+        scene.allowSceneActivation = true;
+    }
+
+    private async Task WaitForSecondsRealtime(float seconds)
+    {
+        await Task.Delay((int)(seconds * 1000));
     }
 
     public void SetUIInput(PlayerManager player)
