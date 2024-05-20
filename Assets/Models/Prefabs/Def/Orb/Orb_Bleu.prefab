@@ -52,7 +52,8 @@ MonoBehaviour:
   type: 3
   states: 
   position: 0
-  pivot: {fileID: 0}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 4690684482226976202}
   ObjectCollider: {fileID: 507900408074072953}
   Renderer: {fileID: 7553918703911016056}
