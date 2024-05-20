@@ -19,6 +19,10 @@ public class UIManager : MonoBehaviour
 
     [Header("MainMenu References")]
     [SerializeField] private bool isMainMenu;
+    [SerializeField] private Image loadingBarBackground;
+    [SerializeField] private Image loadingBarFront;
+    [SerializeField] private Image loadingBarBack;
+    [SerializeField] private TextMeshProUGUI loadingText;
 
     [Header("Shared References")]
     [SerializeField] private Image logo;
@@ -197,7 +201,6 @@ public class UIManager : MonoBehaviour
         buttonTexts[menuIndex].rectTransform.DOScale(0.9f, 0.5f).SetEase(Ease.InBounce).SetUpdate(true);
         yield return new WaitForSecondsRealtime(0.5f);
 
-
         if (menuIndex == 0)
         {
             toggleMenuPause = StartCoroutine(CloseGameMenu());
@@ -214,63 +217,87 @@ public class UIManager : MonoBehaviour
     {
         canNavigateMenu = false;
 
+        buttonTexts[menuIndex].rectTransform.DOScale(0.9f, 0.5f).SetEase(Ease.InBounce);
+        yield return new WaitForSecondsRealtime(0.5f);
+
         if (menuIndex == 0)
         {
-            Debug.Log("Start");
-            LoadScene(1);
+            StartCoroutine(LoadScene(1));
         }
         else if (menuIndex == 1)
         {
-            buttonTexts[menuIndex].rectTransform.DOScale(0.9f, 0.5f).SetEase(Ease.InBounce);
-            yield return new WaitForSecondsRealtime(0.5f);
             endScreen.DOFade(1f, 0.5f);
             yield return new WaitForSecondsRealtime(0.5f);
             Application.Quit();
         }
     }
 
-    private IEnumerator StartGameScene()
+    private IEnumerator LoadScene(int sceneId)
     {
+        buttonSelection.DOFade(1f, 0.25f);
+        for (int i = 0; i < buttonTexts.Count; i++)
+        {
+            buttonTexts[i].DOColor(new Color(1, 1, 1, 0), 0.25f);
+        }
+        yield return new WaitForSecondsRealtime(0.25f);
+
+        loadingText.DOColor(Color.white, 0.5f);
+        loadingBarBackground.DOFade(1f, 0.5f);
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        AsyncOperation load = SceneManager.LoadSceneAsync(sceneId);
+        load.allowSceneActivation = false;
+        StartCoroutine(Loading());
+
+        bool canLaunch = false;
+        float loadFillFront = loadingBarFront.fillAmount;
+
+        while (loadFillFront < 1f && !canLaunch)
+        {
+            loadFillFront = loadingBarFront.fillAmount;
+            float loadNormalized = load.progress / 1f;
+
+            if (loadFillFront < loadNormalized)
+            {
+                loadingBarFront.fillAmount = loadNormalized;
+            }
+
+            if (loadFillFront >= 0.85f)
+            {
+                loadFillFront = loadingBarFront.fillAmount;
+                loadNormalized = load.progress / 1f;
+
+                if (loadFillFront < loadNormalized)
+                {
+                    loadingBarFront.fillAmount = loadNormalized;
+                }
+                yield return new WaitForSecondsRealtime(0.5f);
+                canLaunch = true;
+            }
+
+            yield return new WaitForFixedUpdate();
+        }
+
         endScreen.DOFade(1f, 0.5f);
         yield return new WaitForSecondsRealtime(0.5f);
+        load.allowSceneActivation = true;
     }
 
     private IEnumerator Loading()
     {
-        endScreen.DOFade(1f, 0.5f);
+        loadingText.text = "Loading";
         yield return new WaitForSecondsRealtime(0.5f);
 
-        bool sceneIsDone = false;
+        loadingText.text = "Loading.";
+        yield return new WaitForSecondsRealtime(0.5f);
 
-        while (!sceneIsDone)
-        {
-            Debug.Log("Loading");
-        }
-    }
+        loadingText.text = "Loading..";
+        yield return new WaitForSecondsRealtime(0.5f);
 
-    private async Task LoadScene(int sceneId)
-    {
-        var scene = SceneManager.LoadSceneAsync(sceneId);
-        scene.allowSceneActivation = false;
+        loadingText.text = "Loading...";
+        yield return new WaitForSecondsRealtime(0.5f);
 
-        //StartCoroutine(Loading());
-
-        do
-        {
-            await Task.Yield();
-        }
-        while (scene.progress < 0.9f);
-
-        StartCoroutine(StartGameScene());
-
-        await WaitForSecondsRealtime(0.5f);
-
-        scene.allowSceneActivation = true;
-    }
-
-    private async Task WaitForSecondsRealtime(float seconds)
-    {
-        await Task.Delay((int)(seconds * 1000));
+        StartCoroutine(Loading());
     }
 
     public void SetUIInput(PlayerManager player)
