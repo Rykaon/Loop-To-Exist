@@ -21,7 +21,6 @@ public class StickedWallManager : MonoBehaviour
         {
             elements[i].isWallDestroyed = true;
             states[i].SetState(StateManager.State.Sticky);
-            states[i].rigidBody.isKinematic = false;
             states[i].rigidBody.AddForce(direction * 3, ForceMode.Impulse);
         }
     }

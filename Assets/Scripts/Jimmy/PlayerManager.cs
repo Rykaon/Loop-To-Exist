@@ -81,7 +81,7 @@ public class PlayerManager : StateManager
     [SerializeField] protected float fallGravityMultiplier;
 
     [SerializeField] protected float collisionDetectionDistance;
-    [SerializeField] protected LayerMask GroundLayer;
+    [SerializeField] protected LayerMask RaycastLayer;
     [HideInInspector] protected Vector3 direction = Vector3.zero;
     [HideInInspector] protected Vector2 jumpFrameMovementSave;
     [HideInInspector] protected float linkMoveMultiplier;
@@ -794,12 +794,12 @@ public class PlayerManager : StateManager
 
     private bool RaycastGrounded()
     {
-        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, GroundLayer);
+        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, RaycastLayer);
 
         if (isCollisionDetected)
         {
             RaycastHit hit;
-            if (Physics.Raycast(feet.position, Vector3.down, out hit, collisionDetectionDistance, GroundLayer))
+            if (Physics.Raycast(feet.position, Vector3.down, out hit, collisionDetectionDistance, RaycastLayer))
             {
                 float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
                 if (dotProduct >= 0.75 && dotProduct <= 1.25f)
@@ -825,7 +825,7 @@ public class PlayerManager : StateManager
 
     private bool RaycastFalling()
     {
-        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance * 2, GroundLayer);
+        bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance * 2, RaycastLayer);
 
         return isCollisionDetected;
     }

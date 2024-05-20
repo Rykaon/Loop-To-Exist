@@ -98,6 +98,14 @@ public class StateManager : MonoBehaviour
         lastGroundedPosition = rigidBody.position;
         lastGroundedRotation = rigidBody.rotation;
 
+        if (stickedWall != null )
+        {
+            if (stickyRenderer != null)
+            {
+                stickyRenderer.material.SetFloat("_Dissolve", 0f);
+            }
+        }
+
         linkThrowMultiplier = 2.5f; // On multiplie la force de lancer par cette valeur si l'objet lancé est linké. 
         playerMoveMassMultiplier = 0.075f; // Le joueur qui porte l'objet a un multiplier de base de 1. Pour chaque objet porté, on lui ajoute cette valeur. On lui retire lorsqu'il drop l'item. Sert pour les fonctions Move() et Jump().
     }
@@ -149,7 +157,10 @@ public class StateManager : MonoBehaviour
                     stickyChange = null;
                 }
 
-                stickyChange = StartCoroutine(SetSticky(1f));
+                if (stickyRenderer != null)
+                {
+                    stickyChange = StartCoroutine(SetSticky(1f));
+                }
             }
             else if (state == State.Link)
             {
@@ -191,7 +202,10 @@ public class StateManager : MonoBehaviour
                     stickyChange = null;
                 }
 
-                stickyChange = StartCoroutine(SetSticky(0f));
+                if (stickyRenderer != null)
+                {
+                    stickyChange = StartCoroutine(SetSticky(0f));
+                }
             }
         }
     }
