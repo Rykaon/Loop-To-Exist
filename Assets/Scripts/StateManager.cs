@@ -499,11 +499,11 @@ public class StateManager : MonoBehaviour
 
             if (handPivot != null)
             {
-                Vector3 posOffset = transform.position - handPivot.position;
-                Quaternion rotOffset = Quaternion.Inverse(handPivot.rotation) * endTransform.rotation;
+                Vector3 posOffset = transform.position - headPivot.position;
+                Quaternion rotOffset = Quaternion.Inverse(headPivot.rotation) * endTransform.rotation;
 
                 pos = endTransform.position + posOffset;
-                rot = endTransform.rotation * Quaternion.Inverse(handPivot.rotation) * transform.rotation;
+                rot = endTransform.rotation * Quaternion.Inverse(headPivot.rotation) * transform.rotation;
             }
             else
             {
