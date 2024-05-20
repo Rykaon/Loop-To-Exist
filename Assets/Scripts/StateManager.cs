@@ -369,7 +369,7 @@ public class StateManager : MonoBehaviour
     public virtual void InitializeHoldObject(Transform parent)
     {
         objectCollider.isTrigger = false;
-        transform.SetParent(parent, true);
+        transform.SetParentWithGlobalScale(parent, true);
         rigidBody.useGravity = false;
         rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
     }
@@ -401,7 +401,7 @@ public class StateManager : MonoBehaviour
             isHeldObject = false;
             previousHoldingPlayer = holdingPlayer;
             holdingPlayer = null;
-            transform.SetParent(initParent, true);
+            transform.SetParentWithGlobalScale(initParent, true);
             objectCollider.isTrigger = false;
             rigidBody.useGravity = true;
             rigidBody.isKinematic = false;
@@ -524,7 +524,7 @@ public class StateManager : MonoBehaviour
     public virtual void InitializeEquipObject(Transform parent)
     {
         objectCollider.isTrigger = false;
-        transform.SetParent(parent, true);
+        transform.SetParentWithGlobalScale(parent, true);
         rigidBody.useGravity = false;
         rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePosition;
     }
@@ -626,7 +626,7 @@ public class StateManager : MonoBehaviour
                 }
             }
 
-            transform.SetParent(stickedTransform, true);
+            transform.SetParentWithGlobalScale(stickedTransform, true);
         }
     }
 

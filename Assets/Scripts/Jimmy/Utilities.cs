@@ -64,4 +64,35 @@ public static class Utilities
 
         return curve;
     }
+
+    public static Vector3 GetGlobalScale(this Transform transform)
+    {
+        Vector3 globalScale = transform.localScale;
+        Transform parent = transform.parent;
+
+        while (parent != null)
+        {
+            globalScale = Vector3.Scale(globalScale, parent.localScale);
+            parent = parent.parent;
+        }
+
+        return globalScale;
+    }
+
+    public static void SetParentWithGlobalScale(this Transform child, Transform newParent, bool worldPositionStays)
+    {
+        Vector3 originalGlobalScale = child.lossyScale;
+
+        child.SetParent(newParent, worldPositionStays);
+
+        Vector3 newGlobalScale = child.lossyScale;
+
+        Vector3 scaleFactor = new Vector3(
+            originalGlobalScale.x / newGlobalScale.x,
+            originalGlobalScale.y / newGlobalScale.y,
+            originalGlobalScale.z / newGlobalScale.z
+        );
+
+        child.localScale = Vector3.Scale(child.localScale, scaleFactor);
+    }
 }

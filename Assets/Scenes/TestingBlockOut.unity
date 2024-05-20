@@ -560,7 +560,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7041217, z: -0, w: 0.7100794}
   m_LocalPosition: {x: 42.84624, y: -0.6811898, z: 29.73445}
-  m_LocalScale: {x: 0.7669823, y: 0.11952868, z: 1.0817688}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 167153257}
@@ -606,7 +606,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.7669823, y: 0.1195287, z: 1.081769}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &19769199
 MeshRenderer:
@@ -22701,7 +22701,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 562801006}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.30098587, y: -0.34514108, z: 0.09513545, w: 0.88387465}
+  m_LocalRotation: {x: -0.30098584, y: -0.3451411, z: 0.09513546, w: 0.8838747}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -32199,7 +32199,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754599312}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30539083, y: 0.10206836, z: -0.032944202, w: 0.94616765}
+  m_LocalRotation: {x: 0.30539083, y: 0.10206834, z: -0.032944195, w: 0.94616765}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -66645,8 +66645,8 @@ Transform:
   m_GameObject: {fileID: 1466501859}
   serializedVersion: 2
   m_LocalRotation: {x: 0.006303698, y: -0.6878533, z: -0.0059766355, w: 0.7257978}
-  m_LocalPosition: {x: 45.028244, y: -0.36099982, z: 29.536184}
-  m_LocalScale: {x: 0.85326797, y: 0.05079969, z: 1.7492248}
+  m_LocalPosition: {x: 45.165, y: -0.36099982, z: 29.49}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 167153257}
@@ -66692,7 +66692,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.853268, y: 0.05079969, z: 1.98}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1466501863
 MeshRenderer:
