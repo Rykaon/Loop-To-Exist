@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.VersionControl.Asset;
-
 public class GroundTrigger : MonoBehaviour
 {
     private void OnTriggerExit(Collider other)

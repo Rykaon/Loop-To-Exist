@@ -280,6 +280,7 @@ namespace Cinematic
 
         public void SetotView()
         {
+            #if UNITY_EDITOR
             SceneView sceneView = SceneView.lastActiveSceneView;
 
             if (sceneView != null)
@@ -294,15 +295,18 @@ namespace Cinematic
             {
                 Debug.Log("SceneView not found");
             }
+            #endif
         }
 
         public void GetToView()
         {
+            #if UNITY_EDITOR
             SceneView sceneView = SceneView.lastActiveSceneView;
             if (sceneView != null)
             {
                 sceneView.LookAt(sceneLook, Quaternion.Euler(rotation), sceneSize, sceneView.orthographic);
             }
+            #endif
         }
     }
 }

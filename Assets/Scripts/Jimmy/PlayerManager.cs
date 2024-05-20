@@ -1,17 +1,14 @@
 using Cinemachine;
 using DG.Tweening;
-using Obi;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
 using Unity.VisualScripting;
-using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.Tilemaps;
 
 public class PlayerManager : StateManager
 {
