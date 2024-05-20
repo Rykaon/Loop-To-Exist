@@ -45,6 +45,7 @@ public class PlayerManager : StateManager
     public bool isJumpingDown = false;
     private float idleTime = 0f;
     private Coroutine mainPlayerRoutine = null;
+    private bool canToggleEquip = true;
 
     [HideInInspector] public bool buttonSouthIsPressed = false;
     [HideInInspector] public bool buttonWestIsPressed = false;
@@ -385,7 +386,7 @@ public class PlayerManager : StateManager
 
     public void Hold()
     {
-        if (heldObject == null)
+        if (heldObject == null && canToggleEquip)
         {
             if (trigger.triggeredObjectsList.Count > 0 && trigger.current != null)
             {
@@ -395,9 +396,10 @@ public class PlayerManager : StateManager
                 stickyAnimator.SetTrigger("Grab");
                 idleTime = 0;
                 AudioManager.instance.Play("Sfx_Player_Carry");
+                StartCoroutine(ToggleEquip());
             }
         }
-        else if (heldObject != null)
+        else if (heldObject != null && canToggleEquip)
         {
             heldObject.DropObject();
             animator.SetTrigger("Drop");
@@ -405,12 +407,13 @@ public class PlayerManager : StateManager
             heldObject = null;
             idleTime = 0;
             AudioManager.instance.Play("Sfx_Player_Drop");
+            StartCoroutine(ToggleEquip());
         }
     }
 
     public void Equip()
     {
-        if (equippedObject == null && heldObject != null)
+        if (equippedObject == null && heldObject != null && canToggleEquip)
         {
             equippedObject = heldObject;
             equippedObject.SetEquipObject(this, head, 0.75f);
@@ -427,8 +430,9 @@ public class PlayerManager : StateManager
             {
                 AudioManager.instance.Play("Sfx_Player_OnHead");
             }
+            StartCoroutine(ToggleEquip());
         }
-        else if (equippedObject != null && heldObject == null)
+        else if (equippedObject != null && heldObject == null && canToggleEquip)
         {
             heldObject = equippedObject;
             equippedObject.SetHoldObject(this, hand, 0.75f);
@@ -437,6 +441,7 @@ public class PlayerManager : StateManager
             equippedObject = null;
             idleTime = 0;
             AudioManager.instance.Play("Sfx_Player_OffHead");
+            StartCoroutine(ToggleEquip());
         }
     }
 
@@ -636,6 +641,13 @@ public class PlayerManager : StateManager
     ///////////////////////////////////////////////////
     ///          FONCTIONS UTILITAIRES              ///
     ///////////////////////////////////////////////////
+
+    private IEnumerator ToggleEquip()
+    {
+        canToggleEquip = false;
+        yield return new WaitForSecondsRealtime(0.5f);
+        canToggleEquip = true;
+    }
 
     private IEnumerator Walk(float value)
     {
