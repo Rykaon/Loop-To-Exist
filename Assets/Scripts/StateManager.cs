@@ -393,7 +393,7 @@ public class StateManager : MonoBehaviour
                 rigidBody.constraints = RigidbodyConstraints.None;
             }
 
-            rigidBody.mass = 1f;
+            rigidBody.mass = 10f;
             holdingPlayer.moveMassMultiplier -= playerMoveMassMultiplier;
 
             position = Position.Default;
