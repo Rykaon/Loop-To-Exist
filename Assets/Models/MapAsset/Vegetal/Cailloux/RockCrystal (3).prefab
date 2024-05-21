@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2304451579969158976}
   - component: {fileID: 4882822105450448090}
   - component: {fileID: 8035565562275561154}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RockCrystal (3)
   m_TagString: Object
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 446129735582213902}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pivot (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2531134925256327309}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 3251334576667887171}
   - component: {fileID: 3269674259494167327}
   - component: {fileID: 3843139618073708009}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RockCrystal (3)
   m_TagString: Object
   m_Icon: {fileID: 0}

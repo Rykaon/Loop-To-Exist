@@ -11,13 +11,13 @@ public class LadderManager : MonoBehaviour
     }
 
     public State state;
-    [SerializeField] private Transform textMeshTransform;
-    [SerializeField] private Transform startUI;
-    [SerializeField] private Transform endUI;
-    [SerializeField] private CameraManager cameraManager;
     [SerializeField] private Animator animator;
+    [SerializeField] public Outline outline;
     public List<PlayerManager> players = new List<PlayerManager>();
+    public List<LadderTrigger> triggers = new List<LadderTrigger>();
     private bool isUIActive = false;
+    private Coroutine activation = null;
+    private bool wasInactive = false;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -45,64 +45,84 @@ public class LadderManager : MonoBehaviour
 
     private void Update()
     {
-        if (players.Count > 0)
-        {
-            if (state == State.Active)
-            {
-                if (isUIActive)
-                {
+        bool isPlayer = false;
 
+        if (state == State.Active)
+        {
+            if (wasInactive)
+            {
+                if (players.Count > 0)
+                {
+                    for (int i = 0; i < players.Count; i++)
+                    {
+                        if (players[i].isMainPlayer && players[i].isActive)
+                        {
+                            isPlayer = true;
+                            break;
+                        }
+                    }
                 }
 
-                players.Clear();
-                return;
+                if (!isPlayer && outline.enabled)
+                {
+                    outline.enabled = false;
+                    wasInactive = false;
+                }
             }
 
-            bool isPlayer = false;
+            players.Clear();
+            return;
+        }
+
+        isPlayer = false;
+
+        if (players.Count > 0)
+        {
             for (int i = 0; i < players.Count; i++)
             {
                 if (players[i].isMainPlayer && players[i].isActive)
                 {
                     isPlayer = true;
-                    if (players[0].playerControls.Player.A.WasPressedThisFrame())
+
+                    if (!outline.enabled)
                     {
-                        state = State.Active;
-                        animator.Play("Open");
+                        outline.enabled = true;
+                    }
+
+                    if (players[0].playerControls.Player.A.WasPressedThisFrame() && state == State.Inactive && activation == null)
+                    {
+                        activation = StartCoroutine(SetActive());
+                        animator.Play("LianeActive");
                     }
                     break;
                 }
             }
+        }
 
-            textMeshTransform.LookAt(Camera.main.transform.position, Vector3.up);
-
-            if (isPlayer && !isUIActive)
+        if (!isPlayer)
+        {
+            if (outline.enabled)
             {
-                isUIActive = true;
-                textMeshTransform.DOScale(new Vector3(-0.32f, 0.32f, 0.32f), 0.25f).SetEase(Ease.InOutSine, 0.3f);
-                textMeshTransform.DOMove(endUI.position, 0.5f).SetEase(Ease.InOutSine, 0.3f);
-            }
-            else if (!isPlayer && isUIActive)
-            {
-                isUIActive = false;
-                textMeshTransform.DOScale(new Vector3(-0.25f, 0f, 0.32f), 0.25f).SetEase(Ease.InOutSine, 0.3f);
-                textMeshTransform.DOMove(startUI.position, 0.5f).SetEase(Ease.InOutSine, 0.3f);
+                outline.enabled = false;
             }
         }
-        else
+    }
+
+    private IEnumerator SetActive()
+    {
+        yield return new WaitForSecondsRealtime(0.75f);
+        state = State.Active;
+        wasInactive = true;
+        for (int i = 0;i < triggers.Count; i++)
         {
-            if (isUIActive)
-            {
-                isUIActive = false;
-                textMeshTransform.DOScale(new Vector3(-0.25f, 0f, 0.32f), 0.25f).SetEase(Ease.InOutSine, 0.3f);
-                textMeshTransform.DOMove(startUI.position, 0.5f).SetEase(Ease.InOutSine, 0.3f);
-            }
+            triggers[i].isActive = true;
         }
     }
 
     public void Teleport(Vector3 position, PlayerManager player, LadderTrigger other)
     {
         StartCoroutine(TeleportRoutine(position, player, other));
-        cameraManager.BlackScreen(0.5f, 0.5f);
+        GameManager.instance.cameraManager.BlackScreen(0.5f, 0.5f);
     }
 
     private IEnumerator TeleportRoutine(Vector3 position, PlayerManager player, LadderTrigger other)

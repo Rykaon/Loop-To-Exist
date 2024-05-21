@@ -1585,6 +1585,76 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: eye
+      value: 
+      objectReference: {fileID: 6802360651946524692}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: feet
+      value: 
+      objectReference: {fileID: 5738480824880601504}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: hand
+      value: 
+      objectReference: {fileID: 7310698133081631505}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: head
+      value: 
+      objectReference: {fileID: 4194247132682260400}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: Outline
+      value: 
+      objectReference: {fileID: 4604702339239741688}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: Trigger
+      value: 
+      objectReference: {fileID: 1122349625628603236}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: RigidBody
+      value: 
+      objectReference: {fileID: 5760256672101400769}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: linkTarget
+      value: 
+      objectReference: {fileID: 1221360560406827052}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: cameraTarget
+      value: 
+      objectReference: {fileID: 7608442625863202712}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: lineRenderer
+      value: 
+      objectReference: {fileID: 3582842961803081787}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: animationRoot
+      value: 
+      objectReference: {fileID: 1237294573407816685}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: ObjectCollider
+      value: 
+      objectReference: {fileID: 7240834232986036538}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: stickyAnimator
+      value: 
+      objectReference: {fileID: 910625585623035858}
+    - target: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+        type: 3}
+      propertyPath: stickyRenderer
+      value: 
+      objectReference: {fileID: 918151832175802138}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1627,10 +1697,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2709633788947748403, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
         type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 4092468843641456660}
-    - targetCorrespondingSourceObject: {fileID: 2709633788947748403, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
-        type: 3}
       insertIndex: -1
       addedObject: {fileID: 7240834232986036538}
     - targetCorrespondingSourceObject: {fileID: 2709633788947748403, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
@@ -1656,17 +1722,11 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6956996212435939134}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &4978371639501338893 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2709633788947748403, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+--- !u!114 &4092468843641456660 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6361169035654145834, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
     type: 3}
   m_PrefabInstance: {fileID: 6956996212435939134}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4092468843641456660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4978371639501338893}
   m_Enabled: 1
@@ -1674,78 +1734,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72226babe26ac8e4789da6bc30e0721e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
-  states: 
-  position: 0
-  handPivot: {fileID: 0}
-  headPivot: {fileID: 0}
-  RigidBody: {fileID: 5760256672101400769}
-  ObjectCollider: {fileID: 7240834232986036538}
-  Renderer: {fileID: 5663957509840846782}
-  Outline: {fileID: 4604702339239741688}
-  stickedWall: {fileID: 0}
-  stickyRenderer: {fileID: 918151832175802138}
-  dissolveMaterial: {fileID: 2100000, guid: 9cefab28cbd922346a664e5bc01fdb2e, type: 2}
-  stickyMaterial: {fileID: 2100000, guid: 9b81f1b07e03fec4a996141f9ef9bb45, type: 2}
-  startThrowForceHorizontal: 8
-  startThrowForceVertical: 5
-  objectToStick: {fileID: 0}
-  stickedObjects: []
-  link: {fileID: 0}
-  linkedObject: {fileID: 0}
-  linkAttachment: {fileID: 0}
-  linkJoint: {fileID: 0}
-  isSticked: 0
-  isLinked: 0
-  lastGroundedPosition: {x: 0, y: 0, z: 0}
-  lastGroundedRotation: {x: 0, y: 0, z: 0, w: 0}
-  physicMaterial: {fileID: 13400000, guid: 7f731aa4dff23bd479456c3253ed51c7, type: 2}
-  head: {fileID: 4194247132682260400}
-  hand: {fileID: 7310698133081631505}
-  feet: {fileID: 5738480824880601504}
-  eye: {fileID: 6802360651946524692}
-  linkTarget: {fileID: 1221360560406827052}
-  cameraTarget: {fileID: 7608442625863202712}
-  animationRoot: {fileID: 1237294573407816685}
-  Animator: {fileID: 7436188251193784686}
-  stickyAnimator: {fileID: 910625585623035858}
-  Trigger: {fileID: 1122349625628603236}
-  isMainPlayer: 0
-  isActive: 0
-  isAiming: 0
-  isLadder: 0
-  isLadderTrigger: 0
-  isJumping: 0
-  isJumpingDown: 0
-  buttonSouthIsPressed: 0
-  buttonWestIsPressed: 0
-  buttonEastIsPressed: 0
-  buttonNorthIsPressed: 0
-  leftTriggerIsPressed: 0
-  rightTriggerIsPressed: 0
-  lineRenderer: {fileID: 3582842961803081787}
-  linePoints: 25
-  timeBetweenPoints: 0.1
-  maxMoveSpeed: 10
-  acceleration: 15
-  deceleration: 15
-  velPower: 0.9
-  jumpForce: 17
-  jumpCutMultiplier: 0.9
-  jumpBufferTime: 0.5
-  jumpBufferTimer: 0
-  coyoteTime: 0.5
-  coyoteTimer: 0
-  customGravity: {x: 0, y: -30, z: 0}
-  fallGravityMultiplier: 1.5
-  collisionDetectionDistance: 0.25
-  RaycastLayer:
-    serializedVersion: 2
-    m_Bits: 73
-  moveMassMultiplier: 1
-  walkRatio: 1.01
-  walkRatioMultiplier: 0.02
-  maxSlopeAngle: 55
+--- !u!1 &4978371639501338893 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2709633788947748403, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6956996212435939134}
+  m_PrefabAsset: {fileID: 0}
 --- !u!136 &7240834232986036538
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1939,21 +1933,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6956996212435939134}
   m_PrefabAsset: {fileID: 0}
---- !u!137 &5663957509840846782 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 3320943388471283840, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
-    type: 3}
-  m_PrefabInstance: {fileID: 6956996212435939134}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5792332509760846740 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3525835309525144746, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
-    type: 3}
-  m_PrefabInstance: {fileID: 6956996212435939134}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &7436188251193784686 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 558044906735392336, guid: ba1dde5c07dc4fd489dae2bfd738b55d,
     type: 3}
   m_PrefabInstance: {fileID: 6956996212435939134}
   m_PrefabAsset: {fileID: 0}

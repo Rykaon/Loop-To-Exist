@@ -1,3 +1,4 @@
+using Cinemachine;
 using DG.Tweening;
 using System;
 using System.Collections;
@@ -94,5 +95,32 @@ public static class Utilities
         );
 
         child.localScale = Vector3.Scale(child.localScale, scaleFactor);
+    }
+
+    public static Quaternion GetGlobalRotation(this CinemachineVirtualCameraBase virtualCamera)
+    {
+        if (virtualCamera == null)
+        {
+            Debug.LogError("Virtual Camera is null.");
+            return Quaternion.identity;
+        }
+
+        Transform vcamTransform = virtualCamera.transform;
+
+        Camera mainCamera = Camera.main;
+
+        if (mainCamera == null)
+        {
+            Debug.LogError("Main Camera is not found.");
+            return Quaternion.identity;
+        }
+
+        Quaternion globalRotation = vcamTransform.rotation;
+
+        CinemachineBrain brain = mainCamera.GetComponent<CinemachineBrain>();
+        var state = brain.CurrentCameraState;
+        globalRotation = state.FinalOrientation;
+
+        return globalRotation;
     }
 }

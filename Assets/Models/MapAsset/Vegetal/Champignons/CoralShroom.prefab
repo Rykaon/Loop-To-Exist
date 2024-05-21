@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3644866911650986786}
   - component: {fileID: 6472978444921339369}
   - component: {fileID: 3142427076991011772}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CoralShroom
   m_TagString: Untagged
   m_Icon: {fileID: 0}

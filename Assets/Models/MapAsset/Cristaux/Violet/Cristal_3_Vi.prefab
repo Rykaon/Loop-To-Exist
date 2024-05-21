@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4538090050059023594}
   - component: {fileID: 1733766006980204773}
   - component: {fileID: 6475090803252392774}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cristal_3_Vi
   m_TagString: Untagged
   m_Icon: {fileID: 0}

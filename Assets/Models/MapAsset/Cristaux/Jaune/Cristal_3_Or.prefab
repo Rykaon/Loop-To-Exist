@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5073386037997309053}
   - component: {fileID: 1560969353922903889}
   - component: {fileID: 5248942003235391075}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cristal_3_Or
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 5665146695236293079}
   - component: {fileID: 5847013404920776204}
   - component: {fileID: 4486205211701648105}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Point Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

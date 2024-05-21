@@ -118,6 +118,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Socle_Rouge
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 86b87f0e49a00aa47869cb064a229257,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2786534777698132407, guid: 86b87f0e49a00aa47869cb064a229257,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

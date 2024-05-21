@@ -8,12 +8,9 @@ public class LadderTrigger : MonoBehaviour
     [SerializeField] private LadderManager ladder;
     [SerializeField] private LadderTrigger otherTrigger;
     [SerializeField] private Transform teleportPoint;
-    [SerializeField] private Transform textMeshTransform;
-    [SerializeField] private Transform startUI;
-    [SerializeField] private Transform endUI;
     public List<PlayerManager> players = new List<PlayerManager>();
-    public bool isActive = true;
-    private bool isUIActive = false;
+    public bool isActive = false;
+    public bool isPlayer = false;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -41,44 +38,70 @@ public class LadderTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (players.Count > 0 && isActive)
+        if (isActive)
         {
-            bool isPlayer = false;
-            for (int i = 0; i < players.Count; i++)
+            if (transform.parent.name == "LadderTrigger (1)")
             {
-                if (players[i].isMainPlayer && players[i].isActive)
+                Debug.Log("isActive");
+            }
+
+            if (players.Count > 0)
+            {
+                if (transform.parent.name == "LadderTrigger (1)")
                 {
-                    isPlayer = true;
-                    if (players[0].playerControls.Player.A.WasPressedThisFrame())
+                    Debug.Log("players.Count");
+                }
+
+                for (int i = 0; i < players.Count; i++)
+                {
+                    if (players[i].isMainPlayer && players[i].isActive)
                     {
-                        ladder.Teleport(teleportPoint.position, players[i], otherTrigger);
+                        if (transform.parent.name == "LadderTrigger (1)")
+                        {
+                            Debug.Log("isPlayer");
+                        }
+
+                        if (!ladder.outline.enabled)
+                        {
+                            ladder.outline.enabled = true;
+                        }
+
+                        isPlayer = true;
+                        if (players[i].playerControls.Player.A.WasPressedThisFrame())
+                        {
+                            ladder.Teleport(teleportPoint.position, players[i], otherTrigger);
+                        }
+                        break;
                     }
-                    break;
+
+                    if (i == players.Count - 1)
+                    {
+                        isPlayer = false;
+                    }
                 }
             }
-
-            textMeshTransform.LookAt(Camera.main.transform.position, Vector3.up);
-
-            if (isPlayer && !isUIActive)
+            else
             {
-                isUIActive = true;
-                textMeshTransform.DOScale(new Vector3(-0.32f, 0.32f, 0.32f), 0.25f).SetEase(Ease.InOutSine, 0.3f);
-                textMeshTransform.DOMove(endUI.position, 0.5f).SetEase(Ease.InOutSine, 0.3f);
+                if (transform.parent.name == "LadderTrigger (1)")
+                {
+                    Debug.Log("noPlayer");
+                }
+                isPlayer = false;
             }
-            else if (!isPlayer && isUIActive)
+
+            if (isPlayer)
             {
-                isUIActive = false;
-                textMeshTransform.DOScale(new Vector3(-0.25f, 0f, 0.32f), 0.25f).SetEase(Ease.InOutSine, 0.3f);
-                textMeshTransform.DOMove(startUI.position, 0.5f).SetEase(Ease.InOutSine, 0.3f);
+                if (!ladder.outline.enabled)
+                {
+                    ladder.outline.enabled = true;
+                }
             }
-        }
-        else
-        {
-            if (isUIActive)
+            else
             {
-                isUIActive = false;
-                textMeshTransform.DOScale(new Vector3(-0.25f, 0f, 0.32f), 0.25f).SetEase(Ease.InOutSine, 0.3f);
-                textMeshTransform.DOMove(startUI.position, 0.5f).SetEase(Ease.InOutSine, 0.3f);
+                if (!otherTrigger.isPlayer && ladder.outline.enabled)
+                {
+                    ladder.outline.enabled = false;
+                }
             }
         }
     }

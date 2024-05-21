@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2061960087349523840}
   - component: {fileID: 258929599128388459}
   - component: {fileID: 2425859729060233323}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cristal_1_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 8488079613273466643}
   - component: {fileID: 3823743799929396233}
   - component: {fileID: 3655903606113027918}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5946506264818658946}
   - component: {fileID: 3880688832718219757}
   - component: {fileID: -5131644512332271185}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StoneGate
   m_TagString: Untagged
   m_Icon: {fileID: 0}

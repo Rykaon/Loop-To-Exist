@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1242878840956525670}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DoorSeparate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6590211994250570261}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StoneDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,7 +80,7 @@ GameObject:
   - component: {fileID: 1294750350236458265}
   - component: {fileID: 6810581105198979474}
   - component: {fileID: 5656099255587838385}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: WallPattern.083
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +188,7 @@ GameObject:
   - component: {fileID: 6378516464983153925}
   - component: {fileID: 3799854050747677496}
   - component: {fileID: 3309387273742262037}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube.012
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: 1621397868448711132}
   - component: {fileID: 7800703949313581572}
   - component: {fileID: 8642655203818333415}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PressurePlate_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -418,7 +418,7 @@ GameObject:
   - component: {fileID: 3323283157221188128}
   - component: {fileID: 4320403018182869005}
   - component: {fileID: 9010937716659149212}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -499,7 +499,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8683051127052578372}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PressurePlate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -532,7 +532,7 @@ GameObject:
   - component: {fileID: 5367972421625365936}
   - component: {fileID: 6470078116032704191}
   - component: {fileID: 8575081098078914738}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PressurePlate_Base.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -614,7 +614,7 @@ GameObject:
   m_Component:
   - component: {fileID: 255950727972356405}
   - component: {fileID: 5673784003641648212}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: TriggerSound
   m_TagString: TriggerSound
   m_Icon: {fileID: 0}
@@ -674,7 +674,7 @@ GameObject:
   - component: {fileID: 3749786809114211156}
   - component: {fileID: 3745101601288166280}
   - component: {fileID: 5878411053073083123}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube.046
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1242,6 +1242,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Detector
       objectReference: {fileID: 0}
+    - target: {fileID: 3293862655381761751, guid: 9ec790d5d1b6c3344a7507a0b4e47395,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3656786258596666975, guid: 9ec790d5d1b6c3344a7507a0b4e47395,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -1342,10 +1347,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7011038168153837669, guid: 9ec790d5d1b6c3344a7507a0b4e47395,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8650720338636144787, guid: 9ec790d5d1b6c3344a7507a0b4e47395,
         type: 3}
       propertyPath: m_Name
       value: PressurePlate (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8650720338636144787, guid: 9ec790d5d1b6c3344a7507a0b4e47395,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

@@ -294,6 +294,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3373580124247035017}
+  - component: {fileID: 6361169035654145834}
   - component: {fileID: 558044906735392336}
   m_Layer: 0
   m_Name: ShroomCharacter
@@ -320,6 +321,91 @@ Transform:
   - {fileID: 6983029760947198485}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6361169035654145834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2709633788947748403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72226babe26ac8e4789da6bc30e0721e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  states: 
+  position: 0
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
+  RigidBody: {fileID: 0}
+  ObjectCollider: {fileID: 0}
+  Renderer: {fileID: 3320943388471283840}
+  Outline: {fileID: 0}
+  stickedWall: {fileID: 0}
+  stickyRenderer: {fileID: 0}
+  dissolveMaterial: {fileID: 2100000, guid: 9cefab28cbd922346a664e5bc01fdb2e, type: 2}
+  stickyMaterial: {fileID: 2100000, guid: 9b81f1b07e03fec4a996141f9ef9bb45, type: 2}
+  startThrowForceHorizontal: 8
+  startThrowForceVertical: 5
+  objectToStick: {fileID: 0}
+  stickedObjects: []
+  link: {fileID: 0}
+  linkedObject: {fileID: 0}
+  linkAttachment: {fileID: 0}
+  linkJoint: {fileID: 0}
+  isSticked: 0
+  isLinked: 0
+  lastGroundedPosition: {x: 0, y: 0, z: 0}
+  lastGroundedRotation: {x: 0, y: 0, z: 0, w: 0}
+  physicMaterial: {fileID: 13400000, guid: 7f731aa4dff23bd479456c3253ed51c7, type: 2}
+  head: {fileID: 0}
+  hand: {fileID: 0}
+  feet: {fileID: 0}
+  eye: {fileID: 0}
+  linkTarget: {fileID: 0}
+  cameraTarget: {fileID: 0}
+  animationRoot: {fileID: 0}
+  Animator: {fileID: 558044906735392336}
+  stickyAnimator: {fileID: 0}
+  Trigger: {fileID: 0}
+  isMainPlayer: 0
+  isActive: 0
+  isAiming: 0
+  isLadder: 0
+  isLadderTrigger: 0
+  isLookingEntity: 0
+  isJumping: 0
+  isJumpingDown: 0
+  buttonSouthIsPressed: 0
+  buttonWestIsPressed: 0
+  buttonEastIsPressed: 0
+  buttonNorthIsPressed: 0
+  leftTriggerIsPressed: 0
+  rightTriggerIsPressed: 0
+  lineRenderer: {fileID: 0}
+  linePoints: 25
+  timeBetweenPoints: 0.1
+  maxMoveSpeed: 10
+  acceleration: 15
+  deceleration: 15
+  velPower: 0.9
+  jumpForce: 17
+  jumpCutMultiplier: 0.9
+  jumpBufferTime: 0.5
+  jumpBufferTimer: 0
+  coyoteTime: 0.5
+  coyoteTimer: 0
+  customGravity: {x: 0, y: -30, z: 0}
+  fallGravityMultiplier: 1.5
+  collisionDetectionDistance: 0.25
+  RaycastLayer:
+    serializedVersion: 2
+    m_Bits: 72
+  moveMassMultiplier: 1
+  walkRatio: 1.01
+  walkRatioMultiplier: 0.02
+  maxSlopeAngle: 55
 --- !u!95 &558044906735392336
 Animator:
   serializedVersion: 5

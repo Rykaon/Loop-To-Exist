@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2722612769545403274}
   - component: {fileID: 3391220579711021083}
   - component: {fileID: 4092731221669207972}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ShroomMarron2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

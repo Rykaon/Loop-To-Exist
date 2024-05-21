@@ -38,6 +38,7 @@ public class PlayerManager : StateManager
     public bool isAiming = false;
     public bool isLadder = false;
     public bool isLadderTrigger = false;
+    public bool isLookingEntity = false;
     public bool isJumping = false;
     public bool isJumpingDown = false;
     private float idleTime = 0f;
@@ -545,7 +546,7 @@ public class PlayerManager : StateManager
 
         Vector3 rayDirection = ray.direction;
 
-        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit, RaycastLayer))
+        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit, float.MaxValue, RaycastLayer))
         {
             if (action == playerControls.Player.B)
             {
@@ -594,7 +595,7 @@ public class PlayerManager : StateManager
         ray.origin = eye.position;
         ray.direction = rayDirection;
 
-        if (Physics.Raycast(ray, out hit, RaycastLayer))
+        if (Physics.Raycast(ray, out hit, float.MaxValue, RaycastLayer))
         {
             if (action == playerControls.Player.RT)
             {
@@ -697,7 +698,7 @@ public class PlayerManager : StateManager
 
         Vector3 rayDirection = ray.direction;
 
-        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit, RaycastLayer))
+        if (Physics.Raycast(ray.origin, rayDirection, out RaycastHit hit, float.MaxValue, RaycastLayer))
         {
             if (hit.collider != null)
             {
@@ -736,7 +737,7 @@ public class PlayerManager : StateManager
         ray.origin = eye.position;
         ray.direction = rayDirection;
 
-        if (Physics.Raycast(ray, out hit, RaycastLayer))
+        if (Physics.Raycast(ray, out hit, float.MaxValue, RaycastLayer))
         {
             if (equippedObject != null)
             {
@@ -1102,7 +1103,7 @@ public class PlayerManager : StateManager
                         Hold();
                     }
 
-                    if (playerControls.Player.LT.IsPressed() && !leftTriggerIsPressed)
+                    if (playerControls.Player.LT.IsPressed() && !leftTriggerIsPressed && !isLookingEntity)
                     {
                         leftTriggerIsPressed = true;
                         Aim(true);

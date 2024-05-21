@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5703141039743836867}
   - component: {fileID: 34626617940029191}
   - component: {fileID: 6653296123799770337}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ShroomBleu1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

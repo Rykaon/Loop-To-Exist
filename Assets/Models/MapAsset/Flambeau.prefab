@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2434834373965508279}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 7746853342654167708}
   - component: {fileID: 2403914074585950983}
   - component: {fileID: 2446854340811382851}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 4009734953843905113}
   - component: {fileID: 2623525711191418531}
   - component: {fileID: 5525554675615202191}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5046,7 +5046,7 @@ GameObject:
   - component: {fileID: 7655912443765575458}
   - component: {fileID: 9071870920524012805}
   - component: {fileID: 395643036658651261}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Flambeau
   m_TagString: Object
   m_Icon: {fileID: 0}
@@ -5237,7 +5237,7 @@ GameObject:
   - component: {fileID: 6722508296352593845}
   - component: {fileID: 7702560782901934096}
   - component: {fileID: 5548445122790264026}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TorcheBold
   m_TagString: Untagged
   m_Icon: {fileID: 0}

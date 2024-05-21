@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4843125997986289240}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SocleOrbeBleu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 7944996461330719768}
   - component: {fileID: 6789988239578535485}
   - component: {fileID: 5005616860389265425}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,11 +108,17 @@ MonoBehaviour:
   tagsToCheck: []
   doorController: {fileID: 0}
   nbrOfEntity: 0
+  pressurePlate: {fileID: 0}
+  pressurePlateRenderer: {fileID: 0}
+  colorActive: {r: 0, g: 0, b: 0, a: 0}
+  colorInactive: {r: 0, g: 0, b: 0, a: 0}
   isOrbe: 1
   nameToCheck: Bleu
   orbeStartPos: {fileID: 8092410816653719299}
   orbeEndPos: {fileID: 9021939216252451104}
   vfxHolder: {fileID: 3392089408944490621}
+  glowUp: 0
+  glowDown: 0
   animator: {fileID: 8334760354235332618}
 --- !u!1 &3392089408944490621
 GameObject:
@@ -125,7 +131,7 @@ GameObject:
   - component: {fileID: 1778883402191029276}
   - component: {fileID: 3724866217116833725}
   - component: {fileID: 4448340632951996979}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: OrbActivation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -333,7 +339,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9021939216252451104}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: OrbeEndPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -364,7 +370,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8092410816653719299}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: OrbeStartPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,10 +400,80 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4843125997986289240}
     m_Modifications:
+    - target: {fileID: 339185069867144908, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049306674914766593, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1284105774585189200, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1358084970256947305, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375294093970319054, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2879301408902655434, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2939205287548705005, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3542944746382384309, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4964907580195587302, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384308119961484127, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5791693721262054462, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6631505900866476872, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7408413977424438568, guid: d556308bba25f0c49897e7ddf8a4ca03,
         type: 3}
       propertyPath: m_Name
       value: Socle_Bleu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7408413977424438568, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7732717315962203905, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7891478550511648658, guid: d556308bba25f0c49897e7ddf8a4ca03,
         type: 3}
@@ -468,6 +544,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8558974875299529521, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742538141662875582, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9219303316344419547, guid: d556308bba25f0c49897e7ddf8a4ca03,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

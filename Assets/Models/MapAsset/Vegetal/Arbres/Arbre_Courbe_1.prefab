@@ -88,6 +88,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Arbre_Courbe_1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 26069283f1f970c429c0dad097206ecf,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
