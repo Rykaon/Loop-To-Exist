@@ -460,15 +460,15 @@ public class PlayerManager : StateManager
     {
         float startThrowForceHorizontal = heldObject.startThrowForceHorizontal;
         float startThrowForceVertical = heldObject.startThrowForceVertical;
-        float maxThrowForceHorizontal = 15;
-        float maxThrowForceVertical = 7;
+        float maxThrowForceHorizontal = 100;
+        float maxThrowForceVertical = 70;
         throwDirection = new Vector2(startThrowForceHorizontal, startThrowForceVertical);
         isCalculatingThrowForce = true;
 
         while (isAiming && playerControls.Player.X.IsPressed())
         {
-            startThrowForceHorizontal += (0.1f + Time.fixedDeltaTime);
-            startThrowForceVertical += (0.1f + Time.fixedDeltaTime);
+            startThrowForceHorizontal += (1f + Time.fixedDeltaTime);
+            startThrowForceVertical += (1f + Time.fixedDeltaTime);
 
             if (startThrowForceHorizontal > maxThrowForceHorizontal)
             {
@@ -851,7 +851,7 @@ public class PlayerManager : StateManager
         lineRenderer.positionCount = Mathf.CeilToInt(linePoints / timeBetweenPoints) + 1;
         Vector3 startPosition = hand.position;
         Vector3 startVelocity;
-        float mass = 1;
+        float mass = 10;
 
         /*List<GameObject> stickedList = GetStickedObjects(GetFirstStickedObject(heldObject.gameObject));
 
