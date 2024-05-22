@@ -296,7 +296,7 @@ GameObject:
   - component: {fileID: 3373580124247035017}
   - component: {fileID: 6361169035654145834}
   - component: {fileID: 558044906735392336}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ShroomCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
