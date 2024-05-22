@@ -239,6 +239,18 @@ public class PlayerManager : StateManager
 
             rigidBody.AddForce(direction, ForceMode.Impulse);
             idleTime = 0;
+
+            if (transform.parent.name == "Player (2)")
+            {
+                Debug.Log("kjsdfbjk");
+            }
+        }
+        else
+        {
+            if (transform.parent.name == "Player (2)")
+            {
+                Debug.Log("kjsdfbjk");
+            }
         }
 
         Vector3 TargetSpeed = new Vector3(direction.x * maxMoveSpeed, 0f, direction.z * maxMoveSpeed);
@@ -800,7 +812,21 @@ public class PlayerManager : StateManager
             if (Physics.Raycast(feet.position, Vector3.down, out hit, collisionDetectionDistance, RaycastLayer))
             {
                 float dotProduct = Vector3.Dot(hit.normal, Vector3.up);
-                if (dotProduct >= 0.75 && dotProduct <= 1.25f)
+                float minDot = 0f;
+                float maxDot = 0f;
+
+                if (renderer.transform.position.y > 0f)
+                {
+                    minDot = 0.3f;
+                    maxDot = 1.7f;
+                }
+                else
+                {
+                    minDot = 0.75f;
+                    maxDot = 1.25f;
+                }
+
+                if (dotProduct >= minDot && dotProduct <= maxDot)
                 {
                     isCollisionDetected = true;
                     return true;
