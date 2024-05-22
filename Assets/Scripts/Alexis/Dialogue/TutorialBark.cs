@@ -38,7 +38,7 @@ public class TutorialBark : MonoBehaviour
             {
                 isActivate = true;
 
-                textMeshTransform.DOScale(new Vector3(-0.2f, 0.2f, 0.2f), 0.5f).SetEase(Ease.InOutSine, 0.9f);
+                textMeshTransform.DOScale(new Vector3(-0.4f, 0.4f, 0.4f), 0.5f).SetEase(Ease.InOutSine, 0.9f);
                 textMeshTransform.DOLocalMoveY(4.5f, 0.5f).SetEase(Ease.InOutSine, 0.3f);
             }
         }
