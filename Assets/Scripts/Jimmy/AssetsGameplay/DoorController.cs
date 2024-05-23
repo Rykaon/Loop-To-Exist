@@ -17,6 +17,7 @@ public class DoorController : MonoBehaviour
     [SerializeField] private Rigidbody gateBody;
     [SerializeField] private MeshRenderer motifRenderer;
     [SerializeField] private AnimationCurve openCurve;
+    [SerializeField] private Animator animator;
     private Vector3 openPosition;
     private Coroutine coroutine;
     private Tween open;
@@ -83,13 +84,18 @@ public class DoorController : MonoBehaviour
                 audioSource[2].Play();
             }
 
-            gateBody.useGravity = false;
-            open = gate.DOMove(openPosition, duration).SetEase(openCurve);
-            yield return new WaitForSecondsRealtime(duration);
-            gateBody.isKinematic = true;
+            if (animator == null)
+            {
+                gateBody.useGravity = false;
+                open = gate.DOMove(openPosition, duration).SetEase(openCurve);
+                yield return new WaitForSecondsRealtime(duration);
+                gateBody.isKinematic = true;
 
-            yield return new WaitForSecondsRealtime(duration);
-            gateBody.isKinematic = true;
+                yield return new WaitForSecondsRealtime(duration);
+                gateBody.isKinematic = true;
+            }
+
+            animator.Play("FinalDoorAnimationTremblementExtremeDeLaMort");
         }
         else
         {

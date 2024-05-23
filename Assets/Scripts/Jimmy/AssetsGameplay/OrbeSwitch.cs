@@ -14,9 +14,12 @@ public class OrbeSwitch : DoorSwitch
     [SerializeField] protected HDRColorspace glowUp;
     [SerializeField] private HDRColorspace glowDown;
     [SerializeField] protected Animator animator;
-    [HideInInspector] protected Renderer renderer;
+    [SerializeField] protected TextAsset inkJSON;
+    [SerializeField] protected Renderer doorRenderer;
+    [HideInInspector] protected Renderer orbRenderer;
     [HideInInspector] protected Vector3 startPos;
     [HideInInspector] protected Color currentEmissionColor;
+    [HideInInspector] protected Color currentDoorEmissionColor;
 
     protected override void Awake()
     {
@@ -33,7 +36,7 @@ public class OrbeSwitch : DoorSwitch
                 {
 
                     orbe = objectManager.transform;
-                    renderer = objectManager.renderer;
+                    orbRenderer = objectManager.renderer;
 
                     if (GameManager.instance.mainPlayer.trigger.triggeredObjectsList.Contains(objectManager))
                     {
@@ -69,8 +72,14 @@ public class OrbeSwitch : DoorSwitch
 
         yield return new WaitForSecondsRealtime(1.25f);
 
+        if (inkJSON != null)
+        {
+            DialogueManager.instance.EnterDialogueMode(inkJSON, false, true);
+        }
+
         startPos = orbe.transform.position;
-        currentEmissionColor = renderer.material.GetColor("_EmissionColor");
+        currentEmissionColor = orbRenderer.material.GetColor("_EmissionColor");
+        currentDoorEmissionColor = doorRenderer.material.GetColor("_EmissionColor");
         StartCoroutine(Bounce());
         StartCoroutine(Glow(1));
     }
@@ -95,12 +104,12 @@ public class OrbeSwitch : DoorSwitch
         float startIntensity = start;
         float endIntensity = 1.5f;
 
-        renderer.material.SetColor("_EmissionColor", currentEmissionColor * startIntensity);
+        orbRenderer.material.SetColor("_EmissionColor", currentEmissionColor * startIntensity);
 
         DOTween.To(() => startIntensity, x => {
             Color newEmissionColor = currentEmissionColor * x;
-            renderer.material.SetColor("_EmissionColor", newEmissionColor);
-            DynamicGI.SetEmissive(renderer, newEmissionColor);
+            orbRenderer.material.SetColor("_EmissionColor", newEmissionColor);
+            DynamicGI.SetEmissive(orbRenderer, newEmissionColor);
         }, endIntensity, duration);
 
         yield return new WaitForSecondsRealtime(duration);
@@ -108,16 +117,48 @@ public class OrbeSwitch : DoorSwitch
         startIntensity = endIntensity;
         endIntensity = 0.5f;
 
-        renderer.material.SetColor("_EmissionColor", currentEmissionColor * startIntensity);
+        orbRenderer.material.SetColor("_EmissionColor", currentEmissionColor * startIntensity);
 
         DOTween.To(() => startIntensity, x => {
             Color newEmissionColor = currentEmissionColor * x;
-            renderer.material.SetColor("_EmissionColor", newEmissionColor);
-            DynamicGI.SetEmissive(renderer, newEmissionColor);
+            orbRenderer.material.SetColor("_EmissionColor", newEmissionColor);
+            DynamicGI.SetEmissive(orbRenderer, newEmissionColor);
         }, endIntensity, duration);
 
         yield return new WaitForSecondsRealtime(duration);
 
         StartCoroutine(Glow(endIntensity));
+    }
+
+    private IEnumerator DoorGlow(float start)
+    {
+        float duration = 0.45f;
+        float startIntensity = start;
+        float endIntensity = 1.5f;
+
+        doorRenderer.material.SetColor("_EmissionColor", currentDoorEmissionColor * startIntensity);
+
+        DOTween.To(() => startIntensity, x => {
+            Color newEmissionColor = currentDoorEmissionColor * x;
+            doorRenderer.material.SetColor("_EmissionColor", newEmissionColor);
+            DynamicGI.SetEmissive(doorRenderer, newEmissionColor);
+        }, endIntensity, duration);
+
+        yield return new WaitForSecondsRealtime(duration);
+
+        startIntensity = endIntensity;
+        endIntensity = 0.5f;
+
+        doorRenderer.material.SetColor("_EmissionColor", currentDoorEmissionColor * startIntensity);
+
+        DOTween.To(() => startIntensity, x => {
+            Color newEmissionColor = currentDoorEmissionColor * x;
+            doorRenderer.material.SetColor("_EmissionColor", newEmissionColor);
+            DynamicGI.SetEmissive(doorRenderer, newEmissionColor);
+        }, endIntensity, duration);
+
+        yield return new WaitForSecondsRealtime(duration);
+
+        StartCoroutine(DoorGlow(endIntensity));
     }
 }

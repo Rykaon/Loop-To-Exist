@@ -91,7 +91,6 @@ public class DialogueManager : MonoBehaviour
     {
         if (isActive)
         {
-            Debug.Log("kljdbfkjdfbs");
             if (elapsedTime > timeToWaitToSkip && currentStory.currentChoices.Count == 0) //&& (GameManager.instance.playerControls.UI.A.WasPressedThisFrame()) 
             {
                 ContinueStory();
