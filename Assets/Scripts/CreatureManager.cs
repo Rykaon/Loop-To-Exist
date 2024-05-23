@@ -13,6 +13,7 @@ public class CreatureManager : StateManager
     [SerializeField] private Animator stickyAnimator;
     [SerializeField] private NavMeshAgent Agent;
     [SerializeField] public Transform animationRoot;
+    [SerializeField] private ParticleSystem particleDrop; 
 
     [Header("Properties")]
     [SerializeField] private float roamingRadius;
@@ -94,6 +95,10 @@ public class CreatureManager : StateManager
 
     public override void InitializeHoldObject(Transform parent)
     {
+        if (!particleDrop.isPlaying)
+        {
+            particleDrop.Play();
+        }
         base.InitializeHoldObject(parent);
         isHeldAnim = true;
         audioManager.Play("Sfx_Creature_WhileGrab", radius);
@@ -129,7 +134,6 @@ public class CreatureManager : StateManager
     {
         base.DropObject();
         audioManager.Stop("Sfx_Creature_WhileGrab");
-
     }
 
     protected override void OnCollisionEnter(Collision collision)
@@ -244,6 +248,10 @@ public class CreatureManager : StateManager
 
                     if (agent == null)
                     {
+                        if (particleDrop.isPlaying)
+                        {
+                            particleDrop.Stop();
+                        }
                         Agent = this.AddComponent<NavMeshAgent>();
                         agent = Agent;
                         agent.speed = speed;

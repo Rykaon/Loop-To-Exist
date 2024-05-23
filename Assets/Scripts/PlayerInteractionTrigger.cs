@@ -30,7 +30,17 @@ public class PlayerInteractionTrigger : MonoBehaviour
                 {
                     if (holdObject.position == StateManager.Position.Default || holdObject.position == StateManager.Position.Held)
                     {
-                        triggeredObjectsList.Add(holdObject);
+                        if (holdObject.stickedWall == null)
+                        {
+                            triggeredObjectsList.Add(holdObject);
+                        }
+                        else
+                        {
+                            if (holdObject.stickedWall.isWallDestroyed)
+                            {
+                                triggeredObjectsList.Add(holdObject);
+                            }
+                        }
                     }
                 }
             }
