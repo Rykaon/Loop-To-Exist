@@ -338,26 +338,6 @@ public class PlayerManager : StateManager
         jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
         Vector3 jumpForce = new Vector3(rigidBody.velocity.x, this.jumpForce, rigidBody.velocity.z);
 
-        /*jumpForce = jumpForce * moveMassMultiplier;
-        if (isLinked)
-        {
-            jumpForce = jumpForce * linkMoveMultiplier;
-        }
-        else if (heldObject != null)
-        {
-            if (heldObject.link != null)
-            {
-                jumpForce = jumpForce * linkMoveMultiplier;
-            }
-        }
-        else if (equippedObject != null)
-        {
-            if (equippedObject.link != null)
-            {
-                jumpForce = jumpForce * linkMoveMultiplier;
-            }
-        }*/
-
         if (equippedObject != null)
         {
             equippedObject.objectCollider.isTrigger = true;
@@ -790,7 +770,7 @@ public class PlayerManager : StateManager
         return isCollisionDetected;
     }
 
-    private bool RaycastGrounded()
+    public bool RaycastGrounded()
     {
         bool isCollisionDetected = Physics.BoxCast(feet.position, feet.transform.lossyScale / 2, Vector3.down, feet.transform.rotation, collisionDetectionDistance, RaycastLayer);
 

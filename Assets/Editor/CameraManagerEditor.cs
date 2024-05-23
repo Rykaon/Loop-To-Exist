@@ -9,11 +9,15 @@ public class CameraManagerEditor : Editor
 
     private void OnEnable()
     {
+        ///////////
+        // INTRO //
+        ///////////
+
         // Get the serialized property for intro plans
         SerializedProperty introProperty = serializedObject.FindProperty("intro");
-        SerializedProperty plansProperty = introProperty.FindPropertyRelative("plans");
+        SerializedProperty introPlansProperty = introProperty.FindPropertyRelative("plans");
 
-        reorderableList = new ReorderableList(serializedObject, plansProperty, true, true, true, true);
+        reorderableList = new ReorderableList(serializedObject, introPlansProperty, true, true, true, true);
 
         reorderableList.drawHeaderCallback = (Rect rect) =>
         {
@@ -25,6 +29,166 @@ public class CameraManagerEditor : Editor
             SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
             CameraManager cameraManager = (CameraManager)target;
             Cinematic.CinematicPlan plan = cameraManager.intro.plans[index];
+
+            // Draw the properties of the element
+            rect.y += 2;
+            float singleLineHeight = EditorGUIUtility.singleLineHeight;
+            float padding = 2f;
+
+            EditorGUI.PropertyField(
+                new Rect(rect.x, rect.y, rect.width, singleLineHeight),
+                element, new GUIContent($"Cinematic Plan {index + 1}"), true);
+
+            rect.y += EditorGUI.GetPropertyHeight(element) + padding;
+
+            // Draw SetToView button
+            if (GUI.Button(new Rect(rect.x, rect.y, rect.width / 2 - padding, singleLineHeight), "Set To View"))
+            {
+                plan.SetToView();
+            }
+
+            // Draw GetToView button
+            if (GUI.Button(new Rect(rect.x + rect.width / 2 + padding, rect.y, rect.width / 2 - padding, singleLineHeight), "Get To View"))
+            {
+                plan.GetToView();
+            }
+
+            rect.y += singleLineHeight + padding;
+        };
+
+        reorderableList.elementHeightCallback = (int index) =>
+        {
+            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            float propertyHeight = EditorGUI.GetPropertyHeight(element);
+            return propertyHeight + EditorGUIUtility.singleLineHeight * 2 + 10f; // Adjusted height for properties and buttons
+        };
+
+        //////////////
+        // TUTORIAL //
+        //////////////
+
+        // Get the serialized property for intro plans
+        SerializedProperty tutorialProperty = serializedObject.FindProperty("tutorial");
+        SerializedProperty tutorialPlansProperty = tutorialProperty.FindPropertyRelative("plans");
+
+        reorderableList = new ReorderableList(serializedObject, tutorialPlansProperty, true, true, true, true);
+
+        reorderableList.drawHeaderCallback = (Rect rect) =>
+        {
+            EditorGUI.LabelField(rect, "Cinematic Plans");
+        };
+
+        reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+        {
+            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            CameraManager cameraManager = (CameraManager)target;
+            Cinematic.CinematicPlan plan = cameraManager.tutorial.plans[index];
+
+            // Draw the properties of the element
+            rect.y += 2;
+            float singleLineHeight = EditorGUIUtility.singleLineHeight;
+            float padding = 2f;
+
+            EditorGUI.PropertyField(
+                new Rect(rect.x, rect.y, rect.width, singleLineHeight),
+                element, new GUIContent($"Cinematic Plan {index + 1}"), true);
+
+            rect.y += EditorGUI.GetPropertyHeight(element) + padding;
+
+            // Draw SetToView button
+            if (GUI.Button(new Rect(rect.x, rect.y, rect.width / 2 - padding, singleLineHeight), "Set To View"))
+            {
+                plan.SetToView();
+            }
+
+            // Draw GetToView button
+            if (GUI.Button(new Rect(rect.x + rect.width / 2 + padding, rect.y, rect.width / 2 - padding, singleLineHeight), "Get To View"))
+            {
+                plan.GetToView();
+            }
+
+            rect.y += singleLineHeight + padding;
+        };
+
+        reorderableList.elementHeightCallback = (int index) =>
+        {
+            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            float propertyHeight = EditorGUI.GetPropertyHeight(element);
+            return propertyHeight + EditorGUIUtility.singleLineHeight * 2 + 10f; // Adjusted height for properties and buttons
+        };
+
+        //////////////////
+        // KINDERGARDEN //
+        //////////////////
+
+        SerializedProperty kindergardenProperty = serializedObject.FindProperty("kindergarden");
+        SerializedProperty kindergardenPlansProperty = kindergardenProperty.FindPropertyRelative("plans");
+
+        reorderableList = new ReorderableList(serializedObject, kindergardenPlansProperty, true, true, true, true);
+
+        reorderableList.drawHeaderCallback = (Rect rect) =>
+        {
+            EditorGUI.LabelField(rect, "Cinematic Plans");
+        };
+
+        reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+        {
+            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            CameraManager cameraManager = (CameraManager)target;
+            Cinematic.CinematicPlan plan = cameraManager.kindergarden.plans[index];
+
+            // Draw the properties of the element
+            rect.y += 2;
+            float singleLineHeight = EditorGUIUtility.singleLineHeight;
+            float padding = 2f;
+
+            EditorGUI.PropertyField(
+                new Rect(rect.x, rect.y, rect.width, singleLineHeight),
+                element, new GUIContent($"Cinematic Plan {index + 1}"), true);
+
+            rect.y += EditorGUI.GetPropertyHeight(element) + padding;
+
+            // Draw SetToView button
+            if (GUI.Button(new Rect(rect.x, rect.y, rect.width / 2 - padding, singleLineHeight), "Set To View"))
+            {
+                plan.SetToView();
+            }
+
+            // Draw GetToView button
+            if (GUI.Button(new Rect(rect.x + rect.width / 2 + padding, rect.y, rect.width / 2 - padding, singleLineHeight), "Get To View"))
+            {
+                plan.GetToView();
+            }
+
+            rect.y += singleLineHeight + padding;
+        };
+
+        reorderableList.elementHeightCallback = (int index) =>
+        {
+            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            float propertyHeight = EditorGUI.GetPropertyHeight(element);
+            return propertyHeight + EditorGUIUtility.singleLineHeight * 2 + 10f; // Adjusted height for properties and buttons
+        };
+
+        ////////////
+        // ESCAPE //
+        ////////////
+
+        SerializedProperty escapeProperty = serializedObject.FindProperty("escape");
+        SerializedProperty escapePlansProperty = escapeProperty.FindPropertyRelative("plans");
+
+        reorderableList = new ReorderableList(serializedObject, escapePlansProperty, true, true, true, true);
+
+        reorderableList.drawHeaderCallback = (Rect rect) =>
+        {
+            EditorGUI.LabelField(rect, "Cinematic Plans");
+        };
+
+        reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+        {
+            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            CameraManager cameraManager = (CameraManager)target;
+            Cinematic.CinematicPlan plan = cameraManager.escape.plans[index];
 
             // Draw the properties of the element
             rect.y += 2;
@@ -72,6 +236,51 @@ public class CameraManagerEditor : Editor
             if (iterator.name == "intro")
             {
                 EditorGUILayout.PropertyField(iterator, new GUIContent("Intro"), false);
+                if (iterator.isExpanded)
+                {
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startTransition"));
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endTransition"));
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startDuration"));
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endDuration"));
+
+                    EditorGUILayout.Space();
+                    reorderableList.DoLayoutList();
+                }
+            }
+            else if (iterator.name == "tutorial")
+            {
+                EditorGUILayout.PropertyField(iterator, new GUIContent("Tutorial"), false);
+                if (iterator.isExpanded)
+                {
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startTransition"));
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endTransition"));
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startDuration"));
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endDuration"));
+
+                    EditorGUILayout.Space();
+                    reorderableList.DoLayoutList();
+                }
+            }
+            else if (iterator.name == "kindergarden")
+            {
+                EditorGUILayout.PropertyField(iterator, new GUIContent("Kindergarden"), false);
+                if (iterator.isExpanded)
+                {
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startTransition"));
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endTransition"));
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startDuration"));
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endDuration"));
+
+                    EditorGUILayout.Space();
+                    reorderableList.DoLayoutList();
+                }
+            }
+            else if (iterator.name == "escape")
+            {
+                EditorGUILayout.PropertyField(iterator, new GUIContent("Escape"), false);
                 if (iterator.isExpanded)
                 {
                     EditorGUI.indentLevel++;

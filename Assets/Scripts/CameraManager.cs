@@ -46,6 +46,9 @@ public class CameraManager : MonoBehaviour
 
     [Header("Cinematics")]
     public CinematicSequence intro;
+    public CinematicSequence tutorial;
+    public CinematicSequence kindergarden;
+    public CinematicSequence escape;
 
     private void Awake()
     {

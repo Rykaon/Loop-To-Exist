@@ -49,6 +49,16 @@ public class GameManager : MonoBehaviour
     [Header("Entities References")]
     [SerializeField] private List<StateManager> entities;
 
+    [Header("Progression Status")]
+    public bool hasFinishedTutorial = false;
+    public bool hasSetFirstOrb = false;
+    public bool hasSetSecondOrb = false;
+    public bool hasSetLastOrb = false;
+    public bool hasDied = false;
+    public int talkedToEntity = 0;
+    public bool hasGotToTop = false;
+    public bool hasGotToBottom = false;
+
     public Volume globalVolume { get; private set; }
     public UIManager UIManager { get; private set; }
     public RadialMenu playerMenu { get; private set; }

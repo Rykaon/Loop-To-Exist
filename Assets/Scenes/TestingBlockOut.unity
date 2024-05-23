@@ -12730,6 +12730,71 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 0
       sceneLook: {x: 0, y: 0, z: 0}
+  tutorial:
+    name: 
+    startTransition: 0
+    endTransition: 0
+    startDuration: 0
+    endDuration: 0
+    plans:
+    - transition: 0
+      duration: 0
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 0
+        m_PostInfinity: 0
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 0
+        m_PostInfinity: 0
+        m_RotationOrder: 0
+      sceneSize: 0
+      sceneLook: {x: 0, y: 0, z: 0}
+  kindergarden:
+    name: 
+    startTransition: 0
+    endTransition: 0
+    startDuration: 0
+    endDuration: 0
+    plans: []
+  escape:
+    name: 
+    startTransition: 0
+    endTransition: 0
+    startDuration: 0
+    endDuration: 0
+    plans:
+    - transition: 0
+      duration: 0
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 0
+        m_PostInfinity: 0
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 0
+        m_PostInfinity: 0
+        m_RotationOrder: 0
+      sceneSize: 0
+      sceneLook: {x: 0, y: 0, z: 0}
 --- !u!114 &205155493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13076,6 +13141,14 @@ MonoBehaviour:
   - {fileID: 1096334668}
   - {fileID: 1915813163}
   - {fileID: 1802289391}
+  hasFinishedTutorial: 0
+  hasSetFirstOrb: 0
+  hasSetSecondOrb: 0
+  hasSetLastOrb: 0
+  hasDied: 0
+  talkedToEntity: 0
+  hasGotToTop: 0
+  hasGotToBottom: 0
   buttonNorthIsPressed: 0
   leftShoulderisPressed: 0
 --- !u!1001 &205299269
@@ -35816,7 +35889,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 656584578}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30538628, y: 0.10219998, z: -0.03298669, w: 0.9461534}
+  m_LocalRotation: {x: 0.30538628, y: 0.10219997, z: -0.03298669, w: 0.9461534}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -74492,6 +74565,74 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1384106448}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1385329421
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1385329422}
+  - component: {fileID: 1385329424}
+  - component: {fileID: 1385329423}
+  m_Layer: 0
+  m_Name: TutorialCinematic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1385329422
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1385329421}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -13.32, y: 16.02, z: 215.47}
+  m_LocalScale: {x: 22.73, y: 16.02, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1575011204}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1385329423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1385329421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee9c2d223ee6f0d42aee6b472ceeeff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  isActive: 1
+--- !u!65 &1385329424
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1385329421}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1387877295
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -82946,6 +83087,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1573776565}
   m_Mesh: {fileID: -8575203413107835594, guid: a31aaaefb8953e548bce53d0a275d567, type: 3}
+--- !u!1 &1575011203
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1575011204}
+  m_Layer: 0
+  m_Name: Adjustement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1575011204
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575011203}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1385329422}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1575300048
 Mesh:
   m_ObjectHideFlags: 0
@@ -116554,6 +116727,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 33736474}
+  - {fileID: 1575011204}
   - {fileID: 307622326}
   - {fileID: 1132221039}
   - {fileID: 271795167}
