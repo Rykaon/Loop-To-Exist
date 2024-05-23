@@ -21,6 +21,7 @@ namespace Cinematic
             Interpolate
         }
 
+        public string name;
         public Transition startTransition, endTransition;
         public float startDuration, endDuration;
         public List<CinematicPlan> plans;
@@ -322,7 +323,7 @@ namespace Cinematic
         [HideInInspector] public float sceneSize = 10f;
         [HideInInspector] public Vector3 sceneLook = Vector3.zero;
 
-        public void SetotView()
+        public void SetToView()
         {
             #if UNITY_EDITOR
             SceneView sceneView = SceneView.lastActiveSceneView;

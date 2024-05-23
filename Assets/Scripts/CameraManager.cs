@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using Cinematic;
 using UnityEngine.VFX;
 using UnityEngine.Rendering.Universal;
+using Ink.Parsed;
 
 public class CameraManager : MonoBehaviour
 {

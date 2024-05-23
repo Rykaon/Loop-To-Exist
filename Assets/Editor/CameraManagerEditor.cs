@@ -40,7 +40,7 @@ public class CameraManagerEditor : Editor
             // Draw SetToView button
             if (GUI.Button(new Rect(rect.x, rect.y, rect.width / 2 - padding, singleLineHeight), "Set To View"))
             {
-                plan.SetotView();
+                plan.SetToView();
             }
 
             // Draw GetToView button

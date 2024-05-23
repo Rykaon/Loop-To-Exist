@@ -338,7 +338,7 @@ public class PlayerManager : StateManager
         jumpFrameMovementSave = new Vector2(rigidBody.velocity.x, rigidBody.velocity.z);
         Vector3 jumpForce = new Vector3(rigidBody.velocity.x, this.jumpForce, rigidBody.velocity.z);
 
-        jumpForce = jumpForce * moveMassMultiplier;
+        /*jumpForce = jumpForce * moveMassMultiplier;
         if (isLinked)
         {
             jumpForce = jumpForce * linkMoveMultiplier;
@@ -356,7 +356,7 @@ public class PlayerManager : StateManager
             {
                 jumpForce = jumpForce * linkMoveMultiplier;
             }
-        }
+        }*/
 
         if (equippedObject != null)
         {
