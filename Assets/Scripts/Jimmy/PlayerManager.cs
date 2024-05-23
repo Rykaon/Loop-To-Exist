@@ -239,18 +239,6 @@ public class PlayerManager : StateManager
 
             rigidBody.AddForce(direction, ForceMode.Impulse);
             idleTime = 0;
-
-            if (transform.parent.name == "Player (2)")
-            {
-                Debug.Log("kjsdfbjk");
-            }
-        }
-        else
-        {
-            if (transform.parent.name == "Player (2)")
-            {
-                Debug.Log("kjsdfbjk");
-            }
         }
 
         Vector3 TargetSpeed = new Vector3(direction.x * maxMoveSpeed, 0f, direction.z * maxMoveSpeed);
@@ -815,10 +803,10 @@ public class PlayerManager : StateManager
                 float minDot = 0f;
                 float maxDot = 0f;
 
-                if (renderer.transform.position.y > 0f)
+                if (renderer.transform.position.y > 28f)
                 {
-                    minDot = 0.3f;
-                    maxDot = 1.7f;
+                    minDot = 0.6f;
+                    maxDot = 1.4f;
                 }
                 else
                 {
