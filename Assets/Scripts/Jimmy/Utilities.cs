@@ -123,4 +123,36 @@ public static class Utilities
 
         return globalRotation;
     }
+
+    public static Vector3 QuadraticLerp(Vector3 a, Vector3 b, Vector3 c, float t)
+    {
+        Vector3 ab = Vector3.Lerp(a, b, t);
+        Vector3 bc = Vector3.Lerp(b, c, t);
+
+        return Vector3.Lerp(ab, bc, t);
+    }
+
+    public static Vector3 CubicLerp(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
+    {
+        Vector3 ab_bc = QuadraticLerp(a, b, c, t);
+        Vector3 bc_cd = QuadraticLerp(b, c, d, t);
+
+        return Vector3.Lerp(ab_bc, bc_cd, t);
+    }
+
+    public static Quaternion QuadraticSlerp(Quaternion a, Quaternion b, Quaternion c, float t)
+    {
+        Quaternion ab = Quaternion.Slerp(a, b, t);
+        Quaternion bc = Quaternion.Slerp(b, c, t);
+
+        return Quaternion.Slerp(ab, bc, t);
+    }
+
+    public static Quaternion CubicSlerp(Quaternion a, Quaternion b, Quaternion c, Quaternion d, float t)
+    {
+        Quaternion ab_bc = QuadraticSlerp(a, b, c, t);
+        Quaternion bc_cd = QuadraticSlerp(b, c, d, t);
+
+        return Quaternion.Slerp(ab_bc, bc_cd, t);
+    }
 }

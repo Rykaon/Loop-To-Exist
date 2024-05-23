@@ -235,6 +235,11 @@ public class GameManager : MonoBehaviour
 
         if (controlState == ControlState.World)
         {
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                cameraManager.ExecuteCinematic(cameraManager.intro);
+            }
+
             if (playerControls.Player.Select.WasPressedThisFrame())
             {
                 if (UIManager.toggleMenuPause == null)
@@ -242,11 +247,6 @@ public class GameManager : MonoBehaviour
                     ChangeState(ControlState.UI);
                     UIManager.SetGameMenuActive(true);
                 }
-            }
-
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                cameraManager.ExecuteCinematic(cameraManager.intro);
             }
 
             if (playerControls.Player.LB.IsPressed() && !leftShoulderisPressed)

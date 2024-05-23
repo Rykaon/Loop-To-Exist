@@ -27,7 +27,7 @@ public class StickedWallManager : MonoBehaviour
             states[i].rigidBody.isKinematic = false;
             states[i].rigidBody.useGravity = true;
             states[i].rigidBody.constraints = RigidbodyConstraints.None;
-            states[i].rigidBody.AddForce(direction * 15, ForceMode.Impulse);
+            states[i].rigidBody.AddForce(direction * 20, ForceMode.Impulse);
         }
 
         state.SetState(StateManager.State.Sticky);

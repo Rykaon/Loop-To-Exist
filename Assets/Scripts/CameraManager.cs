@@ -19,6 +19,7 @@ public class CameraManager : MonoBehaviour
     public CinemachineVirtualCamera cinematicCamera;
     [HideInInspector] private Cinemachine3rdPersonFollow thirdPersonFollow;
     public CinemachineBrain brain;
+    private float brainTransitionDuration;
     
     [SerializeField] private RectTransform aimCursor;
     [SerializeField] private Transform followTransitionTarget;
@@ -49,6 +50,7 @@ public class CameraManager : MonoBehaviour
     {
         currentCam = worldCamera;
         brain = Camera.main.GetComponent<CinemachineBrain>();
+        brainTransitionDuration = brain.m_DefaultBlend.m_Time;
     }
 
     public void ChangeCamera(CinemachineVirtualCameraBase newCam)
@@ -60,6 +62,7 @@ public class CameraManager : MonoBehaviour
         }
 
         currentCam = newCam;
+        brain.m_DefaultBlend.m_Time = brainTransitionDuration;
         currentCam.Priority = 100;
     }
 

@@ -289,6 +289,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 5115999}
@@ -2865,6 +2870,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 76796841}
@@ -3874,7 +3884,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 82957763}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -6343,6 +6353,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
@@ -15773,6 +15788,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 326018149}
@@ -24923,7 +24943,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 475341343}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -27943,6 +27963,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RockCrystal (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
@@ -31518,6 +31543,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 598689110}
@@ -32037,6 +32067,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
         type: 3}
@@ -35274,6 +35309,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RockCrystal (17)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
@@ -40465,6 +40505,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 758401087}
@@ -41047,6 +41092,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RockCrystal (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
@@ -41794,6 +41844,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
         type: 3}
@@ -44104,6 +44159,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
@@ -49963,6 +50023,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 945164602}
@@ -54546,6 +54611,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 1047027109}
@@ -56341,6 +56411,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 1084677199}
@@ -57478,7 +57553,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1100843164}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -58798,7 +58873,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1114372096}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -59765,6 +59840,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 1125572378}
@@ -60178,11 +60258,1065 @@ MonoBehaviour:
     m_RotationOrder: 4
   blackScreen: {fileID: 1876917737}
   intro:
-    startTransition: 0
-    endTransition: 0
-    startDuration: 0
-    endDuration: 0
-    plans: []
+    startTransition: 1
+    endTransition: 3
+    startDuration: 1
+    endDuration: 1
+    plans:
+    - transition: 4
+      duration: 1
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -5.2615514, y: 108.99882, z: 6.4902344}
+      rotation: {x: 71.36765, y: 308.9168, z: 0.000550486}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -8.817391, y: 95.44425, z: 9.361156}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 1
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -9.314122, y: 96.72259, z: 9.334065}
+      rotation: {x: 67.51739, y: 301.62866, z: 0.00046439207}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -13.971634, y: 83.50549, z: 12.2026005}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 1
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -23.19921, y: 77.63913, z: 4.8016987}
+      rotation: {x: 43.178135, y: 241.26112, z: -0.00046363202}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -32.345417, y: 67.85116, z: -0.21377325}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 1
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -40.593346, y: 63.066475, z: 2.7248957}
+      rotation: {x: 31.214771, y: 288.2896, z: -0.0004023133}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -52.2088, y: 55.65332, z: 6.5640044}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 2
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -45.19614, y: 53.634388, z: 20.427704}
+      rotation: {x: 28.052021, y: 359.10715, z: -0.0005697382}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -45.392853, y: 46.90747, z: 33.050003}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 2
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -34.43552, y: 40.512238, z: 37.229362}
+      rotation: {x: 35.61505, y: 58.236237, z: -0.0006973459}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -24.548553, y: 32.182327, z: 43.350887}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 2
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -9.41621, y: 25.880894, z: 31.457142}
+      rotation: {x: 7.150513, y: 165.90686, z: -0.00008852042}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -5.960224, y: 24.10035, z: 17.6913}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 2
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -9.157349, y: 17.148277, z: 9.52013}
+      rotation: {x: 33.68991, y: 197.12157, z: -0.00011748916}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -12.661271, y: 9.213722, z: -1.8543129}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 2
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -16.040543, y: 7.6070538, z: 1.8493671}
+      rotation: {x: 12.513389, y: 221.87305, z: -0.0006729648}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -25.361591, y: 4.507777, z: -8.548949}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 0
+      duration: 5
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -16.040543, y: 7.6070538, z: 1.8493671}
+      rotation: {x: 12.513389, y: 221.87305, z: -0.0006729648}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -25.361591, y: 4.507777, z: -8.548949}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 1
+      duration: 0
+      transitionDuration: 0.5
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -19.109211, y: 12.925547, z: 10.879645}
+      rotation: {x: 14.85106, y: 8.458538, z: -0.0006788001}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -17.075428, y: 9.259256, z: 24.555702}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 1
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -18.173227, y: 18.731228, z: 17.826773}
+      rotation: {x: 0.9625613, y: 6.9460936, z: -0.00065428304}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -16.443577, y: 18.490929, z: 32.024063}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 1
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -16.343529, y: 30.886627, z: 34.442047}
+      rotation: {x: 2.3376622, y: 4.883426, z: -0.00065525627}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -15.126837, y: 30.303175, z: 48.682545}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 4
+      duration: 2
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -14.088986, y: 31.580368, z: 74.761215}
+      rotation: {x: 16.501184, y: 1.8580456, z: -0.0006837804}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -13.644296, y: 27.517448, z: 88.46915}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 0
+      duration: 3
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -14.088986, y: 31.580368, z: 74.761215}
+      rotation: {x: 16.501184, y: 1.8580456, z: -0.0006837804}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -13.644296, y: 27.517448, z: 88.46915}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 1
+      duration: 1
+      transitionDuration: 0.5
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -16.040543, y: 7.6070538, z: 1.849371}
+      rotation: {x: 12.513389, y: 221.87305, z: -0.0006734021}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -25.361591, y: 4.507777, z: -8.548948}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
+    - transition: 0
+      duration: 2
+      transitionDuration: 0
+      isFirstDialogue: 0
+      inkJSON: {fileID: 0}
+      dialogueDurations: []
+      position: {x: -16.040543, y: 7.6070538, z: 1.849371}
+      rotation: {x: 12.513389, y: 221.87305, z: -0.0006734021}
+      positionCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      rotationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+      sceneSize: 7.152141
+      sceneLook: {x: -25.361591, y: 4.507777, z: -8.548948}
+      index: 0
+      curvedPlans: []
+      pathPosition: []
+      pathRotation: []
 --- !u!114 &1128649035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66395,6 +67529,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 1217485101}
@@ -69076,6 +70215,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 1274272537}
@@ -70779,6 +71923,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
@@ -74040,7 +75189,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 795834191}
   m_Follow: {fileID: 795834191}
   m_Lens:
-    FieldOfView: 40
+    FieldOfView: 60
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -75872,6 +77021,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 922692873}
     m_Modifications:
+    - target: {fileID: 264480338743525186, guid: 3fd22847b6636bd4d94cf9004c2bcea9,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 264480338743525186, guid: 3fd22847b6636bd4d94cf9004c2bcea9,
+        type: 3}
+      propertyPath: states.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 264480338743525186, guid: 3fd22847b6636bd4d94cf9004c2bcea9,
+        type: 3}
+      propertyPath: states.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 864022429456852305, guid: 3fd22847b6636bd4d94cf9004c2bcea9,
         type: 3}
       propertyPath: m_IsActive
@@ -76472,6 +77636,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RockCrystal (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
@@ -77311,6 +78480,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
         type: 3}
@@ -78223,7 +79397,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1441911929}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -79178,7 +80352,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1463981229}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -80408,6 +81582,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 1479143406}
@@ -80988,6 +82167,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 1492283254}
@@ -81416,6 +82600,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RockCrystal (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
@@ -83678,7 +84867,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1554764631}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -85588,7 +86777,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1591228331}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3053913, y: 0.10205505, z: -0.032939907, w: 0.9461691}
+  m_LocalRotation: {x: 0.30538628, y: 0.10219997, z: -0.03298669, w: 0.9461534}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -88228,7 +89417,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1624925787}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3053913, y: 0.10205505, z: -0.032939907, w: 0.9461691}
+  m_LocalRotation: {x: 0.30538628, y: 0.10219997, z: -0.03298669, w: 0.9461534}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -89396,6 +90585,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3251334576667887171, guid: d6fec025f57a2fa4d90e446c8660e2a0,
         type: 3}
@@ -92213,6 +93407,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 1683835760}
@@ -93931,7 +95130,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1715163212}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -94028,7 +95227,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1720302771}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -100022,7 +101221,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1813856905}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3053913, y: 0.10205505, z: -0.032939907, w: 0.9461691}
+  m_LocalRotation: {x: 0.30538628, y: 0.10219997, z: -0.03298669, w: 0.9461534}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -104690,6 +105889,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977020625595659981, guid: ef263173320cbea48842757f959b93a1,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 1930117308}
@@ -104818,6 +106022,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
@@ -106166,7 +107375,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953302996}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -108608,6 +109817,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
+      propertyPath: isSticked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
@@ -111184,7 +112398,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050370079}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -113851,6 +115065,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
         type: 3}
+      propertyPath: isSticked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185504565743959084, guid: 8cc702c4e3fc5484fb093ecfe3e2c8bf,
+        type: 3}
       propertyPath: stickedWall
       value: 
       objectReference: {fileID: 2098412694}
@@ -114517,7 +115736,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2117633053}
-  m_Material: {fileID: 13400000, guid: b2647ebdcd3a65048b9ad2c9b701136f, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

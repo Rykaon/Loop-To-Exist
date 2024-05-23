@@ -40,27 +40,12 @@ public class LadderTrigger : MonoBehaviour
     {
         if (isActive)
         {
-            if (transform.parent.name == "LadderTrigger (1)")
-            {
-                Debug.Log("isActive");
-            }
-
             if (players.Count > 0)
             {
-                if (transform.parent.name == "LadderTrigger (1)")
-                {
-                    Debug.Log("players.Count");
-                }
-
                 for (int i = 0; i < players.Count; i++)
                 {
                     if (players[i].isMainPlayer && players[i].isActive)
                     {
-                        if (transform.parent.name == "LadderTrigger (1)")
-                        {
-                            Debug.Log("isPlayer");
-                        }
-
                         if (!ladder.outline.enabled)
                         {
                             ladder.outline.enabled = true;
@@ -82,10 +67,6 @@ public class LadderTrigger : MonoBehaviour
             }
             else
             {
-                if (transform.parent.name == "LadderTrigger (1)")
-                {
-                    Debug.Log("noPlayer");
-                }
                 isPlayer = false;
             }
 
