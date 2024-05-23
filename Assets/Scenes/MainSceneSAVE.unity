@@ -9927,6 +9927,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 210860447}
   m_Mesh: {fileID: -2477511411847689622, guid: a31aaaefb8953e548bce53d0a275d567, type: 3}
+--- !u!114 &211290299 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 395643036658651261, guid: d4fe25968efa4ac429554f78d138de41,
+    type: 3}
+  m_PrefabInstance: {fileID: 153355669}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca065c3f37b29cb4a9a8d74efbaa9f0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &217729749
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60069,6 +60081,7 @@ MonoBehaviour:
   - {fileID: 1175897706}
   - {fileID: 1730092258}
   - {fileID: 850561783}
+  - {fileID: 211290299}
   buttonNorthIsPressed: 0
   leftShoulderisPressed: 0
 --- !u!114 &1128649032
@@ -60321,10 +60334,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -8.817391, y: 95.44425, z: 9.361156}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 1
       transitionDuration: 0
@@ -60383,10 +60392,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -13.971634, y: 83.50549, z: 12.2026005}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 1
       transitionDuration: 0
@@ -60445,10 +60450,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -32.345417, y: 67.85116, z: -0.21377325}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 1
       transitionDuration: 0
@@ -60507,10 +60508,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -52.2088, y: 55.65332, z: 6.5640044}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 2
       transitionDuration: 0
@@ -60569,10 +60566,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -45.392853, y: 46.90747, z: 33.050003}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 2
       transitionDuration: 0
@@ -60631,10 +60624,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -24.548553, y: 32.182327, z: 43.350887}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 2
       transitionDuration: 0
@@ -60693,10 +60682,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -5.960224, y: 24.10035, z: 17.6913}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 2
       transitionDuration: 0
@@ -60755,10 +60740,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -12.661271, y: 9.213722, z: -1.8543129}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 2
       transitionDuration: 0
@@ -60817,10 +60798,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -25.361591, y: 4.507777, z: -8.548949}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 0
       duration: 5
       transitionDuration: 0
@@ -60879,10 +60856,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -25.361591, y: 4.507777, z: -8.548949}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 1
       duration: 0
       transitionDuration: 0.5
@@ -60941,10 +60914,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -17.075428, y: 9.259256, z: 24.555702}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 1
       transitionDuration: 0
@@ -61003,10 +60972,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -16.443577, y: 18.490929, z: 32.024063}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 1
       transitionDuration: 0
@@ -61065,10 +61030,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -15.126837, y: 30.303175, z: 48.682545}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 4
       duration: 2
       transitionDuration: 0
@@ -61127,10 +61088,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -13.644296, y: 27.517448, z: 88.46915}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 0
       duration: 3
       transitionDuration: 0
@@ -61189,10 +61146,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -13.644296, y: 27.517448, z: 88.46915}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 1
       duration: 1
       transitionDuration: 0.5
@@ -61251,10 +61204,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -25.361591, y: 4.507777, z: -8.548948}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
     - transition: 0
       duration: 2
       transitionDuration: 0
@@ -61313,10 +61262,6 @@ MonoBehaviour:
         m_RotationOrder: 0
       sceneSize: 7.152141
       sceneLook: {x: -25.361591, y: 4.507777, z: -8.548948}
-      index: 0
-      curvedPlans: []
-      pathPosition: []
-      pathRotation: []
 --- !u!114 &1128649035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65483,7 +65428,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1169858935}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.30098584, y: -0.3451411, z: 0.09513546, w: 0.8838747}
+  m_LocalRotation: {x: -0.30098587, y: -0.34514108, z: 0.09513545, w: 0.88387465}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -86777,7 +86722,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1591228331}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30538628, y: 0.10219997, z: -0.03298669, w: 0.9461534}
+  m_LocalRotation: {x: 0.30539134, y: 0.102055065, z: -0.03293992, w: 0.9461691}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -89417,7 +89362,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1624925787}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30538628, y: 0.10219997, z: -0.03298669, w: 0.9461534}
+  m_LocalRotation: {x: 0.30539134, y: 0.102055065, z: -0.03293992, w: 0.9461691}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -101221,7 +101166,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1813856905}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30538628, y: 0.10219997, z: -0.03298669, w: 0.9461534}
+  m_LocalRotation: {x: 0.30539134, y: 0.102055065, z: -0.03293992, w: 0.9461691}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
