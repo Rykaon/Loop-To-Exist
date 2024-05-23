@@ -16,6 +16,7 @@ namespace Cinematic
         {
             Fixed,
             Fade,
+            Black,
             InterpolateFromPlayer,
             InterpolateToPlayer,
             Interpolate
@@ -54,11 +55,19 @@ namespace Cinematic
         {
             gameManager.ChangeState(GameManager.ControlState.UI);
 
+
             if (startTransition == Transition.Fade)
             {
                 cameraManager.BlackScreen(startDuration, startDuration);
                 yield return new WaitForSecondsRealtime(startDuration);
 
+                cameraTarget.position = plans[0].position;
+                cameraTarget.rotation = Quaternion.Euler(plans[0].rotation);
+                cameraManager.ChangeCamera(cameraManager.cinematicCamera);
+                yield return new WaitForSecondsRealtime(startDuration);
+            }
+            else if (startTransition == Transition.Fixed)
+            {
                 cameraTarget.position = plans[0].position;
                 cameraTarget.rotation = Quaternion.Euler(plans[0].rotation);
                 cameraManager.ChangeCamera(cameraManager.cinematicCamera);
@@ -83,6 +92,8 @@ namespace Cinematic
 
             for (int i = 0; i < plans.Count; i++)
             {
+                Debug.Log(i + " // " + plans[i].transition + " // " + plans[i].position + " // " + plans[i].rotation);
+
                 if (plans[i].isFirstDialogue)
                 {
                     yield return cameraManager.StartCoroutine(ExecuteDialogue(plans[i]));
@@ -90,6 +101,8 @@ namespace Cinematic
 
                 if (plans[i].transition == Transition.Fixed)
                 {
+                    cameraTarget.position = plans[i].position;
+                    cameraTarget.rotation = Quaternion.Euler(plans[i].rotation);
                     yield return new WaitForSecondsRealtime(plans[i].duration);
                 }
                 else if (plans[i].transition == Transition.Fade)
@@ -99,6 +112,14 @@ namespace Cinematic
                     cameraTarget.position = plans[i].position;
                     cameraTarget.rotation = Quaternion.Euler(plans[i].rotation);
                     yield return new WaitForSecondsRealtime(plans[i].duration);
+                }
+                else if (plans[i].transition == Transition.Black)
+                {
+                    cameraManager.BlackScreen(plans[i].transitionDuration, plans[i].duration);
+                    yield return new WaitForSecondsRealtime(plans[i].transitionDuration);
+                    cameraTarget.position = plans[i].position;
+                    cameraTarget.rotation = Quaternion.Euler(plans[i].rotation);
+                    yield return new WaitForSecondsRealtime(plans[i].duration + plans[i].transitionDuration);
                 }
                 else if (plans[i].transition == Transition.Interpolate)
                 {
@@ -136,10 +157,10 @@ namespace Cinematic
                     CalculateControlPoints(positions.ToArray(), positionTangents, out positionControlPoints);
                     CalculateControlPoints(rotations.ToArray(), rotationTangents, out rotationControlPoints);
 
-                    float[] interpolatedDurations = InterpolateDurations(positions.ToArray(), durations.ToArray());
+                    //float[] interpolatedDurations = InterpolateDurations(positions.ToArray(), durations.ToArray());
 
                     // Execute interpolate chain only once for the whole sequence
-                    yield return cameraManager.StartCoroutine(ExecuteInterpolateSequence(positions.ToArray(), positionControlPoints, positionCurves.ToArray(), rotations.ToArray(), rotationControlPoints, rotationCurves.ToArray(), interpolatedDurations, totalDuration));
+                    yield return cameraManager.StartCoroutine(ExecuteInterpolateSequence(positions.ToArray(), positionControlPoints, positionCurves.ToArray(), rotations.ToArray(), rotationControlPoints, rotationCurves.ToArray(), durations.ToArray(), totalDuration));
 
                     sequencePlans.Clear();
                     positions.Clear(); // Clear current interpolate chain
@@ -174,13 +195,14 @@ namespace Cinematic
             }
 
             gameManager.ChangeState(GameManager.ControlState.World);
+            gameManager.mainPlayer.isActive = true;
         }
 
         private IEnumerator ExecuteInterpolateSequence(Vector3[] positions, Vector3[][] positionControlPoints, AnimationCurve[] positionCurves, Vector3[] rotations, Vector3[][] rotationControlsPoints, AnimationCurve[] rotationCurves, float[] durations, float totalDuration)
         {
             float totalElapsedTime = 0f;
             float elapsedTime = 0f;
-
+            //cameraTarget.DOPath(positions, totalDuration, PathType.CatmullRom).SetEase(Ease.InOutSine); 
             for (int i = 0; i < positions.Length - 1; i++)
             {
                 elapsedTime = 0f;
@@ -188,6 +210,8 @@ namespace Cinematic
                 while (elapsedTime < durations[i])
                 {
                     float t = elapsedTime / durations[i];
+
+                    //cameraTarget.DORotate(rotations[i + 1], durations[i]).SetEase(Ease.InOutSine);
 
                     cameraTarget.position = CubicBezier(positions[i], positionControlPoints[i][0], positionControlPoints[i][1], positions[i + 1], positionCurves[i].Evaluate(t));
                     cameraTarget.rotation = CubicBezier(Quaternion.Euler(rotations[i]), Quaternion.Euler(rotationControlsPoints[i][0]), Quaternion.Euler(rotationControlsPoints[i][1]), Quaternion.Euler(rotations[i + 1]), rotationCurves[i].Evaluate(t));
@@ -293,7 +317,7 @@ namespace Cinematic
         }
         private IEnumerator ExecuteDialogue(CinematicPlan dialoguePlan)
         {
-            DialogueManager.instance.EnterDialogueMode(dialoguePlan.inkJSON, false, false);
+            DialogueManager.instance.EnterDialogueMode(dialoguePlan.inkJSON, false, true);
 
             for (int i = 0; i < dialoguePlan.dialogueDurations.Count; i++)
             {

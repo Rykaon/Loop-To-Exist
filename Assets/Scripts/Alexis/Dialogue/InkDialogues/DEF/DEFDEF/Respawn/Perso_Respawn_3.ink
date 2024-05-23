@@ -1,0 +1,1 @@
+Peut-être est-tu en difficulté ? Nous ne souhaitons que ton succès, après tout. Nous pouvons être patient. Ce n'est qu'une difficulté, n'est-ce pas ? #time:8

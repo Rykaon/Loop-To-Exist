@@ -42,6 +42,11 @@ public class UIInputManager : MonoBehaviour
             ReturnObjectToPool(objectsInUse[i]);
         }
 
+        if (DialogueManager.instance.isActive)
+        {
+            return;
+        }
+
         if (player != null)
         {
             if (!player.isLadder && !player.isLadderTrigger)

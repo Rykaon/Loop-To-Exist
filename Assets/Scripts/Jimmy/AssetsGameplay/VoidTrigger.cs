@@ -7,6 +7,7 @@ using UnityEngine;
 public class VoidTrigger : MonoBehaviour
 {
     [SerializeField] private Material dissolveMaterial;
+    [SerializeField] private List<TextAsset> inkJSONs;
     private float dissolveTime;
     private List<StateManager> states = new List<StateManager>();
 
@@ -97,6 +98,40 @@ public class VoidTrigger : MonoBehaviour
 
         if (isMainPlayer)
         {
+            if (!GameManager.instance.hasSeenAllDeath)
+            {
+                if (GameManager.instance.nbrOfDeath == 0)
+                {
+                    DialogueManager.instance.EnterDialogueMode(inkJSONs[GameManager.instance.nbrOfDeath], false, true);
+                    GameManager.instance.nbrOfDeath++;
+                }
+                else
+                {
+                    float rand = UnityEngine.Random.Range(0f, 100f);
+
+                    if (rand < 40f)
+                    {
+                        DialogueManager.instance.EnterDialogueMode(inkJSONs[GameManager.instance.nbrOfDeath], false, true);
+                        GameManager.instance.nbrOfDeath++;
+
+                        if (GameManager.instance.nbrOfDeath == inkJSONs.Count)
+                        {
+                            GameManager.instance.hasSeenAllDeath = true;
+                            GameManager.instance.nbrOfDeath = 0;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                float rand = UnityEngine.Random.Range(0f, 100f);
+
+                if (rand < 10f)
+                {
+                    DialogueManager.instance.EnterDialogueMode(inkJSONs[UnityEngine.Random.Range(0, inkJSONs.Count)], false, true);
+                }
+            }
+
             PlayerManager player = (PlayerManager)manager;
             player.isActive = false;
         }

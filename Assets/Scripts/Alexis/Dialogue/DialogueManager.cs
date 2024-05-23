@@ -146,6 +146,8 @@ public class DialogueManager : MonoBehaviour
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
 
+        isActive = false;
+
         if (saveLockStateDialogue)
         {
             EnableDisable(false);

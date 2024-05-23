@@ -1,0 +1,1 @@
+Même si aucune blessure ne peut arriver dans notre domaine sans notre accord, nous ne pouvons pas tout prévoir. #time:6

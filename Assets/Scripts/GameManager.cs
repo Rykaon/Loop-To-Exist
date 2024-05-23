@@ -51,10 +51,14 @@ public class GameManager : MonoBehaviour
 
     [Header("Progression Status")]
     public bool hasFinishedTutorial = false;
+   
     public bool hasSetFirstOrb = false;
     public bool hasSetSecondOrb = false;
     public bool hasSetLastOrb = false;
-    public bool hasDied = false;
+
+    public int nbrOfDeath = 0;
+    public bool hasSeenAllDeath = false;
+
     public int talkedToEntity = 0;
     public bool hasGotToTop = false;
     public bool hasGotToBottom = false;
@@ -127,6 +131,7 @@ public class GameManager : MonoBehaviour
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
         SetMainPlayer(mainPlayer, true, false);
+        cameraManager.ExecuteCinematic(cameraManager.intro);
     }
 
     private void OnEnable()
@@ -248,6 +253,21 @@ public class GameManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.G))
             {
                 cameraManager.ExecuteCinematic(cameraManager.intro);
+            }
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                cameraManager.ExecuteCinematic(cameraManager.tutorial);
+            }
+
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                cameraManager.ExecuteCinematic(cameraManager.kindergarden);
+            }
+
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                cameraManager.ExecuteCinematic(cameraManager.escape);
             }
 
             if (playerControls.Player.Select.WasPressedThisFrame())

@@ -34,7 +34,6 @@ public class OrbeSwitch : DoorSwitch
             {
                 if (!objectManager.isHeld && !objectManager.isEquipped && objectManager.type == StateManager.Type.Orbe && objectManager.name.Contains(nameToCheck))
                 {
-
                     orbe = objectManager.transform;
                     orbRenderer = objectManager.renderer;
 
@@ -77,11 +76,16 @@ public class OrbeSwitch : DoorSwitch
             DialogueManager.instance.EnterDialogueMode(inkJSON, false, true);
         }
 
+        state = State.Active;
+
         startPos = orbe.transform.position;
         currentEmissionColor = orbRenderer.material.GetColor("_EmissionColor");
         currentDoorEmissionColor = doorRenderer.material.GetColor("_EmissionColor");
         StartCoroutine(Bounce());
         StartCoroutine(Glow(1));
+        StartCoroutine(DoorGlow(1));
+
+        doorController.CheckSwitches();
     }
 
     private IEnumerator Bounce()
@@ -134,7 +138,7 @@ public class OrbeSwitch : DoorSwitch
     {
         float duration = 0.45f;
         float startIntensity = start;
-        float endIntensity = 1.5f;
+        float endIntensity = 3f;
 
         doorRenderer.material.SetColor("_EmissionColor", currentDoorEmissionColor * startIntensity);
 

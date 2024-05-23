@@ -10,6 +10,7 @@ public class EntityCamera : MonoBehaviour
     [SerializeField] private Transform camPoint;
     [SerializeField] private Outline outline;
     [SerializeField] private Renderer entityRenderer;
+    [SerializeField] private List<TextAsset> inkJSONs;
     [HideInInspector] protected Color currentEmissionColor;
     public List<PlayerManager> players = new List<PlayerManager>();
     public bool isCamActive = false;
@@ -109,6 +110,8 @@ public class EntityCamera : MonoBehaviour
 
     private void Update()
     {
+        bool isPlayer = false;
+
         if (!isCamActive)
         {
             if (players.Count > 0)
@@ -125,6 +128,7 @@ public class EntityCamera : MonoBehaviour
                             camRoutine = null;
                         }
                         camRoutine = StartCoroutine(SetEntityCamera(true));
+                        isPlayer = true;
                         break;
                     }
                 }
@@ -132,8 +136,7 @@ public class EntityCamera : MonoBehaviour
         }
         else
         {
-            bool isPlayer = false;
-
+            
             if (players.Count > 0)
             {
                 for (int i = 0; i < players.Count; i++)
@@ -157,6 +160,22 @@ public class EntityCamera : MonoBehaviour
                 }
 
                 camRoutine = StartCoroutine(SetEntityCamera(false));
+            }
+        }
+
+        if (isPlayer)
+        {
+            if (GameManager.instance.playerControls.Player.A.WasPressedThisFrame())
+            {
+                if (GameManager.instance.talkedToEntity >= inkJSONs.Count)
+                {
+                    DialogueManager.instance.EnterDialogueMode(inkJSONs[inkJSONs.Count - 1], true, true);
+                }
+                else
+                {
+                    DialogueManager.instance.EnterDialogueMode(inkJSONs[GameManager.instance.talkedToEntity], true, true);
+                    GameManager.instance.talkedToEntity++;
+                }
             }
         }
     }

@@ -5,7 +5,10 @@ using UnityEngine;
 [CustomEditor(typeof(CameraManager))]
 public class CameraManagerEditor : Editor
 {
-    private ReorderableList reorderableList;
+    private ReorderableList introReorderableList;
+    private ReorderableList tutorialReorderableList;
+    private ReorderableList kindergardenReorderableList;
+    private ReorderableList escapeReorderableList;
 
     private void OnEnable()
     {
@@ -17,16 +20,16 @@ public class CameraManagerEditor : Editor
         SerializedProperty introProperty = serializedObject.FindProperty("intro");
         SerializedProperty introPlansProperty = introProperty.FindPropertyRelative("plans");
 
-        reorderableList = new ReorderableList(serializedObject, introPlansProperty, true, true, true, true);
+        introReorderableList = new ReorderableList(serializedObject, introPlansProperty, true, true, true, true);
 
-        reorderableList.drawHeaderCallback = (Rect rect) =>
+        introReorderableList.drawHeaderCallback = (Rect rect) =>
         {
             EditorGUI.LabelField(rect, "Cinematic Plans");
         };
 
-        reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+        introReorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
         {
-            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty element = introReorderableList.serializedProperty.GetArrayElementAtIndex(index);
             CameraManager cameraManager = (CameraManager)target;
             Cinematic.CinematicPlan plan = cameraManager.intro.plans[index];
 
@@ -56,9 +59,9 @@ public class CameraManagerEditor : Editor
             rect.y += singleLineHeight + padding;
         };
 
-        reorderableList.elementHeightCallback = (int index) =>
+        introReorderableList.elementHeightCallback = (int index) =>
         {
-            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty element = introReorderableList.serializedProperty.GetArrayElementAtIndex(index);
             float propertyHeight = EditorGUI.GetPropertyHeight(element);
             return propertyHeight + EditorGUIUtility.singleLineHeight * 2 + 10f; // Adjusted height for properties and buttons
         };
@@ -71,16 +74,16 @@ public class CameraManagerEditor : Editor
         SerializedProperty tutorialProperty = serializedObject.FindProperty("tutorial");
         SerializedProperty tutorialPlansProperty = tutorialProperty.FindPropertyRelative("plans");
 
-        reorderableList = new ReorderableList(serializedObject, tutorialPlansProperty, true, true, true, true);
+        tutorialReorderableList = new ReorderableList(serializedObject, tutorialPlansProperty, true, true, true, true);
 
-        reorderableList.drawHeaderCallback = (Rect rect) =>
+        tutorialReorderableList.drawHeaderCallback = (Rect rect) =>
         {
             EditorGUI.LabelField(rect, "Cinematic Plans");
         };
 
-        reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+        tutorialReorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
         {
-            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty element = tutorialReorderableList.serializedProperty.GetArrayElementAtIndex(index);
             CameraManager cameraManager = (CameraManager)target;
             Cinematic.CinematicPlan plan = cameraManager.tutorial.plans[index];
 
@@ -110,9 +113,9 @@ public class CameraManagerEditor : Editor
             rect.y += singleLineHeight + padding;
         };
 
-        reorderableList.elementHeightCallback = (int index) =>
+        tutorialReorderableList.elementHeightCallback = (int index) =>
         {
-            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty element = tutorialReorderableList.serializedProperty.GetArrayElementAtIndex(index);
             float propertyHeight = EditorGUI.GetPropertyHeight(element);
             return propertyHeight + EditorGUIUtility.singleLineHeight * 2 + 10f; // Adjusted height for properties and buttons
         };
@@ -124,16 +127,16 @@ public class CameraManagerEditor : Editor
         SerializedProperty kindergardenProperty = serializedObject.FindProperty("kindergarden");
         SerializedProperty kindergardenPlansProperty = kindergardenProperty.FindPropertyRelative("plans");
 
-        reorderableList = new ReorderableList(serializedObject, kindergardenPlansProperty, true, true, true, true);
+        kindergardenReorderableList = new ReorderableList(serializedObject, kindergardenPlansProperty, true, true, true, true);
 
-        reorderableList.drawHeaderCallback = (Rect rect) =>
+        kindergardenReorderableList.drawHeaderCallback = (Rect rect) =>
         {
             EditorGUI.LabelField(rect, "Cinematic Plans");
         };
 
-        reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+        kindergardenReorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
         {
-            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty element = kindergardenReorderableList.serializedProperty.GetArrayElementAtIndex(index);
             CameraManager cameraManager = (CameraManager)target;
             Cinematic.CinematicPlan plan = cameraManager.kindergarden.plans[index];
 
@@ -163,9 +166,9 @@ public class CameraManagerEditor : Editor
             rect.y += singleLineHeight + padding;
         };
 
-        reorderableList.elementHeightCallback = (int index) =>
+        kindergardenReorderableList.elementHeightCallback = (int index) =>
         {
-            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty element = kindergardenReorderableList.serializedProperty.GetArrayElementAtIndex(index);
             float propertyHeight = EditorGUI.GetPropertyHeight(element);
             return propertyHeight + EditorGUIUtility.singleLineHeight * 2 + 10f; // Adjusted height for properties and buttons
         };
@@ -177,16 +180,16 @@ public class CameraManagerEditor : Editor
         SerializedProperty escapeProperty = serializedObject.FindProperty("escape");
         SerializedProperty escapePlansProperty = escapeProperty.FindPropertyRelative("plans");
 
-        reorderableList = new ReorderableList(serializedObject, escapePlansProperty, true, true, true, true);
+        escapeReorderableList = new ReorderableList(serializedObject, escapePlansProperty, true, true, true, true);
 
-        reorderableList.drawHeaderCallback = (Rect rect) =>
+        escapeReorderableList.drawHeaderCallback = (Rect rect) =>
         {
             EditorGUI.LabelField(rect, "Cinematic Plans");
         };
 
-        reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+        escapeReorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
         {
-            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty element = escapeReorderableList.serializedProperty.GetArrayElementAtIndex(index);
             CameraManager cameraManager = (CameraManager)target;
             Cinematic.CinematicPlan plan = cameraManager.escape.plans[index];
 
@@ -216,9 +219,9 @@ public class CameraManagerEditor : Editor
             rect.y += singleLineHeight + padding;
         };
 
-        reorderableList.elementHeightCallback = (int index) =>
+        escapeReorderableList.elementHeightCallback = (int index) =>
         {
-            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty element = escapeReorderableList.serializedProperty.GetArrayElementAtIndex(index);
             float propertyHeight = EditorGUI.GetPropertyHeight(element);
             return propertyHeight + EditorGUIUtility.singleLineHeight * 2 + 10f; // Adjusted height for properties and buttons
         };
@@ -245,7 +248,7 @@ public class CameraManagerEditor : Editor
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endDuration"));
 
                     EditorGUILayout.Space();
-                    reorderableList.DoLayoutList();
+                    introReorderableList.DoLayoutList();
                 }
             }
             else if (iterator.name == "tutorial")
@@ -260,7 +263,7 @@ public class CameraManagerEditor : Editor
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endDuration"));
 
                     EditorGUILayout.Space();
-                    reorderableList.DoLayoutList();
+                    tutorialReorderableList.DoLayoutList();
                 }
             }
             else if (iterator.name == "kindergarden")
@@ -275,7 +278,7 @@ public class CameraManagerEditor : Editor
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endDuration"));
 
                     EditorGUILayout.Space();
-                    reorderableList.DoLayoutList();
+                    kindergardenReorderableList.DoLayoutList();
                 }
             }
             else if (iterator.name == "escape")
@@ -290,7 +293,7 @@ public class CameraManagerEditor : Editor
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endDuration"));
 
                     EditorGUILayout.Space();
-                    reorderableList.DoLayoutList();
+                    escapeReorderableList.DoLayoutList();
                 }
             }
             else

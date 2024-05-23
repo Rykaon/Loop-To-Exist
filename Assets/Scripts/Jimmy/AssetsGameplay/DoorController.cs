@@ -28,8 +28,11 @@ public class DoorController : MonoBehaviour
     private void Awake()
     {
         state = State.Close;
-        openPosition = gate.position;
-        coroutine = StartCoroutine(OpenClose());
+        if (animator == null)
+        {
+            openPosition = gate.position;
+            coroutine = StartCoroutine(OpenClose());
+        }
     }
 
     public void CheckSwitches()

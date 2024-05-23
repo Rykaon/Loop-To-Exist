@@ -64,7 +64,7 @@ public class CameraManager : MonoBehaviour
             previousCam = currentCam;
             currentCam.Priority = 0;
         }
-
+        Debug.Log(newCam.name);
         currentCam = newCam;
         brain.m_DefaultBlend.m_Time = brainTransitionDuration;
         currentCam.Priority = 100;
@@ -96,12 +96,12 @@ public class CameraManager : MonoBehaviour
     private IEnumerator BlackScreenRoutine(float fadeTime, float blackTime)
     {
         blackScreen.DOFade(1f, fadeTime);
-        gameManager.mainPlayer.isActive = false;
+        //gameManager.mainPlayer.isActive = false;
         yield return new WaitForSecondsRealtime(fadeTime);
         yield return new WaitForSecondsRealtime(blackTime);
         blackScreen.DOFade(0f, fadeTime);
         yield return new WaitForSecondsRealtime(fadeTime);
-        gameManager.mainPlayer.isActive = true;
+        //gameManager.mainPlayer.isActive = true;
     }
 
     public IEnumerator SetCameraTarget(Transform follow, Transform look, bool isWarp)

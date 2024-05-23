@@ -29,8 +29,8 @@ public class PlayerManager : StateManager
     public PlayerInteractionTrigger trigger { get; private set; }
 
     public PlayerControls playerControls { get; private set; }
-    public StateManager heldObject { get; set; }
-    public StateManager equippedObject { get; set; }
+    public StateManager heldObject;
+    public StateManager equippedObject;
 
     [Header("Status")]
     public bool isMainPlayer;
@@ -106,8 +106,6 @@ public class PlayerManager : StateManager
 
         animator = Animator;
         trigger = Trigger;
-        heldObject = null;
-        equippedObject = null;
         moveMassMultiplier = 1;
         linkMoveMultiplier = 1.75f;
         linkJumpMultiplier = 5.25f;

@@ -49,7 +49,7 @@ public class StateManager : MonoBehaviour
     public Renderer renderer { get; set; }
     public Outline outline { get; set; }
 
-    protected Transform initParent;
+    public Transform initParent;
 
     public GameObject objectToStick = null;
     public List<GameObject> stickedObjects = new List<GameObject>();
@@ -61,8 +61,8 @@ public class StateManager : MonoBehaviour
     public bool isSticked;
     public bool isLinked;
 
-    protected PlayerManager holdingPlayer = null;
-    protected PlayerManager equippingPlayer = null;
+    public PlayerManager holdingPlayer = null;
+    public PlayerManager equippingPlayer = null;
     protected Joint joint = null;
     private float jointBreakTreshold = 1000f;
     private PlayerManager stickHoldingPlayer = null;
@@ -71,10 +71,10 @@ public class StateManager : MonoBehaviour
     private Quaternion stickedOffsetRotation;
     private List<GameObject> stickedCollisions = new List<GameObject>();
 
-    public bool isHeldObject { get; private set; }
-    public bool isHeld { get; private set; }
-    public bool isEquippedObject { get; private set; }
-    public bool isEquipped { get; private set; }
+    public bool isHeldObject;
+    public bool isHeld;
+    public bool isEquippedObject;
+    public bool isEquipped;
 
     public Vector3 lastGroundedPosition;
     public Quaternion lastGroundedRotation;
@@ -90,9 +90,12 @@ public class StateManager : MonoBehaviour
         objectCollider = ObjectCollider;
         renderer = Renderer;
         outline = Outline;
-        isHeldObject = false;
-        isHeld = false;
-        initParent = transform.parent;
+
+        if (initParent == null)
+        {
+            initParent = transform.parent;
+        }
+        
         inOutCurve = Utilities.ConvertEaseToCurve(Ease.InOutSine);
 
         lastGroundedPosition = rigidBody.position;
