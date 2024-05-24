@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<StateManager> entities;
 
     [Header("Progression Status")]
+    public bool showCinematics = true;
     public bool hasFinishedTutorial = false;
    
     public bool hasSetFirstOrb = false;
@@ -131,7 +132,15 @@ public class GameManager : MonoBehaviour
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
         SetMainPlayer(mainPlayer, true, false);
-        cameraManager.ExecuteCinematic(cameraManager.intro);
+
+        if (showCinematics)
+        {
+            cameraManager.ExecuteCinematic(cameraManager.intro);
+        }
+        else
+        {
+            cameraManager.BlackScreen(0.5f, 0f);
+        }
     }
 
     private void OnEnable()
@@ -250,26 +259,6 @@ public class GameManager : MonoBehaviour
 
         if (controlState == ControlState.World)
         {
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                cameraManager.ExecuteCinematic(cameraManager.intro);
-            }
-
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                cameraManager.ExecuteCinematic(cameraManager.tutorial);
-            }
-
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                cameraManager.ExecuteCinematic(cameraManager.kindergarden);
-            }
-
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                cameraManager.ExecuteCinematic(cameraManager.escape);
-            }
-
             if (playerControls.Player.Select.WasPressedThisFrame())
             {
                 if (UIManager.toggleMenuPause == null)

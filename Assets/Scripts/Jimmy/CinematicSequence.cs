@@ -43,7 +43,6 @@ namespace Cinematic
             this.dialogueManager = dialogueManager;
             this.cinematicCamera = cinematicCamera;
             this.cameraTarget = cameraTarget;
-            gameManager.mainPlayer.isActive = false;
 
             camPos = Camera.main.transform.position;
             camRot = Camera.main.transform.rotation.eulerAngles;
@@ -54,7 +53,13 @@ namespace Cinematic
         private IEnumerator PlayCinematicSequence()
         {
             gameManager.ChangeState(GameManager.ControlState.UI);
+            gameManager.mainPlayer.rigidBody.velocity = Vector3.zero;
+            gameManager.mainPlayer.rigidBody.angularVelocity = Vector3.zero;
 
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+
+            gameManager.mainPlayer.isActive = false;
 
             if (startTransition == Transition.Fade)
             {
@@ -73,13 +78,14 @@ namespace Cinematic
                 cameraManager.ChangeCamera(cameraManager.cinematicCamera);
                 yield return new WaitForSecondsRealtime(startDuration);
             }
-            else if (startTransition == Transition.InterpolateToPlayer)
+            else if (startTransition == Transition.InterpolateFromPlayer)
             {
+                cameraTarget.position = camPos;
+                cameraTarget.rotation = Quaternion.Euler(camRot);
+                cameraManager.ChangeCamera(cameraManager.cinematicCamera);
                 cameraTarget.DOMove(plans[0].position, startDuration).SetEase(Ease.InOutSine);
                 cameraTarget.DORotate(plans[0].rotation, startDuration).SetEase(Ease.InOutSine);
-
                 yield return new WaitForSecondsRealtime(startDuration);
-                cameraManager.ChangeCamera(cameraManager.cinematicCamera);
             }
 
             List<CinematicPlan> sequencePlans = new List<CinematicPlan>();
