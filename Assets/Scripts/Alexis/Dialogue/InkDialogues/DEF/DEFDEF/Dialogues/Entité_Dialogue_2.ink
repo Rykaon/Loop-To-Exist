@@ -1,2 +1,2 @@
-Nous ? Ce réceptacle devant toi ? Non. #time:5
-Cette forme n'est que le coeur de notre être. Nous sommes partout, en toi, dans tous les recoins de cette cave, et bien au-delà. #time:7
+Cette forme ? Notre âme réside certes dans ce Soleil rouge, mais nous sommes ici partout avec toi. #time:7
+Aucun mal ne pourra t'arriver sans notre autorisation, tant que tu reste dans notre domaine. #time:7
