@@ -280,6 +280,7 @@ MonoBehaviour:
   stickyMaterial: {fileID: 2100000, guid: c067eaf8b4333384da4ed73b4860df4c, type: 2}
   startThrowForceHorizontal: 15
   startThrowForceVertical: 5
+  initParent: {fileID: 0}
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
@@ -288,6 +289,12 @@ MonoBehaviour:
   linkJoint: {fileID: 0}
   isSticked: 0
   isLinked: 0
+  holdingPlayer: {fileID: 0}
+  equippingPlayer: {fileID: 0}
+  isHeldObject: 0
+  isHeld: 0
+  isEquippedObject: 0
+  isEquipped: 0
   lastGroundedPosition: {x: 0, y: 0, z: 0}
   lastGroundedRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!65 &1039864030762238529
@@ -309,8 +316,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0028777178, y: 0.003272671, z: 0.0028976768}
-  m_Center: {x: -0.000004653003, y: 0.00014229206, z: 0.0015129263}
+  m_Size: {x: 0.0035646174, y: 0.0044679553, z: 0.0028976775}
+  m_Center: {x: -0.000004653003, y: 0.00014229208, z: 0.0015129267}
 --- !u!54 &7757718988754751956
 Rigidbody:
   m_ObjectHideFlags: 0
