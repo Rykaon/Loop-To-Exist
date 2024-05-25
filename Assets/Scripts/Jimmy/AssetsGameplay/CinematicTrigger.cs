@@ -36,7 +36,7 @@ public class CinematicTrigger : MonoBehaviour
                     }
                     else if (type == Type.Escape)
                     {
-                        if (GameManager.instance.mainPlayer.RaycastGrounded())
+                        if (GameManager.instance.mainPlayer.RaycastGrounded() && !GameManager.instance.mainPlayer.isJumping && !GameManager.instance.mainPlayer.isJumpingDown)
                         {
                             isActive = false;
                             GameManager.instance.cameraManager.ExecuteCinematic(GameManager.instance.cameraManager.escape);
