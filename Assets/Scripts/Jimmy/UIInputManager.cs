@@ -183,11 +183,11 @@ public class UIInputManager : MonoBehaviour
                         {
                             if (manager.gameManager.previousControlScheme == manager.gameManager.gamepad)
                             {
-                                GetObjectFromPool(sprites.rightShoulderGamepad, "Sticky");
+                                GetObjectFromPool(sprites.rightShoulderGamepad, "Adhésion");
                             }
                             else
                             {
-                                GetObjectFromPool(sprites.rightShoulderKeyboard, "Sticky");
+                                GetObjectFromPool(sprites.rightShoulderKeyboard, "Adhésion");
                             }
                         }
                     }
