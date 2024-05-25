@@ -105,6 +105,11 @@ namespace Cinematic
                     yield return cameraManager.StartCoroutine(ExecuteDialogue(plans[i]));
                 }
 
+                if (plans[i].startWalk)
+                {
+                    cameraManager.StartCoroutine(Walk(plans[i]));
+                }
+
                 if (plans[i].transition == Transition.Fixed)
                 {
                     cameraTarget.position = plans[i].position;
@@ -199,9 +204,62 @@ namespace Cinematic
                 yield return new WaitForSecondsRealtime(endDuration);
                 cameraManager.ChangeCamera(cameraManager.worldCamera);
             }
+            else if (endTransition == Transition.Black)
+            {
+                cameraManager.BlackScreen(endDuration, 10f);
+                yield return new WaitForSecondsRealtime(endDuration + 6);
+
+                gameManager.UIManager.GetBackToMenu();
+                yield break;
+            }
 
             gameManager.ChangeState(GameManager.ControlState.World);
             gameManager.mainPlayer.isActive = true;
+        }
+
+        private IEnumerator Walk(CinematicPlan plan)
+        {
+            gameManager.mainPlayer.objectCollider.isTrigger = true;
+            gameManager.mainPlayer.rigidBody.useGravity = false;
+            gameManager.mainPlayer.animator.SetBool("isRunning", true);
+
+            plan.pathPoints[0].position = new Vector3(gameManager.mainPlayer.transform.position.x, gameManager.mainPlayer.transform.position.y, gameManager.mainPlayer.transform.position.z);
+            plan.pathPoints[1].position = new Vector3(plan.pathPoints[1].position.x, gameManager.mainPlayer.transform.position.y, plan.pathPoints[1].position.z);
+
+            Transform player = gameManager.mainPlayer.transform;
+            List<Vector3> positions = new List<Vector3>();
+
+            for (int i = 0; i < plan.pathPoints.Count; ++i)
+            {
+                positions.Add(plan.pathPoints[i].position);
+            }
+
+            player.DOPath(positions.ToArray(), 5, PathType.CatmullRom).SetEase(Ease.Linear);
+
+            yield return new WaitForSecondsRealtime(4);
+
+            gameManager.mainPlayer.animator.SetBool("isJumping", true);
+            yield return new WaitForSecondsRealtime(0.25f);
+            gameManager.mainPlayer.animator.SetBool("isJumpingUp", true);
+            yield return new WaitForSecondsRealtime(0.25f);
+            gameManager.mainPlayer.animator.SetBool("isJumpingUp", false);
+            gameManager.mainPlayer.animator.SetBool("isJumpingDown", true);
+            gameManager.mainPlayer.animator.SetBool("isRunning", false);
+            yield return new WaitForSecondsRealtime(0.25f);
+            gameManager.mainPlayer.animator.SetBool("isJumpingUp", false);
+            gameManager.mainPlayer.animator.SetBool("isJumpingDown", false);
+
+            // se retourner
+            float elapsedTime = 0f;
+            plan.pathPoints[plan.pathPoints.Count - 1].LookAt(plan.pathPoints[0]);
+
+            while (elapsedTime < 0.5f)
+            {
+                player.rotation = Quaternion.RotateTowards(player.rotation, plan.pathPoints[plan.pathPoints.Count - 1].rotation, 800 * Time.fixedDeltaTime);
+                elapsedTime += Time.fixedDeltaTime;
+            }
+
+            gameManager.mainPlayer.animator.SetBool("isActive", false);
         }
 
         private IEnumerator ExecuteInterpolateSequence(Vector3[] positions, Vector3[][] positionControlPoints, AnimationCurve[] positionCurves, Vector3[] rotations, Vector3[][] rotationControlsPoints, AnimationCurve[] rotationCurves, float[] durations, float totalDuration)
@@ -342,8 +400,10 @@ namespace Cinematic
         public float duration;
         public float transitionDuration;
         public bool isFirstDialogue;
+        public bool startWalk;
         public TextAsset inkJSON;
         public List<float> dialogueDurations;
+        public List<Transform> pathPoints;
 
         [Header("Play properties")]
         public Vector3 position;

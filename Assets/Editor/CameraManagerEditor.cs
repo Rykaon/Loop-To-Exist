@@ -242,6 +242,7 @@ public class CameraManagerEditor : Editor
                 if (iterator.isExpanded)
                 {
                     EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("name"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startTransition"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endTransition"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startDuration"));
@@ -257,6 +258,7 @@ public class CameraManagerEditor : Editor
                 if (iterator.isExpanded)
                 {
                     EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("name"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startTransition"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endTransition"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startDuration"));
@@ -272,6 +274,7 @@ public class CameraManagerEditor : Editor
                 if (iterator.isExpanded)
                 {
                     EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("name"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startTransition"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endTransition"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startDuration"));
@@ -287,6 +290,7 @@ public class CameraManagerEditor : Editor
                 if (iterator.isExpanded)
                 {
                     EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(iterator.FindPropertyRelative("name"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startTransition"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("endTransition"));
                     EditorGUILayout.PropertyField(iterator.FindPropertyRelative("startDuration"));

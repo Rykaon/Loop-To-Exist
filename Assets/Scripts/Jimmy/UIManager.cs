@@ -194,6 +194,11 @@ public class UIManager : MonoBehaviour
         AudioManager.instance.Play("Sfx_Dialogue_Next");
     }
 
+    public void GetBackToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     private IEnumerator ExecuteGameMenuButton(int value)
     {
         canNavigateMenu = false;

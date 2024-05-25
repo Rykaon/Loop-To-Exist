@@ -561,6 +561,11 @@ public class StateManager : MonoBehaviour
 
         if (states.Contains(State.Sticky) && !isHeldObject && !isEquippedObject && !isSticked)
         {
+            if (collision.transform.TryGetComponent<PlayerManager>(out PlayerManager player))
+            {
+                return;
+            }
+
             if (stickHoldingPlayer != null)
             {
                 if (collision.gameObject == stickHoldingPlayer.objectCollider.gameObject)
@@ -592,7 +597,7 @@ public class StateManager : MonoBehaviour
             stickedTransform = collision.transform;
             bool isAnimated = false;
 
-            if (collision.transform.TryGetComponent<StateManager>(out StateManager stateManager))
+            /*if (collision.transform.TryGetComponent<StateManager>(out StateManager stateManager))
             {
                 stateManager.stickedObjects.Add(this.gameObject);
 
@@ -630,7 +635,7 @@ public class StateManager : MonoBehaviour
                 {
                     stickedTransform = nearestTransform;
                 }
-            }
+            }*/
 
             transform.SetParentWithGlobalScale(stickedTransform, true);
         }

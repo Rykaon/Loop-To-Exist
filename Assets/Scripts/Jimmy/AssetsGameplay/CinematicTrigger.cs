@@ -23,7 +23,7 @@ public class CinematicTrigger : MonoBehaviour
             {
                 if (playerManager.isMainPlayer && playerManager.isActive)
                 {
-                    if (type == Type.Tutorial)
+                    if (type == Type.Tutorial && GameManager.instance.showCinematics)
                     {
                         isActive = false;
                         GameManager.instance.hasFinishedTutorial = true;
