@@ -21,6 +21,7 @@ public class PlayerManager : StateManager
     [SerializeField] private Transform linkTarget;
     [SerializeField] public Transform cameraTarget;
     [SerializeField] public Transform animationRoot;
+    [SerializeField] private GameObject swapCollider;
 
     [SerializeField] private Animator Animator;
     [SerializeField] private Animator stickyAnimator;
@@ -80,6 +81,7 @@ public class PlayerManager : StateManager
 
     [SerializeField] protected float collisionDetectionDistance;
     [SerializeField] protected LayerMask RaycastLayer;
+    [SerializeField] protected LayerMask ThrowLayer;
     [HideInInspector] protected Vector3 direction = Vector3.zero;
     [HideInInspector] protected Vector2 jumpFrameMovementSave;
     [HideInInspector] protected float linkMoveMultiplier;
@@ -137,12 +139,14 @@ public class PlayerManager : StateManager
     public override void InitializeHoldObject(Transform parent)
     {
         base.InitializeHoldObject(parent);
+        swapCollider.SetActive(false);
     }
 
     public override void DropObject()
     {
         base.DropObject();
         rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
+        swapCollider.SetActive(true);
     }
 
     public override void ThrowObject(float throwForceHorizontal, float throwForceVertical, Vector3 hitpoint)
@@ -163,6 +167,7 @@ public class PlayerManager : StateManager
     public override void InitializeEquipObject(Transform parent)
     {
         base.InitializeEquipObject(parent);
+        swapCollider.SetActive(false);
     }
 
     protected override void OnCollisionEnter(Collision collision)
@@ -187,6 +192,7 @@ public class PlayerManager : StateManager
             idleTime = 0;
             animator.SetBool("isActive", true);
             stickyAnimator.SetBool("isActive", true);
+            swapCollider.SetActive(false);
         }
         else
         {
@@ -199,6 +205,7 @@ public class PlayerManager : StateManager
             isActive = false;
             animator.SetBool("isActive", false);
             stickyAnimator.SetBool("isActive", false);
+            swapCollider.SetActive(true);
         }
     }
 
@@ -552,7 +559,7 @@ public class PlayerManager : StateManager
             {
                 if (hit.collider.tag == "Player" && hit.collider.transform != transform)
                 {
-                    if (hit.collider.TryGetComponent<PlayerManager>(out PlayerManager playerManager))
+                    if (hit.collider.transform.parent.TryGetComponent<PlayerManager>(out PlayerManager playerManager))
                     {
                         if (playerManager.position == Position.Default)
                         {
@@ -606,28 +613,57 @@ public class PlayerManager : StateManager
                     {
                         if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object") && hit.collider.transform != transform)
                         {
-                            if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                            if (hit.collider.tag == "Player")
                             {
-                                if (stateManager.stickedWall != null)
+                                if (hit.collider.transform.parent.TryGetComponent<StateManager>(out StateManager stateManager))
                                 {
-                                    if (!stateManager.stickedWall.isWallDestroyed)
+                                    if (stateManager.stickedWall != null)
                                     {
-                                        stateManager.stickedWall.manager.DestroyWall();
+                                        if (!stateManager.stickedWall.isWallDestroyed)
+                                        {
+                                            stateManager.stickedWall.manager.DestroyWall();
+                                        }
+                                        else
+                                        {
+                                            stateManager.SetState(equippedMushroom.stateToApply);
+                                        }
+
+                                        idleTime = 0;
                                     }
                                     else
                                     {
                                         stateManager.SetState(equippedMushroom.stateToApply);
+                                        idleTime = 0;
                                     }
 
-                                    idleTime = 0;
+                                    AudioManager.instance.Play("Sfx_Player_Sticky");
                                 }
-                                else
+                            }
+                            else
+                            {
+                                if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
                                 {
-                                    stateManager.SetState(equippedMushroom.stateToApply);
-                                    idleTime = 0;
-                                }
+                                    if (stateManager.stickedWall != null)
+                                    {
+                                        if (!stateManager.stickedWall.isWallDestroyed)
+                                        {
+                                            stateManager.stickedWall.manager.DestroyWall();
+                                        }
+                                        else
+                                        {
+                                            stateManager.SetState(equippedMushroom.stateToApply);
+                                        }
 
-                                AudioManager.instance.Play("Sfx_Player_Sticky");
+                                        idleTime = 0;
+                                    }
+                                    else
+                                    {
+                                        stateManager.SetState(equippedMushroom.stateToApply);
+                                        idleTime = 0;
+                                    }
+
+                                    AudioManager.instance.Play("Sfx_Player_Sticky");
+                                }
                             }
                         }
                     }
@@ -707,7 +743,7 @@ public class PlayerManager : StateManager
 
             if (hit.collider.tag == "Player" && hit.collider.transform != transform)
             {
-                if (hit.collider.TryGetComponent<PlayerManager>(out PlayerManager playerManager))
+                if (hit.collider.transform.parent.TryGetComponent<PlayerManager>(out PlayerManager playerManager))
                 {
                     if (target != null)
                     {
@@ -748,18 +784,37 @@ public class PlayerManager : StateManager
                     {
                         if ((hit.collider.tag == "Player" || hit.collider.tag == "Mushroom" || hit.collider.tag == "Object") && hit.collider.transform != transform)
                         {
-                            if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                            if (hit.collider.tag == "Player")
                             {
-                                if (target != null)
+                                if (hit.collider.transform.parent.TryGetComponent<StateManager>(out StateManager stateManager))
                                 {
-                                    if (target != stateManager)
+                                    if (target != null)
                                     {
-                                        target.outline.enabled = false;
+                                        if (target != stateManager)
+                                        {
+                                            target.outline.enabled = false;
+                                        }
                                     }
+                                    target = stateManager;
+                                    target.outline.enabled = true;
+                                    return;
                                 }
-                                target = stateManager;
-                                target.outline.enabled = true;
-                                return;
+                            }
+                            else
+                            {
+                                if (hit.collider.TryGetComponent<StateManager>(out StateManager stateManager))
+                                {
+                                    if (target != null)
+                                    {
+                                        if (target != stateManager)
+                                        {
+                                            target.outline.enabled = false;
+                                        }
+                                    }
+                                    target = stateManager;
+                                    target.outline.enabled = true;
+                                    return;
+                                }
                             }
                         }
                     }
