@@ -57,7 +57,7 @@ public class PlayerManager : StateManager
     private bool isCalculatingThrowForce = false;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField][Range(10, 100)] private int linePoints = 25;
-    [SerializeField][Range (0.01f, 0.25f)] private float timeBetweenPoints = 0.1f;
+    [SerializeField][Range(0.01f, 0.25f)] private float timeBetweenPoints = 0.1f;
 
     private StateManager target = null;
 
@@ -439,23 +439,45 @@ public class PlayerManager : StateManager
         float startThrowForceHorizontal = heldObject.startThrowForceHorizontal;
         float startThrowForceVertical = heldObject.startThrowForceVertical;
         float maxThrowForceHorizontal = 100;
-        float maxThrowForceVertical = 70;
+        float maxThrowForceVertical = 110;
+        int sign = 1;
         throwDirection = new Vector2(startThrowForceHorizontal, startThrowForceVertical);
         isCalculatingThrowForce = true;
 
         while (isAiming && playerControls.Player.X.IsPressed())
         {
-            startThrowForceHorizontal += (1f + Time.fixedDeltaTime);
-            startThrowForceVertical += (1f + Time.fixedDeltaTime);
+            if (sign > 0)
+            {
+                startThrowForceHorizontal += (1f + sign * Time.fixedDeltaTime);
+                startThrowForceVertical += (1f + sign * Time.fixedDeltaTime);
+
+            }
+            if (sign < 0)
+            {
+                startThrowForceHorizontal -= (1f + Time.fixedDeltaTime);
+                startThrowForceVertical -= (1f + Time.fixedDeltaTime);
+
+            }
 
             if (startThrowForceHorizontal > maxThrowForceHorizontal)
             {
                 startThrowForceHorizontal = maxThrowForceHorizontal;
-            }
 
+            }
             if (startThrowForceVertical > maxThrowForceVertical)
             {
                 startThrowForceVertical = maxThrowForceVertical;
+                sign = -1;
+            }
+
+            if (startThrowForceHorizontal <= 0)
+            {
+                startThrowForceHorizontal = 0;
+            }
+            if (startThrowForceVertical <= 0)
+            {
+                startThrowForceVertical = 0;
+                sign = 1;
             }
 
             throwDirection = new Vector2(startThrowForceHorizontal, startThrowForceVertical);
@@ -556,7 +578,7 @@ public class PlayerManager : StateManager
                     }
                 }
             }
-            
+
 
             hitPoint = hit.point;
         }
@@ -992,7 +1014,7 @@ public class PlayerManager : StateManager
                 {
                     gameManager.UIManager.SetUIInput(null);
                 }
-                
+
                 Move(playerControls.Player.LeftStick.ReadValue<Vector2>());
                 FallGravity();
 
@@ -1002,7 +1024,7 @@ public class PlayerManager : StateManager
                     coyoteTimer = -5;
                     Jump();
                 }
-                else if(playerControls.Player.A.IsPressed() && coyoteTimer > 0 && !RaycastGrounded())
+                else if (playerControls.Player.A.IsPressed() && coyoteTimer > 0 && !RaycastGrounded())
                 {
                     buttonSouthIsPressed = true;
                     coyoteTimer = -5;
