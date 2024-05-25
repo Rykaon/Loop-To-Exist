@@ -1,1 +1,1 @@
-Souhaites-tu aller autrepart ? Impossible. Notre union est loi dans notre domaine. Jamais nous ne permettrons une telle possibilité. #time:7
+Souhaites-tu aller autre part ? Impossible. Notre union est loi dans notre domaine. Jamais nous ne permettrons une telle possibilité. #time:7

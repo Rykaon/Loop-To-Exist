@@ -1,2 +1,2 @@
-Cette forme ? Notre âme réside certes dans ce Soleil rouge, mais nous sommes ici partout avec toi. #time:7
-Aucun mal ne pourra t'arriver sans notre autorisation, tant que tu reste dans notre domaine. #time:7
+Cette forme ? Notre âme réside certes dans ce Soleil rouge, mais nous sommes ici, partout avec toi. #time:7
+Aucun mal ne pourra t'arriver sans notre autorisation, tant que tu restes dans notre domaine. #time:7
