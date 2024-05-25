@@ -52,6 +52,7 @@ namespace Cinematic
 
         private IEnumerator PlayCinematicSequence()
         {
+            gameManager.isInCinematic = true;
             gameManager.ChangeState(GameManager.ControlState.UI);
             gameManager.mainPlayer.rigidBody.velocity = Vector3.zero;
             gameManager.mainPlayer.rigidBody.angularVelocity = Vector3.zero;
@@ -215,6 +216,7 @@ namespace Cinematic
 
             gameManager.ChangeState(GameManager.ControlState.World);
             gameManager.mainPlayer.isActive = true;
+            gameManager.isInCinematic = false;
         }
 
         private IEnumerator Walk(CinematicPlan plan)

@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<StateManager> entities;
 
     [Header("Progression Status")]
+    public bool isInCinematic = false;
     public bool showCinematics = true;
     public bool hasFinishedTutorial = false;
    
@@ -132,6 +133,13 @@ public class GameManager : MonoBehaviour
         playerMenu = PlayerMenu;
         playerMaxIndex = playerList.Count - 1;
         SetMainPlayer(mainPlayer, true, false);
+
+        StartCoroutine(StartGame());
+    }
+
+    private IEnumerator StartGame()
+    {
+        yield return new WaitForSecondsRealtime(0.25f);
 
         if (showCinematics)
         {

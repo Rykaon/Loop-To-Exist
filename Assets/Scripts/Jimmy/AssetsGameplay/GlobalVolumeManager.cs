@@ -25,7 +25,7 @@ public class GlobalVolumeManager : MonoBehaviour
                 {
                     bool isInVolume = volumes[i].IsTransformInsideBoundingBox(GameManager.instance.mainPlayer.transform);
 
-                    if (isInVolume)
+                    if (isInVolume && !GameManager.instance.isInCinematic)
                     {
                         if (currentVolume == null)
                         {
