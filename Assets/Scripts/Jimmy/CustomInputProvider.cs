@@ -5,6 +5,7 @@ using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 using UnityEngine.Windows;
 using static Cinemachine.AxisState;
+using UnityEngine.ProBuilder.Shapes;
 
 public class CustomInputProvider : MonoBehaviour, IInputAxisProvider
 {
@@ -15,11 +16,25 @@ public class CustomInputProvider : MonoBehaviour, IInputAxisProvider
     {
         if (axis == 0)
         {
-            return gameManager.playerControls.Player.RightStick.ReadValue<Vector2>().x * rotationSpeed;
+            if (GameManager.instance.previousControlScheme == GameManager.instance.gamepad)
+            {
+                return gameManager.playerControls.Player.RightStick.ReadValue<Vector2>().x * rotationSpeed * 1.5f;
+            }
+            else
+            {
+                return gameManager.playerControls.Player.RightStick.ReadValue<Vector2>().x * rotationSpeed;
+            }
         }
         else if (axis == 1)
         {
-            return gameManager.playerControls.Player.RightStick.ReadValue<Vector2>().y * rotationSpeed;
+            if (GameManager.instance.previousControlScheme == GameManager.instance.gamepad)
+            {
+                return gameManager.playerControls.Player.RightStick.ReadValue<Vector2>().y * rotationSpeed * 1.5f;
+            }
+            else
+            {
+                return gameManager.playerControls.Player.RightStick.ReadValue<Vector2>().y * rotationSpeed;
+            }
         }
         else
         {
