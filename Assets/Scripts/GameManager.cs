@@ -13,6 +13,7 @@ using static Cinemachine.CinemachineFreeLook;
 using static UnityEngine.Rendering.VolumeComponent;
 using System.Linq;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -263,6 +264,12 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            SceneManager.LoadScene(1);
+        }
+
+
         ResetInputState();
 
         if (controlState == ControlState.World)
