@@ -706,37 +706,6 @@ Transform:
   - {fileID: 7600289020297275643}
   m_Father: {fileID: 4049020821650170303}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2006265298649847288
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2422482920985589604}
-  m_Layer: 0
-  m_Name: Pivot (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2422482920985589604
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2006265298649847288}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.41, z: 0.04}
-  m_LocalScale: {x: 2.8571427, y: 2.8571427, z: 2.8571427}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4552716132596060401}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2047535533425914715
 GameObject:
   m_ObjectHideFlags: 0
@@ -1453,7 +1422,6 @@ Transform:
   - {fileID: 6738855953374197364}
   - {fileID: 5648717274849367979}
   - {fileID: 8395247496508580121}
-  - {fileID: 2422482920985589604}
   m_Father: {fileID: 1379778369274321884}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5006748754500241956
@@ -1514,8 +1482,8 @@ MonoBehaviour:
   type: 4
   states: 
   position: 0
-  handPivot: {fileID: 8395247496508580121}
-  headPivot: {fileID: 2422482920985589604}
+  handPivot: {fileID: 0}
+  headPivot: {fileID: 0}
   RigidBody: {fileID: 7844494707028061591}
   ObjectCollider: {fileID: 7272283819878818187}
   Renderer: {fileID: 6257653223578730151}
@@ -1526,7 +1494,6 @@ MonoBehaviour:
   stickyMaterial: {fileID: 2100000, guid: 9b81f1b07e03fec4a996141f9ef9bb45, type: 2}
   startThrowForceHorizontal: 8
   startThrowForceVertical: 5
-  initParent: {fileID: 0}
   objectToStick: {fileID: 0}
   stickedObjects: []
   link: {fileID: 0}
@@ -1535,12 +1502,6 @@ MonoBehaviour:
   linkJoint: {fileID: 0}
   isSticked: 0
   isLinked: 0
-  holdingPlayer: {fileID: 0}
-  equippingPlayer: {fileID: 0}
-  isHeldObject: 0
-  isHeld: 0
-  isEquippedObject: 0
-  isEquipped: 0
   lastGroundedPosition: {x: 0, y: 0, z: 0}
   lastGroundedRotation: {x: 0, y: 0, z: 0, w: 0}
   AudioManager: {fileID: 5006748754500241956}
@@ -7194,7 +7155,7 @@ Transform:
   m_GameObject: {fileID: 6078816333828297447}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.85, z: 0}
+  m_LocalPosition: {x: 0, y: 1.164, z: 0}
   m_LocalScale: {x: 2.8571427, y: 2.8571427, z: 2.8571427}
   m_ConstrainProportionsScale: 0
   m_Children: []
